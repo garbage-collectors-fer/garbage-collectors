@@ -1,51 +1,93 @@
-# Programsko inženjerstvo — FER-UNIZG
+# EcoSentry
 
-Dobro došli u središnji repozitorij kolegija **Programsko inženjerstvo** na Fakultetu elektrotehnike i računarstva Sveučilišta u Zagrebu.
+EcoSentry omogućuje građanima da s terena prijave divlje odlagalište otpada, a komunalnim redarima i eko-udrugama da te prijave provjere i organiziraju njihovu sanaciju.
 
-**Važna napomena:** Ovaj `README.md` **nije** predložak za studentske projekte. Kao polazište za README vlastitog projekta koristite [`README_PREDLOZAK.md`](README_PREDLOZAK.md). Potpune upute za projektnu dokumentaciju — opseg, zahtjeve, obrasce uporabe, arhitekturu, ispitivanje, postavljanje, zaključak i aktivnosti grupe — nalaze se u direktoriju [`docs/`](docs/Home.md). **Napomena:** Sva projektna dokumentacija vodi se isključivo unutar direktorija docs/ u obliku međusobno povezanih Markdown dokumenata.
+**Projekt na kolegiju:** Ovu aplikaciju razvija studentski tim **Garbage Collectors** (G01, tim 1.2) u sklopu kolegija [Programsko inženjerstvo](https://www.fer.unizg.hr/predmet/proinz) na Fakultetu elektrotehnike i računarstva Sveučilišta u Zagrebu (FER).
 
-## Svrha
+## Opis aplikacije
 
-Ovaj repozitorij sadrži službenu strukturu dokumentacije, predloške, primjere i smjernice za studentske projekte na kolegiju Programsko inženjerstvo na FER-u. Služi kao glavno mjesto za praćenje napretka i strukture projektnih zadataka te definira praktične standarde za jasnu dokumentaciju, organizirano upravljanje projektom i transparentnost tijekom razvoja.
+Divlja odlagališta često ostaju neprijavljena jer građani ne znaju kome se obratiti, a eko-udruge i komunalne službe nemaju zajednički pregled prijava. EcoSentry povezuje **građane** koji prijavljuju odlagališta fotografijom i lokacijom, **komunalne redare** koji prijave provjeravaju i po potrebi izdaju službeni nalog te **eko-udruge** koje organiziraju akcije čišćenja s volonterima. Svaka prijava ima vidljiv status na karti, od prijave do sanacije.
 
-## Verzije i povijest
+**Status:** Projekt je u fazi analize zahtjeva; aplikacija još nije implementirana.
 
-Ovaj repozitorij primjenjuje semantičko verzioniranje (engl. Semantic Versioning). Trenutačna je verzija 3.0.  
-Predložak i pripadajuća struktura dokumentacije kontinuirano se razvijaju i unaprjeđuju od 2015. godine.
+**Planirane ključne funkcionalnosti**
 
-## Struktura repozitorija
+- Prijava odlagališta s fotografijom, lokacijom i kategorijom otpada
+- Karta prijava s oznakama obojenima prema statusu
+- Organizacija akcija čišćenja s prijavom volontera, događajem u Google kalendaru i vremenskom prognozom za termin akcije
 
-Repozitorij sadrži predloške dokumentacije, primjere i pomoćne materijale za projekte na kolegiju Programsko inženjerstvo.
+Za potpuni opseg, zahtjeve, oblikovanje i dokaze ispitivanja pogledajte [docs](docs/Home.md).
+
+<a id="deployment"></a>
+## Postavljanje (engl. deployment)
+
+<!-- UPUTA: Ovaj odjeljak opisuje već postavljenu aplikaciju koju se  može otvoriti i isprobati bez lokalnog pokretanja izvornog koda.
+Za Iteraciju 1 i Završni pregled navedite konkretne podatke. Provjerite vodi li URL na javno dostupnu pokrenutu aplikaciju i radi li navedeni tijek uporabe. Nikada ne objavljujte lozinke ni pristupne tokene. -->
+
+**Javno dostupna aplikacija:** još nije postavljena (planirano za predaju prvog ciklusa, 20. 11. 2026.).
+
+[Vodič za postavljanje i pokretanje](docs/6-Postavljanje-instalacija-i-konfiguracija.md) opisuje smještaj aplikacije (engl. hosting) koji tim stvarno koristi.
+
+<a id="quick-start"></a>
+## Brzi početak / instalacija
+
+<!-- Obavezno od Demo 1 nadalje. Zamijenite mjesta za unos naredbama koje je drugi član tima uspješno provjerio nakon čistog kloniranja repozitorija. Detaljne upute za administraciju držite u projektnoj dokumentaciji u direktoriju docs/. -->
+
+Upute za lokalno pokretanje bit će dodane s prvom funkcionalnom inačicom.
+
+**Konfiguracija:** Potrebne varijable okruženja navedene su u [`.env.example`](.env.example). Kopirajte je u `.env` i upišite vlastite vrijednosti. Datoteka `.env` se ne commita, a API ključevi i lozinke ne objavljuju se u repozitoriju, dokumentaciji ni porukama.
+
+## Tehnologije
+
+Vanjske usluge određene su projektnim zadatkom. Programski jezik, radni okvir, baza podataka i platforma za smještaj još se dogovaraju s asistentom.
+
+| Tehnologija ili alat | Uloga u ovom projektu | Razlog uporabe ili važno ograničenje |
+| --- | --- | --- |
+| Google (OpenID Connect / OAuth 2.0) | Prijava korisnika | Prijava putem vanjskog pružatelja identiteta obavezna je na kolegiju |
+| Google Maps API | Karta prijava, oznake prema statusu, geokodiranje, lokacija okupljanja | Zahtijeva se projektnim zadatkom |
+| Google Calendar API | Događaj za akciju čišćenja i prijavljene volontere | Zahtijeva se projektnim zadatkom; potreban je pristanak korisnika na pristup kalendaru |
+| OpenWeatherMap API | Prognoza za lokaciju i termin akcije, upozorenje na nevrijeme | Zahtijeva se projektnim zadatkom |
+
+<a id="team-members"></a>
+## Članovi tima
+
+| Član | GitHub | Glavna uloga ili doprinos |
+| --- | --- | --- |
+| Tibor Andreani | [dopuniti] | Voditelj tima |
+| Bruno Hrgovan | [dopuniti] | [dopuniti] |
+| Pavao Maršić | [dopuniti] | [dopuniti] |
+| Ivana Markovinović | [dopuniti] | [dopuniti] |
+| Nikola Mihanović | [nikola266](https://github.com/nikola266) | [dopuniti] |
+| Leo Žigman | [dopuniti] | [dopuniti] |
+| Aki Pandžić | [dopuniti] | [dopuniti] |
+
+Uloge se tijekom projekta mogu mijenjati. Repozitorij i GitHub Issues služe kao dodatni dokazi timskog rada.
+
+## Doprinos projektu
+
+- Značajan rad počinje [Issueom](https://github.com/garbage-collectors-fer/garbage-collectors/issues) koji ima opis, očekivani rezultat i nositelja.
+- Grana `master` je stabilna i u nju se ne pusha izravno; za svaki zadatak otvara se kratkotrajna grana (npr. `feature/prijava-odlagalista`, `fix/karta`, `docs/obrasci-uporabe`).
+- Promjene ulaze u `master` kroz pull request povezan s Issueom (`Closes #12`), koji pregleda barem još jedan član tima.
+- Poruke commitova imaju prefiks vrste promjene: `feat:`, `fix:`, `docs:`, `ci:`, `chore:`.
+
+<a id="license"></a>
+
+**Status licence:** Tim još nije odabrao licencu; dok to ne učini, nije dodijeljena licenca koja dopušta javnu ponovnu uporabu koda.
+
+Dokumentacijski predložak kolegija sadrži otvorene obrazovne sadržaje (engl. Open Educational Resources, OER) i licenciran je licencom Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International. Ta licenca **ne određuje automatski licencu studentske aplikacije**.
 
 <a id="ai-usage"></a>
 ## Uporaba umjetne inteligencije [![AI Usage: Disclosed](https://img.shields.io/badge/AI%20Usage-Disclosed-blue.svg)](https://www.fer.unizg.hr/_download/repository/Policy%20on%20the%20appropriate%20use%20of%20artificial%20intelligence%20at%20the%20faculty%20of%20electrical%20engineering%20and%20computing%5B1%5D.pdf)
 
 Ovaj projekt slijedi FER-ova [pravila o primjerenoj uporabi umjetne inteligencije](https://www.fer.unizg.hr/_download/repository/Policy%20on%20the%20appropriate%20use%20of%20artificial%20intelligence%20at%20the%20faculty%20of%20electrical%20engineering%20and%20computing%5B1%5D.pdf).
 
-**Transparentnost i korišteni alati:** Jezični model umjetne inteligencije Gemini (3.8 Flash) korišten je kao pomoć pri završnom uređivanju dokumentacije i predložaka repozitorija (`README.md` i direktorij `docs/`) te pri izradi i oblikovanju dokumentacije koda projekta.
+**Izjava:** Alat Claude (Anthropic) korišten je pri postavljanju repozitorija: prilagodbi workflowa, izradi ovog README-a prema predlošku kolegija, predložaka za pull requestove i Issuese te `.gitignore` i `.env.example`. Ime tima, članove i temu zadao je tim, a nastali tekst pregledao je Nikola Mihanović. Detaljan zapis nalazi se u [projektnoj dokumentaciji](docs/Home.md#izjava-o-uporabi-umjetne-inteligencije).
 
-**Etika, sigurnost i provjera:** Radi točnosti i sigurnosti podataka, sva dokumentacija izrađena uz pomoć umjetne inteligencije neovisno je pregledana i provjerena prije objave. Provjereno je da sadržaj poštuje povjerljivost korisnika i da ne uvodi neprovjerene pristranosti.
+<a id="code-of-conduct-and-support"></a>
+## Kodeks ponašanja i podrška [![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-2.1-4baaaa.svg)](CODE_OF_CONDUCT.md)
 
-## Kodeks ponašanja
+Od članova tima očekuje se pridržavanje **Kodeksa ponašanja studenata** Fakulteta elektrotehnike i računarstva Sveučilišta u Zagrebu, pravila timskog rada na kolegiju i [Etičkog kodeksa IEEE-a](https://www.ieee.org/about/corporate/governance/p7-8.html). Pogledajte i [`CODE_OF_CONDUCT.md`](CODE_OF_CONDUCT.md).
 
-Od studenata se očekuje pridržavanje minimalnih standarda prihvatljivog ponašanja definiranih **Kodeksom ponašanja studenata Fakulteta elektrotehnike i računarstva Sveučilišta u Zagrebu**. Također se očekuje pridržavanje [Etičkog kodeksa IEEE-a](https://www.ieee.org/about/corporate/governance/p7-8.html), koji postavlja visoke standarde integriteta, odgovornog i etičnog profesionalnog ponašanja.
+---
 
-**Očekivanja od tima:**
-
-- jasno definirati kako će se rad raspodijeliti među članovima tima i kako će tim komunicirati;
-- primjenjivati dogovorena pravila i standarde pri rješavanju nesuglasica;
-- svi članovi tima dužni su pridržavati se kodeksa ponašanja.
-
-## Licenca [![CC BY-NC-SA 4.0](https://img.shields.io/badge/License-CC%20BY--NC--SA%204.0-lightgrey.svg)](https://creativecommons.org/licenses/by-nc-sa/4.0/)
-
-Copyright © 2026 Vlado Sruk
-
-Dokumentacija i materijali u ovom repozitoriju licencirani su licencom **Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)**. Djelo možete preuzimati, dijeliti i prilagođavati uz navođenje autora, bez komercijalne uporabe i uz objavu izvedenog djela pod istom licencom.
-
-Predložak dokumentacije razvijen je u okviru kolegija Programsko inženjerstvo na FER-u na temelju višegodišnjeg iskustva rada na studentskim projektima. Njegova je svrha isključivo obrazovna: studentima pružiti jasan, strukturiran i povezan okvir za dokumentiranje ključnih aspekata razvoja programskog sustava. Struktura je namjerno moderna i plitka, prilagođena Git/Markdown dokumentaciji i čitanju na ekranu, bez nepotrebno duboke hijerarhije poglavlja. Usklađen s vremenskim okvirom semestra i ciljevima kolegija, predložak je namjerno sažet na inženjerski minimum potreban za razumijevanje i praktičnu primjenu temeljnih principa struke. Stoga ne teži razini opsega i detalja koja se očekuje u dokumentaciji velikih industrijskih sustava.
-
-Predložak služi kao polazište, a ne ograničenje. Timovi ga mogu prilagoditi i proširiti u skladu sa specifičnostima domene, odabranim tehnologijama, složenošću rješenja i interesima članova tima. Svaka nadopuna pritom treba imati jasnu svrhu i doprinositi kvaliteti rješenja, arhitekture, dokumentacije ili verifikacije projekta, a ne pukom povećanju opsega. Obavezni zahtjevi, način rada i ostala pravila studentskog projekta definirani su na službenoj stranici [Projekt - Programsko inženjerstvo](https://www.fer.unizg.hr/predmet/proinz). Ova licenca se odnosi na predložak dokumentacije i pripadajuće nastavne sadržaje, a ne automatski na studentske projekte izrađene njegovom uporabom.
-
-## Citiranje
-
-Ako koristite ili prilagođavate ovaj repozitorij, citirajte ga prema datoteci [`CITATION.cff`](citation.cff). GitHubova naredba **Cite this repository** automatski čita tu datoteku.
+Struktura dokumentacije prilagođena je predlošku kolegija Programsko inženjerstvo FER-a autora [Vlade Sruka](https://www.fer.unizg.hr/vlado.sruk), licenciranom pod [CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/). Aplikaciju i njezin sadržaj izrađuje gore navedeni studentski tim.
