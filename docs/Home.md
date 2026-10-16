@@ -1,16 +1,16 @@
-# [Naziv aplikacije] — Projektna dokumentacija
+# EcoSentry — Projektna dokumentacija
 
 **Kolegij:** [Programsko inženjerstvo](https://www.fer.unizg.hr/predmet/proinz), Fakultet elektrotehnike i računarstva Sveučilišta u Zagrebu  
-**Akademska godina:** [20XX./20XX.]  
-**Tim:** [Oznaka i naziv tima]  
+**Akademska godina:** 2026./2027.  
+**Tim:** G01.2 — Garbage Collectors  
 **Nastavnik:** Vlado Sruk  
-**Asistent / demonstrator:** [Ime i uloga u ovom izvođenju kolegija]
+**Asistent / demonstrator:** Goran Rajić (asistent)
 
 ## Pregled projekta
 
 **Cilj:** Omogućiti čitatelju koji prvi put vidi projekt da u dvije ili tri rečenice prepozna aplikaciju, njezine ciljane korisnike i glavnu svrhu.
 
-[Opis projekta.]
+EcoSentry je aplikacija za prijavu i sanaciju divljih odlagališta otpada. Građani s terena prijavljuju odlagalište fotografijom i lokacijom, komunalni redari prijave provjeravaju, a eko-udruge na temelju njih organiziraju akcije čišćenja s volonterima. Status svake prijave vidljiv je na karti od prijave do sanacije.
 
 <details>
 <summary><strong>Sažet pregled projekta</strong></summary>
@@ -19,12 +19,12 @@ Za projekt na temu CrisisMap sažet pregled može navesti građane kojima trebaj
 
 </details>
 
-**Aplikacija i osnovno postavljanje:** [README repozitorija](../README_PREDLOZAK.md#quick-start)  
-**Javno dostupna aplikacija:** pogledajte [README – Postavljanje](../README_PREDLOZAK.md#deployment)
+**Aplikacija i osnovno postavljanje:** [README repozitorija](../README.md#quick-start)  
+**Javno dostupna aplikacija:** pogledajte [README – Postavljanje](../README.md#deployment)
 
 ## Članovi tima i uloge
 
-Ažurirani popis članova, njihovih GitHub profila i glavnih uloga ili doprinosa nalazi se u [README-u repozitoriju](../README_PREDLOZAK.md#team-members).
+Ažurirani popis članova, njihovih GitHub profila i glavnih uloga ili doprinosa nalazi se u [README-u repozitoriju](../README.md#team-members).
 
 ## Kazalo dokumentacije
 
@@ -50,8 +50,8 @@ Dokumentacija se kontinuirano ažurira kako se aplikacija razvija.
 
 ## Organizacija projekta i razvojni proces
 
-**Način rada:** [Stvarni način rada i trajanje iteracije, ako je relevantno.]  
-**Praćenje trenutačnih zadataka i nedostataka:** [Poveznica na GitHub Issues ili stvarno korištenu ploču zadataka.]
+**Način rada:** Zadatak (Issue) → kratkotrajna grana → pull request s pregledom → spajanje u `master`; pravila su u [README – Doprinos projektu](../README.md#doprinos-projektu). [Dopuniti: ritam sastanaka i trajanje iteracije.]  
+**Praćenje trenutačnih zadataka i nedostataka:** [GitHub Issues](https://github.com/garbage-collectors-fer/garbage-collectors/issues)
 
 <details>
 <summary><strong>Opis načina rada tima</strong></summary>
@@ -77,25 +77,25 @@ Za obrazac uporabe podnošenja prijave kriznog događaja u CrisisMapu tim može 
 
 ## Akademski integritet, ponašanje i licenciranje
 
-README repozitorija sadrži projektnu [izjavu o uporabi umjetne inteligencije](../README_PREDLOZAK.md#ai-usage), [informacije o kodeksu ponašanja i podršci](../README_PREDLOZAK.md#code-of-conduct-and-support) te [status licence ili ponovne uporabe](../README_PREDLOZAK.md#license). Pristupni podaci i druge tajne nikada se ne objavljuju u dokumentaciji niti dijele u običnim porukama.
+README repozitorija sadrži projektnu [izjavu o uporabi umjetne inteligencije](../README.md#ai-usage), [informacije o kodeksu ponašanja i podršci](../README.md#code-of-conduct-and-support) te [status licence ili ponovne uporabe](../README.md#license). Pristupni podaci i druge tajne nikada se ne objavljuju u dokumentaciji niti dijele u običnim porukama.
 
 ## Izjava o uporabi umjetne inteligencije
 
 <!-- UPUTA: Ovo je detaljan zapis uporabe umjetne inteligencije; README sadrži kratak sažetak i poveznicu na ovaj odjeljak. Unesite samo ono što se stvarno dogodilo i uklonite neupotrijebljene retke. Ako nije korišten nijedan alat generativne umjetne inteligencije, zamijenite cijeli odjeljak jednom rečenicom koja to jasno navodi. Svaki redak mora upućivati na stranicu, datoteku, zahtjev za uključivanje promjena (PR) ili zadatak. Nikada ne unosite pristupne podatke, osobne podatke ni tuđi zaštićeni sadržaj u alate umjetne inteligencije. -->
 
-Kratak sažetak: [README – Uporaba umjetne inteligencije](../README_PREDLOZAK.md#ai-usage). Ovaj odjeljak bilježi koji su alati korišteni, za koju dokumentaciju ili kod te kako je tim provjerio rezultat. Slijedi FER-ova [pravila o primjerenoj uporabi umjetne inteligencije](https://www.fer.unizg.hr/_download/repository/Policy%20on%20the%20appropriate%20use%20of%20artificial%20intelligence%20at%20the%20faculty%20of%20electrical%20engineering%20and%20computing%5B1%5D.pdf).
+Kratak sažetak: [README – Uporaba umjetne inteligencije](../README.md#ai-usage). Ovaj odjeljak bilježi koji su alati korišteni, za koju dokumentaciju ili kod te kako je tim provjerio rezultat. Slijedi FER-ova [pravila o primjerenoj uporabi umjetne inteligencije](https://www.fer.unizg.hr/_download/repository/Policy%20on%20the%20appropriate%20use%20of%20artificial%20intelligence%20at%20the%20faculty%20of%20electrical%20engineering%20and%20computing%5B1%5D.pdf).
 
 ### Korišteni alati
 
 | Alat | Inačica ili model | Koristio/la | Glavna svrha |
 | --- | --- | --- | --- |
-| [Naziv alata] | [Inačica ili model, ako je poznat] | [Član/članovi tima] | [npr. izrada nacrta dokumentacije, generiranje izvora dijagrama] |
+| Claude (Anthropic) | Claude Opus 5.5 | Nikola Mihanović | Postavljanje repozitorija: prilagodba workflowa, README, predlošci za PR i Issuese, `.gitignore`, `.env.example` |
 
 ### Opseg doprinosa umjetne inteligencije
 
 | Stranica, datoteka ili artefakt | Vrsta pomoći | Što je alat proizveo | Što je tim zadao i promijenio | Lokacija |
 | --- | --- | --- | --- | --- |
-| [npr. 3. Obrasci uporabe, UC-002] | [Izrada nacrta / preoblikovanje / prijevod / izvor dijagrama / sažimanje] | [Kratak opis] | [Ulaz zadan alatu; dodane, ispravljene ili uklonjene činjenice] | [Stranica dokumentacije, `.puml` datoteka, PR] |
+| `README.md`, `docs/Home.md`, `.github/`, `.gitignore`, `.env.example` | Izrada nacrta i prilagodba predloška | Popunjene dijelove predloška kolegija, promjenu grane `main` u `master` u workflowima, predloške za PR i Issue | Tim je zadao ime tima, članove, voditelja i temu (PDF zadatka EcoSentry); nepoznati podaci ostavljeni su kao `[dopuniti]` | Grana `docs/prilagodba-predloska` i pripadajući PR |
 
 Stranice i artefakti koji nisu navedeni iznad izrađeni su bez pomoći generativne umjetne inteligencije. [Po želji: kao dodatne retke navedite kod ili ispitivanja izrađena uz pomoć umjetne inteligencije.]
 
