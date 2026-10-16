@@ -83,3 +83,14 @@ out
 
 # pnpm
 .pnpm-store
+
+# Tajne: Google OAuth klijent preuzima se kao client_secret_*.json
+client_secret*.json
+*.pem
+*.key
+
+# IDE i operacijski sustav
+.idea/
+.vscode/
+Thumbs.db
+.DS_Store
