@@ -30,7 +30,7 @@ Prioriteti su zadani po MoSCoW metodi: Must (mora biti), Should (trebalo bi biti
 
 | ID | Opis | Prioritet | Izvor | Kriteriji prihvaćanja |
 | --- | --- | --- | --- | --- |
-| F-011 | Sustav prikazuje prijave na Google karti kao pribadače obojane po statusu (crveno - Prijavljeno, žuto - Akcija u tijeku, zeleno - Očišćeno). | Must | Zadatak | Svaka prihvaćena prijava ima pribadaču na svojoj lokaciji i boja odgovara statusu. Odbačene prijave se ne prikazuju. |
+| F-011 | Sustav prikazuje prijave na Google karti kao pribadače obojane po statusu (crveno - Prijavljeno, žuto - Akcija u tijeku, zeleno - Očišćeno). | Must | Zadatak | Svaka prijava koja nije odbačena ima pribadaču na svojoj lokaciji i boja odgovara statusu. Nova prijava vidljiva je odmah nakon podnošenja, kao crvena, i prije nego je redar provjeri. Odbačene prijave se ne prikazuju. |
 | F-012 | Klikom na pribadaču prikazuju se detalji prijave. | Must | Zadatak | Odabirom pribadače otvaraju se detalji (fotografija, kategorija, adresa, status, datum). |
 | F-013 | Sustav iz koordinata prijave dohvaća tekstualnu adresu. | Should | Zadatak | Uz svaku prijavu prikazuje se adresa. |
 | F-014 | Korisnik može unijeti lokaciju prijave upisivanjem adrese. | Should | Zadatak | Upisana adresa postavlja pribadaču na odgovarajuće mjesto na karti. |
@@ -80,7 +80,7 @@ Prioriteti su zadani po MoSCoW metodi: Must (mora biti), Should (trebalo bi biti
 | F-033 | Sustav šalje push obavijesti na uređaj korisnika. | Won't | Interpretacija zadatka |  Obavijesti se prikazuju unutar aplikacije. |
 | F-034 | Sustav šalje obavijesti e-mailom. | Won't | Interpretacija zadatka | Obavijesti se prikazuju unutar aplikacije. |
 | F-035 | Sustav podržava više gradova s odvojenim redarima. | Won't | Interpretacija zadatka | Sustav je za jedan grad |
-| F-036 | Sustav automatski šalje službeni nalog komunalnoj tvrtki. | Won't | Interpretacija zadatka | Nije specifirano kako se šalje nalog. |
+| F-036 | Sustav automatski šalje službeni nalog komunalnoj tvrtki. | Won't | Interpretacija zadatka | Nije specificirano kako se šalje nalog. |
 
 ## 2.2 Nefunkcijski zahtjevi
 
@@ -101,8 +101,11 @@ Prioriteti su zadani po MoSCoW metodi: Must (mora biti), Should (trebalo bi biti
 | A-01 Građanin | Korisnik. Prijavljuje otpad, prati svoje prijave i prijavljuje se na akcije kao volonter. | F-001, F-006 do F-015, F-026, F-027, F-029, F-031 |
 | A-02 Eko-udruga | Korisnik. Organizira akcije čišćenja i potvrđuje sanaciju. | F-001, F-004, F-011 do F-015, F-021 do F-025, F-028, F-030 do F-032 |
 | A-03 Komunalni redar | Korisnik i administrator. Provjerava prijave, upravlja korisnicima i šalje prijave na službenu sanaciju. | F-002, F-005, F-011, F-012, F-016 do F-020, F-025 |
-| A-04 Google Maps, Google Calendar, OpenWeatherMap | Vanjski sustavi s kojima aplikacija komunicira. | F-001, F-011, F-013 do F-015, F-028 do F-032 |
-| Komunalna tvrtka | Dionik. Ne koristi aplikaciju, ali prima službene naloge koje generira redar. | F-018 |
+| A-04 Google (OAuth 2.0) | Vanjski sustav. Pružatelj identiteta koji provodi autentikaciju korisnika. | F-001 |
+| A-05 Google Maps | Vanjski sustav. Prikaz karte, geokodiranje i ruta do mjesta okupljanja. | F-011, F-013, F-014, F-015 |
+| A-06 Google Calendar | Vanjski sustav. Upis i ažuriranje događaja za akcije čišćenja. | F-028, F-029, F-030 |
+| A-07 OpenWeatherMap | Vanjski sustav. Vremenska prognoza za lokaciju i datum akcije. | F-031, F-032 |
+| D-01 Komunalna tvrtka | Dionik. Ne koristi aplikaciju, ali prima službene naloge koje generira redar. | F-018 |
 
 ## 2.4 Ograničenja i pretpostavke
 
