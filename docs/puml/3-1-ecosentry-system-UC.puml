@@ -1,0 +1,92 @@
+@startuml
+title Sustav EcoSentry - obrasci uporabe
+left to right direction
+skinparam shadowing false
+skinparam defaultFontName Arial
+skinparam ArrowColor #212529
+
+skinparam actor {
+    BackgroundColor #F8F9FA
+    BorderColor #212529
+    BackgroundColor<<external system>> #FFF3CD
+    BorderColor<<external system>> #856404
+}
+
+skinparam usecase {
+    BackgroundColor #E7F1FF
+    BorderColor #0D6EFD
+}
+actor "Korisnik" as User
+actor "Građanin" as Gradan
+actor "Eko-udruga" as Udruga
+actor "Komunalni redar" as Redar
+
+actor "Google OAuth 2.0" as OAuth <<external system>>
+actor "Google Calendar" as Kalendar <<external system>>
+actor "OpenWeatherMap" as Weather <<external system>>
+actor "Google Maps" as Maps <<external system>>
+
+Gradan -[norank]|> User
+Redar -[norank]|> User
+Udruga -[norank]|> User
+
+Gradan -[hidden]down-> User
+User -[hidden]down-> Udruga
+Udruga -[hidden]down-> Redar
+
+
+OAuth -[hidden]down-> Maps
+Maps -[hidden]down-> Kalendar
+Kalendar -[hidden]down-> Weather
+
+
+rectangle "Sustav EcoSentry" {
+    usecase "UC-002\nPrijava odlagališta" as UC002
+    usecase "UC-009\nPraćenje vlastitih\nprijava" as UC009
+    usecase "UC-006\nPrijava volontera na akciju" as UC006
+
+    usecase "UC-001\nPrijava u sustav" as UC001
+    usecase "UC-003\nPregled karte prijava" as UC003
+
+
+    usecase "UC-005\nKreiranje akcije čišćenja" as UC005
+    usecase "UC-010\nUpravljanje kalendarom\nakcija" as UC010
+    usecase "UC-007\nPotvrda sanacije" as UC007
+
+    usecase "UC-004\nVerifikacija prijave" as UC004
+    usecase "UC-008\nIzdavanje službenog\nnaloga" as UC008
+    usecase "UC-011\nPregled statistike" as UC011
+
+}
+
+User -- UC001
+Gradan -- UC002
+User -- UC003
+Redar -- UC004
+Udruga -- UC005
+Gradan -- UC006
+Udruga -- UC007
+Redar -- UC007
+Redar -- UC008
+Gradan -- UC009
+Udruga -- UC010
+Redar -- UC011
+
+UC008 .[norank].> UC004 : <<extend>>\n[otpad opasan\nili prevelik]
+
+UC001 -- OAuth
+UC002 -- Maps
+UC003 -- Maps
+UC005 -- Kalendar
+UC005 -- Weather
+UC006 -- Kalendar
+UC006 -- Maps
+UC006 -- Weather
+UC010 -- Kalendar
+
+
+
+
+
+
+@enduml
