@@ -83,3 +83,6 @@ out
 
 # pnpm
 .pnpm-store
+
+# Frontend build output
+/frontend/dist/

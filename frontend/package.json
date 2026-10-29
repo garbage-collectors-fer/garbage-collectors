@@ -1,8 +1,19 @@
 {
   "name": "frontend",
   "version": "1.0.0",
+  "private": true,
+  "type": "module",
   "scripts": {
-    "build": "mkdir -p dist && echo \"<h1>Frontend App</h1>\" > dist/index.html",
-    "test": "echo \"Frontend tests passed\" && exit 0"
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^6.1.2",
+    "vite": "^8.3.5"
   }
 }
