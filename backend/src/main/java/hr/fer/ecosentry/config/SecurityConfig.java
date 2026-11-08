@@ -21,7 +21,9 @@ public class SecurityConfig {
 		http
 			.authorizeHttpRequests(auth -> auth
 				.requestMatchers("/api/health").permitAll()
-				.anyRequest().authenticated())
+				.requestMatchers("/api/**").authenticated()
+				// stranice frontenda
+				.anyRequest().permitAll())
 			.oauth2Login(login -> login
 				.authorizationEndpoint(endpoint -> endpoint.baseUri("/api/auth"))
 				.redirectionEndpoint(endpoint -> endpoint.baseUri("/api/auth/*/callback"))

@@ -34,6 +34,13 @@ class KorisnikControllerTest {
 	}
 
 	@Test
+	void stranicaFrontendaNijeZasticena() throws Exception {
+		// u testu nema izgradenog frontenda, pa je 404, ali ne 401
+		mockMvc.perform(get("/"))
+			.andExpect(status().isNotFound());
+	}
+
+	@Test
 	void neprijavljeniKorisnikDobiva401() throws Exception {
 		mockMvc.perform(get("/api/me"))
 			.andExpect(status().isUnauthorized())
