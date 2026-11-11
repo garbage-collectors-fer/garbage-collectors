@@ -1,0 +1,297 @@
+
+
+.redar-stranica {
+  --boja-granite: #3F4B3B;
+  --boja-hunter: #44633F;
+  --boja-sea: #5A9367;
+  --boja-mint: #5CAB7D;
+  --boja-tirkizna: #4ADBC8;
+  --boja-pozadina: #eef6f0;
+  --boja-rub: #d3e6d8;
+
+  color: var(--boja-granite);
+  font-size: 17px;
+}
+
+/*pozadina*/
+body:has(.redar-stranica) {
+  background: #eef6f0;
+}
+
+.redar-naslov {
+  margin: 0 0 18px;
+  color: var(--boja-hunter);
+  font-size: 32px;
+}
+
+
+.redar-filteri {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.redar-filteri button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 18px;
+  border: none;
+  border-radius: 999px;
+  background: #fff;
+  color: var(--boja-granite);
+  font: inherit;
+  cursor: pointer;
+}
+
+.redar-filteri button:hover {
+  background: var(--boja-rub);
+}
+
+.redar-filteri button[aria-pressed='true'] {
+  background: var(--boja-hunter);
+  color: #fff;
+}
+
+.redar-broj {
+  min-width: 26px;
+  padding: 1px 8px;
+  border-radius: 999px;
+  background: var(--boja-tirkizna);
+  color: var(--boja-granite);
+  font-size: 14px;
+  font-weight: bold;
+  text-align: center;
+}
+
+
+
+.redar-poruka {
+  margin: 0 0 20px;
+  padding: 12px 18px;
+  border-radius: 10px;
+  background: #fff;
+  border-left: 5px solid var(--boja-granite);
+  font-weight: bold;
+}
+
+.redar-prazno {
+  margin: 0;
+  opacity: 0.7;
+}
+
+
+.redar-raspored {
+  display: grid;
+  grid-template-columns: minmax(280px, 1fr) 2fr;
+  gap: 24px;
+  align-items: start;
+}
+
+.redar-popis {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-height: 80vh;
+  overflow-y: auto;
+}
+
+.redar-stavka {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 16px;
+  border: 2px solid transparent;
+  border-radius: 12px;
+  background: #fff;
+  color: var(--boja-granite);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.redar-stavka:hover {
+  border-color: var(--boja-rub);
+}
+
+.redar-stavka-odabrana {
+  border-color: var(--boja-hunter);
+}
+
+.redar-stavka-tekst {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.redar-stavka-naslov {
+  font-weight: bold;
+}
+
+.redar-stavka-detalj {
+  overflow: hidden;
+  font-size: 15px;
+  opacity: 0.75;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.redar-stavka-id {
+  font-size: 14px;
+  opacity: 0.6;
+}
+
+.redar-status-tocka {
+  display: inline-block;
+  flex-shrink: 0;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+}
+
+
+.redar-desno {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.redar-stranica .karta {
+  width: 100%;
+  height: 360px;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #fff;
+}
+
+.redar-stranica .karta-poruka {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  text-align: center;
+  opacity: 0.8;
+}
+
+.redar-detalji {
+  display: grid;
+  grid-template-columns: minmax(200px, 1fr) 1.3fr;
+  overflow: hidden;
+  border-radius: 12px;
+  background: #fff;
+}
+
+.redar-slika {
+  display: block;
+  width: 100%;
+  height: 100%;
+  min-height: 220px;
+  object-fit: cover;
+}
+
+.redar-detalji-sadrzaj {
+  padding: 20px;
+}
+
+.redar-detalji-zaglavlje {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+
+.redar-detalji-zaglavlje h2 {
+  margin: 0;
+  color: var(--boja-hunter);
+  font-size: 24px;
+}
+
+.redar-status {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 15px;
+}
+
+.redar-podaci {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  align-items: center;
+  gap: 8px 16px;
+  margin: 0 0 20px;
+}
+
+.redar-podaci dt {
+  font-size: 15px;
+  opacity: 0.65;
+}
+
+.redar-podaci dd {
+  margin: 0;
+}
+
+.redar-podaci select {
+  padding: 6px 10px;
+  border: 2px solid var(--boja-rub);
+  border-radius: 8px;
+  background: #fff;
+  color: var(--boja-granite);
+  font: inherit;
+}
+
+
+.redar-radnje {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+
+.redar-pitanje {
+  font-weight: bold;
+}
+
+.redar-gumb {
+  padding: 12px 22px;
+  border: 2px solid var(--boja-hunter);
+  border-radius: 10px;
+  background: #fff;
+  color: var(--boja-hunter);
+  font: inherit;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.redar-gumb:hover {
+  background: var(--boja-pozadina);
+}
+
+.redar-gumb-glavni {
+  background: var(--boja-hunter);
+  color: #fff;
+}
+
+.redar-gumb-glavni:hover {
+  background: var(--boja-granite);
+  border-color: var(--boja-granite);
+}
+
+.redar-gumb:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+@media (max-width: 900px) {
+  .redar-raspored,
+  .redar-detalji {
+    grid-template-columns: 1fr;
+  }
+
+  .redar-popis {
+    max-height: none;
+  }
+}
