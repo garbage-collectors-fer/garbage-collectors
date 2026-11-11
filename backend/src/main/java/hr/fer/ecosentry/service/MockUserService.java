@@ -9,7 +9,11 @@ public class MockUserService {
 
     private final Map<String, String> users = Map.of(
         "aki.pandzic64@gmail.com", "gradanin",
-        "colin.creevy64@gmail.com", "redar"
+        "colin.creevy64@gmail.com", "redar",
+        "nikola.mihanovic11@gmail.com", "redar",
+        "tibi.hobit@gmail.com", "gradanin",
+        "markovinovicivana57@gmail.com", "gradanin",
+        "bruno.hrgovan@gmail.com", "gradanin"
     );
 
     public String getRole(String email) {
