@@ -13,7 +13,9 @@ public class MockUserService {
         "nikola.mihanovic11@gmail.com", "redar",
         "tibi.hobit@gmail.com", "gradanin",
         "markovinovicivana57@gmail.com", "gradanin",
-        "bruno.hrgovan@gmail.com", "gradanin"
+        "bruno.hrgovan@gmail.com", "gradanin",
+        "leo.zigman@gmail.com", "gradanin",
+        "pavao.marsic@gmail.com", "gradanin"
     );
 
     public String getRole(String email) {
