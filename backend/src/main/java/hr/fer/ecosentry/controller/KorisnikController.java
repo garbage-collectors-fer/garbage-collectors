@@ -22,8 +22,20 @@ public class KorisnikController {
 
 	@GetMapping("/me")
 	public Korisnik me(@AuthenticationPrincipal OidcUser user) {
-		// id, uloga i blokada citat ce se iz baze kad bude tablica korisnika;
-		// dotad je svaki korisnik prijavljen Googleom GRADANIN.
-		return new Korisnik(null, user.getFullName(), user.getEmail(), "GRADANIN", false, null);
+		String uloga = user.getAuthorities().stream()
+			.map(authority -> authority.getAuthority())
+			.filter(authority -> authority.startsWith("ROLE_"))
+			.map(authority -> authority.substring(5))
+			.findFirst()
+			.orElse("nepoznato");
+
+		return new Korisnik(
+			null,
+			user.getFullName(),
+			user.getEmail(),
+			uloga,
+			false,
+			null
+		);
 	}
 }
