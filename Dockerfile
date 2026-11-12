@@ -5,6 +5,9 @@ WORKDIR /app
 COPY frontend/package.json frontend/package-lock.json ./
 RUN npm ci
 COPY frontend/ ./
+# Kljuc za Google Maps dolazi iz Render varijable okruzenja, ne iz repozitorija
+ARG VITE_GOOGLE_MAPS_API_KEY
+ENV VITE_GOOGLE_MAPS_API_KEY=$VITE_GOOGLE_MAPS_API_KEY
 RUN npm run build
 
 FROM eclipse-temurin:21-jdk AS backend
