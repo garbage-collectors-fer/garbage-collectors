@@ -2,4 +2,6 @@ Frontend je napravljen u Reactu koristeći Vite. Aplikacija ima Google prijavu, 
 
 Za pokretanje frontenda u mapi `frontend` treba pokrenuti `npm install`, a zatim `npm run dev`. Naredba `npm run build` priprema aplikaciju za objavu.
 
-Za pregled novog izgleda eko-udruge napravljen je zaseban lokalni demo s probnim podacima, bez Google prijave. Demo zasad nije dio repozitorija i nije dostupan samim preuzimanjem projekta.
+Novi prikaz eko-udruge uključen je u glavnu aplikaciju i prikazuje se korisniku s ulogom udruge nakon prijave. Sadrži kartice akcija i dostupnih odlagališta, detalje, broj volontera i SVG ikonice. Prikaz još koristi probne podatke, a gumbi za izmjene nisu implementirani.
+
+Zaseban lokalni demo bez Google prijave nije dio repozitorija i nije dostupan samim preuzimanjem projekta.
