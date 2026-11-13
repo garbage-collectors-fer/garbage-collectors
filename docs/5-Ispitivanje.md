@@ -137,6 +137,10 @@ const assert = require('assert');
 
 ## 5.3 Provedena ispitivanja i rezultati
 
+Lokalni prototip eko-udruge provjeren je ručno u pregledniku. Provjereno je da odabir kartice mijenja popis i da odabir stavke prikazuje odgovarajuće detalje. Pregledan je i izgled sučelja nakon dodavanja ikonica i promjene boja.
+
+Ova provjera obuhvaća prikaz i navigaciju kroz probne podatke. Stvaranje i uređivanje akcija, spremanje podataka i slanje dokaza nisu implementirani u prototipu pa njihova ispravnost nije potvrđena.
+
 **Cilj:** Navesti reviziju aplikacije, okruženje i dokaze potrebne za tumačenje stvarnih rezultata u tablici ispitnih slučajeva. Dodajte kratak zapis izvođenja kada te podatke nije moguće jasno prenijeti poveznicom na kod ispitivanja ili CI izvođenje.
 
 **Najnovije izvođenje ili dokaz:** [Poveznica na CI izvođenje, bilješku ručnog ispitivanja ili kratak sažetak izvođenja s datumom, revizijom i okruženjem.]

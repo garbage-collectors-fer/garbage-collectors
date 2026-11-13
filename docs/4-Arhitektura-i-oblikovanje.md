@@ -42,6 +42,10 @@ Objasnite glavne arhitekturne odluke bez ponavljanja popisa tehnologija. Ako va�
 
 ## 4.2 Gradivni blokovi i UML dijagram komponenata
 
+Frontend je podijeljen na stranice, zajedničke komponente i servise. Stranice prikazuju sadržaj za pojedinu korisničku ulogu, komponente služe za dijelove sučelja koji se mogu ponovno koristiti, a servisi odvajaju rad s podacima od prikaza.
+
+Lokalni prototip eko-udruge koristi probne podatke i zaseban ulaz u aplikaciju za pregled bez prijave. Taj prikaz nije povezan s backendom za upravljanje akcijama i ne mijenja način prijave u glavnoj aplikaciji.
+
 **Cilj:** Prikazati logičku podjelu programa na komponente, njihova sučelja i vanjske integracije. Dijagram komponenata prikazuje logičku organizaciju, dok dijagram razmještaja prikazuje fizičko izvođenje. Ovaj prikaz ažurirajte kako sustav poprima konačan oblik.
 
 **Dijagram komponenata:** [Ugradite čitljiv UML dijagram komponenata.]  

@@ -59,6 +59,8 @@ Ako koristite tablicu, plan vodite na korisnoj tjednoj razini i ažurirajte ga k
 
 ## A.3 Aktivnosti i doprinosi članova
 
+Pripremljen je lokalni prototip stranice eko-udruge prema stilu stranice komunalnog redara. Dodani su prikaz akcija, dostupnih odlagališta i detalja odabrane stavke te je uređen izgled sučelja. Pripremljen je i paket od deset SVG ikonica s React komponentom i kratkim uputama za ostale članove frontend tima.
+
 **Cilj:** Prikazati koji su članovi radili na važnim projektnim aktivnostima i približan trud koji prijavljuju. Uz implementaciju uključite oblikovanje, dokumentaciju, integraciju, ispitivanje i postavljanje.
 
 | Aktivnost ili rezultat | Član | Prijavljeni sati | Reprezentativni rezultat ili poveznica |
@@ -114,4 +116,4 @@ Graf može pokazati kada su zapisi promjena napravljeni i tko ih je napravio, al
 
 ---
 
->**Završna provjera:** Sastanci navode smislene ishode i odgovorne osobe; plan odražava namjeravani rad; tablica uloženog rada i generirani prikaz repozitorija odnose na ovaj vidljivi projekt; konkretni izazovi povezani su s radnjama i njihovim rezultatima. 
+>**Završna provjera:** Sastanci navode smislene ishode i odgovorne osobe; plan odražava namjeravani rad; tablica uloženog rada i generirani prikaz repozitorija odnose na ovaj vidljivi projekt; konkretni izazovi povezani su s radnjama i njihovim rezultatima.

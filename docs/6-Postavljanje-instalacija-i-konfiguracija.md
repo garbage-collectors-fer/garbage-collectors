@@ -42,6 +42,12 @@ Predloženi klijentski dio gradi se kao statičko web-mjesto. Poslužiteljska we
 
 ## 6.2 Lokalna instalacija i konfiguracija
 
+Za pokretanje frontenda potrebni su Node.js i npm. U mapi `frontend` pokreću se naredbe `npm install` i `npm run dev`, a aplikacija se otvara na adresi koju ispiše Vite.
+
+Za Google prijavu potrebno je pokrenuti i Java backend te postaviti `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET` i `FRONTEND_URL` u njegovoj konfiguraciji. Frontend koristi `VITE_API_URL` za adresu backenda. Stvarne tajne vrijednosti ne upisuju se u dokumentaciju ni u repozitorij.
+
+Na računalu na kojem su pripremljene lokalne demo datoteke prikaz bez prijave dostupan je na `http://localhost:5173/demo-local.html`. Te datoteke nisu uključene u Git pa ova adresa neće raditi nakon običnog kloniranja projekta.
+
 **Cilj:** Omogućiti novom članu tima ili ocjenjivaču da iz čiste radne kopije repozitorija instalira i lokalno pokrene cijeli programski sustav, uključujući bazu podataka i početne podatke.
 
 1. **Preduvjeti i preuzimanje izvornog koda:**
