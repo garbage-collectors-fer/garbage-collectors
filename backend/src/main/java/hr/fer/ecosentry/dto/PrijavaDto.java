@@ -36,7 +36,7 @@ public record PrijavaDto (
                 p.getSlikaUrl(),
                 p.getSlikaSanacijeUrl(),
                 p.getDatum(),
-                null,
+                (p.getPrijavitelj() == null) ? null : new PrijaviteljDto(p.getPrijavitelj().getId(), p.getPrijavitelj().getIme()),
                 null
         );
     }
