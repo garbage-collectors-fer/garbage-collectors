@@ -1,60 +1,224 @@
+
+import { useEffect, useState } from 'react';
+import KartaPrijava from '../components/KartaPrijava.jsx';
+import { dohvatiPrijave } from '../services/prijaveServis.js';
+import {
+  nazivKategorije,
+  nazivStatusa,
+  bojaStatusa,
+  formatirajDatum,
+  KATEGORIJE
+} from '../services/oznake.js';
+import './Gradjanin.css';
+
+//privremena slika kalendara dok nemamo kalendar
+import kalendarSlika from '../assets/images/kalendar.jpg';
+
+const funkcije = [
+  {
+    naslov: 'Moje prijave',
+    stavke: [
+        'Nemate prijava',
+    ],
+  },
+  {
+    naslov: 'Akcije čišćenja',
+    stavke: [
+        'Nema dostupnih akcija čišćenja',
+    ],
+  },
+  {
+    naslov: 'Kalendar i dolazak',
+    stavke: [
+        'Slika kalendara dok nema funkcionalnosti',
+    ],
+    slika: kalendarSlika,
+  },
+];
+
+function zanemariOdabir() {}
+
 export default function Gradjanin() {
+const [odabranaPrijavaId, setOdabranaPrijavaId] = useState(null);
+const [prijavaOtvorena, setPrijavaOtvorena] = useState(false);
+const [kategorija, setKategorija] = useState('');
+const [slika, setSlika] = useState(null);
+
+const [prijave, setPrijave] = useState([]);
+const [ucitavanjePrijava, setUcitavanjePrijava] = useState(true);
+const [greskaUcitavanjaPrijava, setGreskaUcitavanjaPrijava] = useState(null);
+
+useEffect(() => {
+    dohvatiPrijave()
+        .then((dohvaceno) => {
+            setPrijave(dohvaceno);
+        })
+        .catch((greska) => {
+            setGreskaUcitavanjaPrijava(greska.message);
+        })
+        .finally(() => {
+            setUcitavanjePrijava(false);
+        });
+}, []);
+
+function zatvoriPrijavu() {
+    setKategorija('');
+    setSlika(null);
+    setPrijavaOtvorena(false);
+}
+
   return (
-    <>
-      <div className="page-heading">
-        <p className="eyebrow">Pregled uloge</p>
+    <div className="gradjanin-stranica">
+      <div className="gradjanin-zaglavlje">
+        <p className="gradjanin-eyebrow">Pregled uloge</p>
         <h1>Građanin</h1>
-        <p>Prijavljuje divlja odlagališta, prati rješavanje svojih prijava i sudjeluje u akcijama čišćenja.</p>
+        <p>
+          Prijavljuje divlja odlagališta, prati rješavanje svojih prijava
+          i sudjeluje u akcijama čišćenja.
+        </p>
       </div>
 
-      <div className="feature-grid">
-        <section className="feature-card">
-          <h2>Prijava u sustav</h2>
-          <p>Prijaviti se pomoću Google računa i pristupiti funkcionalnostima građanina.</p>
-        </section>
-        <section className="feature-card">
-          <h2>Prijava odlagališta</h2>
-          <ul>
-            <li>Unijeti lokaciju, fotografiju i kategoriju otpada.</li>
-            <li>Preuzeti lokaciju putem GPS-a ili je unijeti ručno.</li>
-          </ul>
-        </section>
-        <section className="feature-card">
-          <h2>Pregled karte</h2>
-          <p>Pregledavati odlagališta i detalje prijava: fotografiju, kategoriju, adresu ili koordinate, status i datum.</p>
-        </section>
-        <section className="feature-card">
-          <h2>Moje prijave</h2>
-          <ul>
-            <li>Pratiti statuse vlastitih prijava i povijest promjena.</li>
-            <li>Čitati obavijesti o promjenama unutar aplikacije.</li>
-          </ul>
-        </section>
-        <section className="feature-card">
-          <h2>Akcije čišćenja</h2>
-          <ul>
-            <li>Pregledavati termine, mjesta okupljanja, popunjenost i vremensku prognozu.</li>
-            <li>Prijaviti se kao volonter ili odjaviti ako više ne može sudjelovati.</li>
-          </ul>
-        </section>
-        <section className="feature-card">
-          <h2>Kalendar i dolazak</h2>
-          <ul>
-            <li>Dodati akciju u Google kalendar s lokacijom, uputama i podsjetnikom dva sata prije početka.</li>
-            <li>Prikazati mjesto okupljanja i rutu dolaska ako je dopušten pristup lokaciji.</li>
-          </ul>
-        </section>
-      </div>
+    <section className="gradjanin-prijava">
 
-      <section className="rules-panel">
-        <h2>Važna pravila</h2>
-        <ul>
-          <li>Prijava mora sadržavati lokaciju, kategoriju i JPG ili PNG fotografiju do 10 MB.</li>
-          <li>Blokirani korisnik ne može podnositi nove prijave ni prijavljivati se na akcije.</li>
-          <li>Prijava na popunjenu akciju nije dopuštena.</li>
-          <li>Nedostupna prognoza ili odbijen pristup Google kalendaru ne sprečavaju prijavu na akciju.</li>
-        </ul>
-      </section>
-    </>
+        {!prijavaOtvorena ? (
+            <button
+                type="button"
+                onClick={() => setPrijavaOtvorena(true)}
+            >
+                Prijavi otpad
+            </button>
+        ) : (
+            <div className="gradjanin-prijava-forma">
+
+                <h2>Prijava otpada</h2>
+
+                {/* Kategorija */}
+                <div className="gradjanin-forma-polje">
+                    <label htmlFor="kategorija">
+                        Kategorija
+                    </label>
+
+                    <select
+                        id="kategorija"
+                        value={kategorija}
+                        onChange={(e) => setKategorija(e.target.value)}
+                    >
+                        <option value="">Odaberite kategoriju</option>
+
+                        {KATEGORIJE.map((kat) => (
+                            <option key={kat} value={kat}>
+                                {kat}
+                            </option>
+                        ))}
+                    </select>
+                </div>
+
+                {/* Slika otpada */}
+                <div className="gradjanin-forma-polje">
+                    <label htmlFor="slika-otpada">
+                        Slika otpada
+                    </label>
+
+                    <input
+                        id="slika-otpada"
+                        type="file"
+                        accept="image/*"
+                        onChange={(e) => setSlika(e.target.files[0] || null)}
+                    />
+
+                    {slika && (
+                        <p>Odabrana slika: {slika.name}</p>
+                    )}
+
+                    {slika && (
+                        <img
+                            src={URL.createObjectURL(slika)}
+                            alt="Odabrani otpad"
+                            style={{ maxWidth: '300px', display: 'block' }}
+                        />
+                    )}
+                </div>
+
+                {/* Karta */}
+                <section className="gradjanin-karta-sekcija">
+                    <h3>Pregled karte odlagališta</h3>
+
+                    {ucitavanjePrijava && <p>Učitavanje karte...</p>}
+
+                    {greskaUcitavanjaPrijava !== null && (
+                        <p>{greskaUcitavanjaPrijava}</p>
+                    )}
+
+                    {!ucitavanjePrijava &&
+                        greskaUcitavanjaPrijava === null && (
+                            <KartaPrijava
+                                prijave={prijave}
+                                odabranaPrijavaId={null}
+                                onOdaberi={() => {}}
+                            />
+                        )}
+                </section>
+
+                {/* Gumb za prijavu */}
+                <button
+                    type="button"
+                    onClick={zatvoriPrijavu}
+                >
+                    Prijavi
+                </button>
+
+            </div>
+        )}
+
+    </section>
+
+    <section className="gradjanin-karta-sekcija">
+        <h2>Pregled karte odlagališta</h2>
+
+        {ucitavanjePrijava && <p>Učitavanje karte...</p>}
+
+        {greskaUcitavanjaPrijava !== null && (
+            <p className="gradjanin-poruka">
+                {greskaUcitavanjaPrijava}
+            </p>
+        )}
+
+        {!ucitavanjePrijava && greskaUcitavanjaPrijava === null && (
+            <KartaPrijava
+                prijave={prijave}
+                odabranaPrijavaId={odabranaPrijavaId}
+                onOdaberi={setOdabranaPrijavaId}
+            />
+        )}
+    </section>
+
+    <div className="gradjanin-funkcije">
+        {funkcije.map(function (funkcija) {
+            return (
+            <section className="gradjanin-kartica" key={funkcija.naslov}>
+                <h2>{funkcija.naslov}</h2>
+
+                {funkcija.opis && <p>{funkcija.opis}</p>}
+
+                {funkcija.stavke && (
+                <ul>
+                    {funkcija.stavke.map(function (stavka) {
+                    return <li key={stavka}>{stavka}</li>;
+                    })}
+                </ul>
+                )}
+
+                {funkcija.slika && (
+                    <img
+                        src={funkcija.slika}
+                        alt={funkcija.naslov}
+                        className="gradjanin-funkcija-slika"
+                    />
+                )}
+            </section>
+            );
+        })}
+    </div>
+    </div>
   );
 }

@@ -1,3 +1,7 @@
-Postavljen je početni kostur aplikacije koristeći React i Vite. Dodan je header s odabirom između građanina, eko-udruge i komunalnog redara. Za svaku ulogu prikazani su opisi planiranih funkcionalnosti i pravila, raspoređeni u kartice koje se prilagođavaju veličini ekrana. Zasad radi samo promjena prikazane uloge.
+Frontend je napravljen u Reactu koristeći Vite. Aplikacija ima Google prijavu, a nakon prijave prikazuje stranicu prema dodijeljenoj ulozi korisnika: građanin, eko-udruga ili komunalni redar. Za rad Google prijave potrebno je pokrenuti backend i postaviti Google OAuth podatke.
 
-Za pokretanje je potrebno u frontend mapi izvršiti `npm install`, a zatim `npm run dev`. Naredba `npm run build` priprema aplikaciju za objavu.
+Za pokretanje frontenda u mapi `frontend` treba pokrenuti `npm install`, a zatim `npm run dev`. Naredba `npm run build` priprema aplikaciju za objavu.
+
+Novi prikaz eko-udruge uključen je u glavnu aplikaciju i prikazuje se korisniku s ulogom udruge nakon prijave. Sadrži kartice akcija i dostupnih odlagališta, detalje, broj volontera i SVG ikonice. Prikaz još koristi probne podatke, a gumbi za izmjene nisu implementirani.
+
+Zaseban lokalni demo bez Google prijave nije dio repozitorija i nije dostupan samim preuzimanjem projekta.
