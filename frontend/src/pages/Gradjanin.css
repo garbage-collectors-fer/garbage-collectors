@@ -80,6 +80,83 @@ body:has(.gradjanin-stranica) {
   margin-bottom: 0;
 }
 
+.gradjanin-popis {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.gradjanin-stavka {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 15px;
+    background: white;
+    border: 1px solid #d3e6d8;
+    border-radius: 12px;
+}
+
+.gradjanin-stavka img {
+    width: 120px;
+    height: 90px;
+    object-fit: cover;
+    border-radius: 8px;
+}
+
+.gradjanin-stavka-sadrzaj {
+    flex: 1;
+}
+
+.gradjanin-stavka-sadrzaj h3 {
+    color: #44633F;
+    margin-top: 0;
+}
+
+.gradjanin-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.gradjanin-status-tocka {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+}
+
+.gradjanin-stavka-id {
+    color: #777;
+}
+
+.gradjanin-prijava-forma {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    padding: 20px;
+}
+
+.gradjanin-forma-polje {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.gradjanin-forma-polje select,
+.gradjanin-forma-polje input {
+    padding: 10px;
+    max-width: 400px;
+}
+
+.gradjanin-karta-sekcija {
+    width: 100%;
+}
+
+.gradjanin-prijava-forma button {
+    width: fit-content;
+    padding: 10px 20px;
+    cursor: pointer;
+}
+
 .gradjanin-karta-sekcija {
   padding: 22px;
   border: 1px solid var(--boja-rub);

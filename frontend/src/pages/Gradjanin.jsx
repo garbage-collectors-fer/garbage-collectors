@@ -2,6 +2,13 @@
 import { useEffect, useState } from 'react';
 import KartaPrijava from '../components/KartaPrijava.jsx';
 import { dohvatiPrijave } from '../services/prijaveServis.js';
+import {
+  nazivKategorije,
+  nazivStatusa,
+  bojaStatusa,
+  formatirajDatum,
+  KATEGORIJE
+} from '../services/oznake.js';
 import './Gradjanin.css';
 
 const funkcije = [
@@ -39,24 +46,36 @@ const funkcije = [
   },
 ];
 
-export default function Gradjanin() {
-  const [prijave, setPrijave] = useState([]);
-  const [ucitavanje, setUcitavanje] = useState(true);
-  const [greskaUcitavanja, setGreskaUcitavanja] = useState(null);
-  const [odabranaPrijavaId, setOdabranaPrijavaId] = useState(null);
+function zanemariOdabir() {}
 
-  useEffect(function () {
+export default function Gradjanin() {
+const [odabranaPrijavaId, setOdabranaPrijavaId] = useState(null);
+const [prijavaOtvorena, setPrijavaOtvorena] = useState(false);
+const [kategorija, setKategorija] = useState('');
+const [slika, setSlika] = useState(null);
+
+const [prijave, setPrijave] = useState([]);
+const [ucitavanjePrijava, setUcitavanjePrijava] = useState(true);
+const [greskaUcitavanjaPrijava, setGreskaUcitavanjaPrijava] = useState(null);
+
+useEffect(() => {
     dohvatiPrijave()
-      .then(function (dohvaceno) {
-        setPrijave(dohvaceno);
-      })
-      .catch(function (greska) {
-        setGreskaUcitavanja(greska.message);
-      })
-      .finally(function () {
-        setUcitavanje(false);
-      });
-  }, []);
+        .then((dohvaceno) => {
+            setPrijave(dohvaceno);
+        })
+        .catch((greska) => {
+            setGreskaUcitavanjaPrijava(greska.message);
+        })
+        .finally(() => {
+            setUcitavanjePrijava(false);
+        });
+}, []);
+
+function zatvoriPrijavu() {
+    setKategorija('');
+    setSlika(null);
+    setPrijavaOtvorena(false);
+}
 
   return (
     <div className="gradjanin-stranica">
@@ -89,23 +108,119 @@ export default function Gradjanin() {
         })}
       </div>
 
-      <section className="gradjanin-karta-sekcija">
+    <section className="gradjanin-prijava">
+
+        {!prijavaOtvorena ? (
+            <button
+                type="button"
+                onClick={() => setPrijavaOtvorena(true)}
+            >
+                Prijavi otpad
+            </button>
+        ) : (
+            <div className="gradjanin-prijava-forma">
+
+                <h2>Prijava otpada</h2>
+
+                {/* Kategorija */}
+                <div className="gradjanin-forma-polje">
+                    <label htmlFor="kategorija">
+                        Kategorija
+                    </label>
+
+                    <select
+                        id="kategorija"
+                        value={kategorija}
+                        onChange={(e) => setKategorija(e.target.value)}
+                    >
+                        <option value="">Odaberite kategoriju</option>
+
+                        {KATEGORIJE.map((kat) => (
+                            <option key={kat} value={kat}>
+                                {kat}
+                            </option>
+                        ))}
+                    </select>
+                </div>
+
+                {/* Slika otpada */}
+                <div className="gradjanin-forma-polje">
+                    <label htmlFor="slika-otpada">
+                        Slika otpada
+                    </label>
+
+                    <input
+                        id="slika-otpada"
+                        type="file"
+                        accept="image/*"
+                        onChange={(e) => setSlika(e.target.files[0] || null)}
+                    />
+
+                    {slika && (
+                        <p>Odabrana slika: {slika.name}</p>
+                    )}
+
+                    {slika && (
+                        <img
+                            src={URL.createObjectURL(slika)}
+                            alt="Odabrani otpad"
+                            style={{ maxWidth: '300px', display: 'block' }}
+                        />
+                    )}
+                </div>
+
+                {/* Karta */}
+                <section className="gradjanin-karta-sekcija">
+                    <h3>Pregled karte odlagališta</h3>
+
+                    {ucitavanjePrijava && <p>Učitavanje karte...</p>}
+
+                    {greskaUcitavanjaPrijava !== null && (
+                        <p>{greskaUcitavanjaPrijava}</p>
+                    )}
+
+                    {!ucitavanjePrijava &&
+                        greskaUcitavanjaPrijava === null && (
+                            <KartaPrijava
+                                prijave={prijave}
+                                odabranaPrijavaId={null}
+                                onOdaberi={() => {}}
+                            />
+                        )}
+                </section>
+
+                {/* Gumb za prijavu */}
+                <button
+                    type="button"
+                    onClick={zatvoriPrijavu}
+                >
+                    Prijavi
+                </button>
+
+            </div>
+        )}
+
+    </section>
+
+    <section className="gradjanin-karta-sekcija">
         <h2>Pregled karte odlagališta</h2>
 
-        {ucitavanje && <p>Učitavanje karte...</p>}
+        {ucitavanjePrijava && <p>Učitavanje karte...</p>}
 
-        {greskaUcitavanja !== null && (
-          <p className="gradjanin-poruka">{greskaUcitavanja}</p>
+        {greskaUcitavanjaPrijava !== null && (
+            <p className="gradjanin-poruka">
+                {greskaUcitavanjaPrijava}
+            </p>
         )}
 
-        {!ucitavanje && greskaUcitavanja === null && (
-          <KartaPrijava
-            prijave={prijave}
-            odabranaPrijavaId={odabranaPrijavaId}
-            onOdaberi={setOdabranaPrijavaId}
-          />
+        {!ucitavanjePrijava && greskaUcitavanjaPrijava === null && (
+            <KartaPrijava
+                prijave={prijave}
+                odabranaPrijavaId={odabranaPrijavaId}
+                onOdaberi={setOdabranaPrijavaId}
+            />
         )}
-      </section>
+    </section>
     </div>
   );
 }
