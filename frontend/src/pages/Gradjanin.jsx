@@ -1,60 +1,111 @@
+
+import { useEffect, useState } from 'react';
+import KartaPrijava from '../components/KartaPrijava.jsx';
+import { dohvatiPrijave } from '../services/prijaveServis.js';
+import './Gradjanin.css';
+
+const funkcije = [
+  {
+    naslov: 'Prijava odlagališta',
+    stavke: [
+      'Unijeti lokaciju, fotografiju i kategoriju otpada.',
+      'Preuzeti lokaciju putem GPS-a ili je unijeti ručno.',
+    ],
+  },
+  {
+    naslov: 'Pregled karte',
+    opis: 'Pregledavati odlagališta i detalje prijava: fotografiju, kategoriju, adresu ili koordinate, status i datum.',
+  },
+  {
+    naslov: 'Moje prijave',
+    stavke: [
+      'Pratiti statuse vlastitih prijava i povijest promjena.',
+      'Čitati obavijesti o promjenama unutar aplikacije.',
+    ],
+  },
+  {
+    naslov: 'Akcije čišćenja',
+    stavke: [
+      'Pregledavati termine, mjesta okupljanja, popunjenost i vremensku prognozu.',
+      'Prijaviti se kao volonter ili odjaviti ako više ne može sudjelovati.',
+    ],
+  },
+  {
+    naslov: 'Kalendar i dolazak',
+    stavke: [
+      'Dodati akciju u Google kalendar s lokacijom, uputama i podsjetnikom dva sata prije početka.',
+      'Prikazati mjesto okupljanja i rutu dolaska ako je dopušten pristup lokaciji.',
+    ],
+  },
+];
+
 export default function Gradjanin() {
+  const [prijave, setPrijave] = useState([]);
+  const [ucitavanje, setUcitavanje] = useState(true);
+  const [greskaUcitavanja, setGreskaUcitavanja] = useState(null);
+  const [odabranaPrijavaId, setOdabranaPrijavaId] = useState(null);
+
+  useEffect(function () {
+    dohvatiPrijave()
+      .then(function (dohvaceno) {
+        setPrijave(dohvaceno);
+      })
+      .catch(function (greska) {
+        setGreskaUcitavanja(greska.message);
+      })
+      .finally(function () {
+        setUcitavanje(false);
+      });
+  }, []);
+
   return (
-    <>
-      <div className="page-heading">
-        <p className="eyebrow">Pregled uloge</p>
+    <div className="gradjanin-stranica">
+      <div className="gradjanin-zaglavlje">
+        <p className="gradjanin-eyebrow">Pregled uloge</p>
         <h1>Građanin</h1>
-        <p>Prijavljuje divlja odlagališta, prati rješavanje svojih prijava i sudjeluje u akcijama čišćenja.</p>
+        <p>
+          Prijavljuje divlja odlagališta, prati rješavanje svojih prijava
+          i sudjeluje u akcijama čišćenja.
+        </p>
       </div>
 
-      <div className="feature-grid">
-        <section className="feature-card">
-          <h2>Prijava u sustav</h2>
-          <p>Prijaviti se pomoću Google računa i pristupiti funkcionalnostima građanina.</p>
-        </section>
-        <section className="feature-card">
-          <h2>Prijava odlagališta</h2>
-          <ul>
-            <li>Unijeti lokaciju, fotografiju i kategoriju otpada.</li>
-            <li>Preuzeti lokaciju putem GPS-a ili je unijeti ručno.</li>
-          </ul>
-        </section>
-        <section className="feature-card">
-          <h2>Pregled karte</h2>
-          <p>Pregledavati odlagališta i detalje prijava: fotografiju, kategoriju, adresu ili koordinate, status i datum.</p>
-        </section>
-        <section className="feature-card">
-          <h2>Moje prijave</h2>
-          <ul>
-            <li>Pratiti statuse vlastitih prijava i povijest promjena.</li>
-            <li>Čitati obavijesti o promjenama unutar aplikacije.</li>
-          </ul>
-        </section>
-        <section className="feature-card">
-          <h2>Akcije čišćenja</h2>
-          <ul>
-            <li>Pregledavati termine, mjesta okupljanja, popunjenost i vremensku prognozu.</li>
-            <li>Prijaviti se kao volonter ili odjaviti ako više ne može sudjelovati.</li>
-          </ul>
-        </section>
-        <section className="feature-card">
-          <h2>Kalendar i dolazak</h2>
-          <ul>
-            <li>Dodati akciju u Google kalendar s lokacijom, uputama i podsjetnikom dva sata prije početka.</li>
-            <li>Prikazati mjesto okupljanja i rutu dolaska ako je dopušten pristup lokaciji.</li>
-          </ul>
-        </section>
+      <div className="gradjanin-funkcije">
+        {funkcije.map(function (funkcija) {
+          return (
+            <section className="gradjanin-kartica" key={funkcija.naslov}>
+              <h2>{funkcija.naslov}</h2>
+
+              {funkcija.opis && <p>{funkcija.opis}</p>}
+
+              {funkcija.stavke && (
+                <ul>
+                  {funkcija.stavke.map(function (stavka) {
+                    return <li key={stavka}>{stavka}</li>;
+                  })}
+                </ul>
+              )}
+            </section>
+          );
+        })}
       </div>
 
-      <section className="rules-panel">
-        <h2>Važna pravila</h2>
-        <ul>
-          <li>Prijava mora sadržavati lokaciju, kategoriju i JPG ili PNG fotografiju do 10 MB.</li>
-          <li>Blokirani korisnik ne može podnositi nove prijave ni prijavljivati se na akcije.</li>
-          <li>Prijava na popunjenu akciju nije dopuštena.</li>
-          <li>Nedostupna prognoza ili odbijen pristup Google kalendaru ne sprečavaju prijavu na akciju.</li>
-        </ul>
+      <section className="gradjanin-karta-sekcija">
+        <h2>Pregled karte odlagališta</h2>
+
+        {ucitavanje && <p>Učitavanje karte...</p>}
+
+        {greskaUcitavanja !== null && (
+          <p className="gradjanin-poruka">{greskaUcitavanja}</p>
+        )}
+
+        {!ucitavanje && greskaUcitavanja === null && (
+          <KartaPrijava
+            prijave={prijave}
+            odabranaPrijavaId={odabranaPrijavaId}
+            onOdaberi={setOdabranaPrijavaId}
+          />
+        )}
       </section>
-    </>
+    </div>
   );
 }

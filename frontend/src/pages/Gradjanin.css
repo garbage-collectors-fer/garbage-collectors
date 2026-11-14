@@ -1,0 +1,126 @@
+
+.gradjanin-stranica {
+  --boja-granite: #3F4B3B;
+  --boja-hunter: #44633F;
+  --boja-sea: #5A9367;
+  --boja-mint: #5CAB7D;
+  --boja-tirkizna: #4ADBC8;
+  --boja-pozadina: #eef6f0;
+  --boja-rub: #d3e6d8;
+
+  color: var(--boja-granite);
+  font-size: 17px;
+}
+
+body:has(.gradjanin-stranica) {
+  background: #eef6f0;
+}
+
+.gradjanin-zaglavlje {
+  margin-bottom: 28px;
+}
+
+.gradjanin-eyebrow {
+  margin: 0 0 6px;
+  color: var(--boja-sea);
+  font-size: 14px;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.gradjanin-zaglavlje h1 {
+  margin: 0 0 12px;
+  color: var(--boja-hunter);
+  font-size: 32px;
+}
+
+.gradjanin-zaglavlje > p:last-child {
+  max-width: 750px;
+  margin: 0;
+  line-height: 1.6;
+}
+
+.gradjanin-funkcije {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+  margin-bottom: 28px;
+}
+
+.gradjanin-kartica {
+  padding: 22px;
+  border: 1px solid var(--boja-rub);
+  border-radius: 12px;
+  background: #fff;
+}
+
+.gradjanin-kartica h2 {
+  margin: 0 0 14px;
+  color: var(--boja-hunter);
+  font-size: 21px;
+}
+
+.gradjanin-kartica p {
+  margin: 0;
+  line-height: 1.6;
+}
+
+.gradjanin-kartica ul {
+  margin: 0;
+  padding-left: 22px;
+}
+
+.gradjanin-kartica li {
+  margin-bottom: 10px;
+  line-height: 1.5;
+}
+
+.gradjanin-kartica li:last-child {
+  margin-bottom: 0;
+}
+
+.gradjanin-karta-sekcija {
+  padding: 22px;
+  border: 1px solid var(--boja-rub);
+  border-radius: 12px;
+  background: #fff;
+}
+
+.gradjanin-karta-sekcija h2 {
+  margin: 0 0 18px;
+  color: var(--boja-hunter);
+  font-size: 24px;
+}
+
+.gradjanin-stranica .karta {
+  width: 100%;
+  height: 360px;
+  overflow: hidden;
+  border-radius: 12px;
+  background: #fff;
+}
+
+.gradjanin-poruka {
+  padding: 12px 18px;
+  border-left: 5px solid var(--boja-granite);
+  border-radius: 8px;
+  background: var(--boja-pozadina);
+}
+
+@media (max-width: 900px) {
+  .gradjanin-funkcije {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 600px) {
+  .gradjanin-zaglavlje h1 {
+    font-size: 28px;
+  }
+
+  .gradjanin-kartica,
+  .gradjanin-karta-sekcija {
+    padding: 16px;
+  }
+}
