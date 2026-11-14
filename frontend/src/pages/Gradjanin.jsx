@@ -11,38 +11,28 @@ import {
 } from '../services/oznake.js';
 import './Gradjanin.css';
 
+//privremena slika kalendara dok nemamo kalendar
+import kalendarSlika from '../assets/images/kalendar.jpg';
+
 const funkcije = [
-  {
-    naslov: 'Prijava odlagališta',
-    stavke: [
-      'Unijeti lokaciju, fotografiju i kategoriju otpada.',
-      'Preuzeti lokaciju putem GPS-a ili je unijeti ručno.',
-    ],
-  },
-  {
-    naslov: 'Pregled karte',
-    opis: 'Pregledavati odlagališta i detalje prijava: fotografiju, kategoriju, adresu ili koordinate, status i datum.',
-  },
   {
     naslov: 'Moje prijave',
     stavke: [
-      'Pratiti statuse vlastitih prijava i povijest promjena.',
-      'Čitati obavijesti o promjenama unutar aplikacije.',
+        'Nemate prijava',
     ],
   },
   {
     naslov: 'Akcije čišćenja',
     stavke: [
-      'Pregledavati termine, mjesta okupljanja, popunjenost i vremensku prognozu.',
-      'Prijaviti se kao volonter ili odjaviti ako više ne može sudjelovati.',
+        'Nema dostupnih akcija čišćenja',
     ],
   },
   {
     naslov: 'Kalendar i dolazak',
     stavke: [
-      'Dodati akciju u Google kalendar s lokacijom, uputama i podsjetnikom dva sata prije početka.',
-      'Prikazati mjesto okupljanja i rutu dolaska ako je dopušten pristup lokaciji.',
+        'Slika kalendara dok nema funkcionalnosti',
     ],
+    slika: kalendarSlika,
   },
 ];
 
@@ -86,26 +76,6 @@ function zatvoriPrijavu() {
           Prijavljuje divlja odlagališta, prati rješavanje svojih prijava
           i sudjeluje u akcijama čišćenja.
         </p>
-      </div>
-
-      <div className="gradjanin-funkcije">
-        {funkcije.map(function (funkcija) {
-          return (
-            <section className="gradjanin-kartica" key={funkcija.naslov}>
-              <h2>{funkcija.naslov}</h2>
-
-              {funkcija.opis && <p>{funkcija.opis}</p>}
-
-              {funkcija.stavke && (
-                <ul>
-                  {funkcija.stavke.map(function (stavka) {
-                    return <li key={stavka}>{stavka}</li>;
-                  })}
-                </ul>
-              )}
-            </section>
-          );
-        })}
       </div>
 
     <section className="gradjanin-prijava">
@@ -221,6 +191,34 @@ function zatvoriPrijavu() {
             />
         )}
     </section>
+
+    <div className="gradjanin-funkcije">
+        {funkcije.map(function (funkcija) {
+            return (
+            <section className="gradjanin-kartica" key={funkcija.naslov}>
+                <h2>{funkcija.naslov}</h2>
+
+                {funkcija.opis && <p>{funkcija.opis}</p>}
+
+                {funkcija.stavke && (
+                <ul>
+                    {funkcija.stavke.map(function (stavka) {
+                    return <li key={stavka}>{stavka}</li>;
+                    })}
+                </ul>
+                )}
+
+                {funkcija.slika && (
+                    <img
+                        src={funkcija.slika}
+                        alt={funkcija.naslov}
+                        className="gradjanin-funkcija-slika"
+                    />
+                )}
+            </section>
+            );
+        })}
+    </div>
     </div>
   );
 }
