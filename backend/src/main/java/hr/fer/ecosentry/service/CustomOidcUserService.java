@@ -3,6 +3,9 @@ package hr.fer.ecosentry.service;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import hr.fer.ecosentry.model.Korisnik;
+import hr.fer.ecosentry.model.Uloga;
+import hr.fer.ecosentry.repository.KorisnikRepository;
 import org.springframework.security.oauth2.client.oidc.userinfo.OidcUserService;
 import org.springframework.security.oauth2.client.oidc.userinfo.OidcUserRequest;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
@@ -16,10 +19,10 @@ import java.util.List;
 @Service
 public class CustomOidcUserService extends OidcUserService {
 
-    private final MockUserService mockUserService;
+    private final KorisnikRepository korisnikRepository;
 
-    public CustomOidcUserService(MockUserService mockUserService) {
-        this.mockUserService = mockUserService;
+    public CustomOidcUserService(KorisnikRepository korisnikRepository) {
+        this.korisnikRepository = korisnikRepository;
     }
 
     @Override
@@ -34,18 +37,18 @@ public class CustomOidcUserService extends OidcUserService {
 
         String email = user.getEmail();
 
-        String role = mockUserService.getRole(email);
+        String ime = user.getFullName() != null ? user.getFullName() : email;
 
-        if (role == null) {
-            throw new OAuth2AuthenticationException(
-                "User is not registered in EcoSentry"
-            );
-        }
+        Korisnik korisnik = korisnikRepository.findByEmail(email)       // standardno ponašanje, novom korisniku se dodjeljuje obična uloga građana
+                .orElseGet(() -> new Korisnik(ime, email, Uloga.GRADANIN));
 
-        Collection<GrantedAuthority> authorities =
-            new ArrayList<>(user.getAuthorities());
+        korisnik.setIme(ime);
+        korisnikRepository.save(korisnik);
 
-        authorities.add(new SimpleGrantedAuthority("ROLE_" + role));
+        Collection<GrantedAuthority> authorities = new ArrayList<>(user.getAuthorities());
+
+        authorities.add(new SimpleGrantedAuthority("ROLE_" + korisnik.getUloga().name()));
+
 
         return new org.springframework.security.oauth2.core.oidc.user.DefaultOidcUser(
             authorities,
