@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import KartaPrijava from '../components/KartaPrijava.jsx';
 import { dohvatiPrijave, dohvatiMojePrijave, posaljiNovuPrijavu } from '../services/prijaveServis.js';
 import {
@@ -29,6 +29,7 @@ export default function Gradjanin() {
   const [ucitavanje, setUcitavanje] = useState(true);
   const [greskaUcitavanja, setGreskaUcitavanja] = useState(null);
   const [odabranaPrijavaId, setOdabranaPrijavaId] = useState(null);
+  const detaljiElement = useRef(null);
 
   function ucitajPrijave() {
     return Promise.all([dohvatiPrijave(), dohvatiMojePrijave()]).then(function (rezultati) {
@@ -47,6 +48,19 @@ export default function Gradjanin() {
         setUcitavanje(false);
       });
   }, []);
+
+  //na mobitelu su detalji ispod karte pa se stranica spusti do njih
+  useEffect(
+    function () {
+      if (odabranaPrijavaId === null || detaljiElement.current === null) {
+        return;
+      }
+      if (window.matchMedia('(max-width: 900px)').matches) {
+        detaljiElement.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    },
+    [odabranaPrijavaId]
+  );
 
   function promijeniPrikaz(noviPrikaz) {
     setPrikaz(noviPrikaz);
@@ -168,7 +182,11 @@ export default function Gradjanin() {
               onOdaberi={setOdabranaPrijavaId}
             />
 
-            {odabranaPrijava !== null && <DetaljiPrijave prijava={odabranaPrijava} />}
+            {odabranaPrijava !== null && (
+              <div ref={detaljiElement}>
+                <DetaljiPrijave prijava={odabranaPrijava} />
+              </div>
+            )}
           </div>
         </div>
       )}
