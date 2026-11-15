@@ -171,17 +171,9 @@ export async function posaljiNaSluzbenuSanaciju(id) {
     }
     prijava.status = 'SLUZBENA_SANACIJA';
     prijava.nacinSanacije = 'SLUZBENA';
-    return {
-      id: 500 + id,
-      broj: 'EKO-2026-' + id,
-      prijavaId: id,
-      datum: new Date().toISOString(),
-      adresa: prijava.adresa,
-      kategorija: prijava.kategorija,
-      slikaUrl: prijava.slikaUrl,
-    };
+    return { ...prijava };
   }
-  return posaljiZahtjev('POST', '/prijave/' + id + '/nalog');
+  return posaljiZahtjev('PATCH', '/prijave/' + id, { nacinSanacije: 'SLUZBENA' });
 }
 
 export async function promijeniKategoriju(id, novaKategorija) {
