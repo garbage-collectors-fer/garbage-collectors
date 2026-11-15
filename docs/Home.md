@@ -1,30 +1,21 @@
-# [Naziv aplikacije] — Projektna dokumentacija
+# EcoSentry — Projektna dokumentacija
 
 **Kolegij:** [Programsko inženjerstvo](https://www.fer.unizg.hr/predmet/proinz), Fakultet elektrotehnike i računarstva Sveučilišta u Zagrebu  
-**Akademska godina:** [20XX./20XX.]  
-**Tim:** [Oznaka i naziv tima]  
+**Akademska godina:** 2026./2027.  
+**Tim:** G01, tim 1.2  
 **Nastavnik:** Vlado Sruk  
-**Asistent / demonstrator:** [Ime i uloga u ovom izvođenju kolegija]
+**Asistent / demonstrator:** Goran Rajić
 
 ## Pregled projekta
 
-**Cilj:** Omogućiti čitatelju koji prvi put vidi projekt da u dvije ili tri rečenice prepozna aplikaciju, njezine ciljane korisnike i glavnu svrhu.
+EcoSentry je web aplikacija za prijavu i sanaciju divljih odlagališta otpada. Građani prijavljuju otpad s fotografijom i lokacijom na karti, komunalni redari provjeravaju prijave i odlučuju čiste li ih eko-udruge ili komunalna tvrtka, a eko-udruge organiziraju akcije čišćenja s volonterima. Cilj je da svaka prijava ima vidljiv trag od podnošenja do čišćenja.
 
-[Opis projekta.]
-
-<details>
-<summary><strong>Sažet pregled projekta</strong></summary>
-
-Za projekt na temu CrisisMap sažet pregled može navesti građane kojima trebaju informacije o kriznim događajima povezane s njihovom lokacijom te cilj aplikacije da prijave kriznih događaja prikaže na karti. Funkcionalnost spomenite samo ako pripada odobrenom zadatku tima; bez dokaza nemojte tvrditi da aplikacija poboljšava odgovor hitnih službi. Ovo je primjer informativnog pregleda, a ne tekst za prepisivanje niti dokaz da je funkcionalnost ostvarena.
-
-</details>
-
-**Aplikacija i osnovno postavljanje:** [README repozitorija](../README_PREDLOZAK.md#quick-start)  
-**Javno dostupna aplikacija:** pogledajte [README – Postavljanje](../README_PREDLOZAK.md#deployment)
+**Aplikacija i osnovno postavljanje:** [README repozitorija](../README.md#quick-start)  
+**Javno dostupna aplikacija:** pogledajte [README – Postavljanje](../README.md#deployment)
 
 ## Članovi tima i uloge
 
-Ažurirani popis članova, njihovih GitHub profila i glavnih uloga ili doprinosa nalazi se u [README-u repozitoriju](../README_PREDLOZAK.md#team-members).
+Ažurirani popis članova i njihovih glavnih uloga ili doprinosa nalazi se u [README-u repozitorija](../README.md#team-members).
 
 ## Kazalo dokumentacije
 
@@ -38,100 +29,58 @@ Ažurirani popis članova, njihovih GitHub profila i glavnih uloga ili doprinosa
 | [6. Postavljanje, instalacija i konfiguracija](6-Postavljanje-instalacija-i-konfiguracija.md) | Lokalna instalacija, konfiguracija, javno postavljanje i administracija |
 | [7. Zaključak i budući rad](7-Zakljucak-i-buduci-rad.md) | Zaključak i moguća daljnja poboljšanja |
 | [A. Pregled aktivnosti grupe](A-Pregled-aktivnosti-grupe.md) | Aktivnosti tima, doprinosi i izazovi |
+| [Prijedlog API-ja](api.md) | Endpointi poslužitelja i oblik podataka koje koristi korisničko sučelje |
 
 ## Ključne točke projekta
 
 | Kontrolna točka | Demonstracija | Video |
 | --- | --- | --- |
-| Iteracija 1 | [Poveznica na demonstraciju ili inačicu projekta] | [Poveznica na video Demo 1, ako je snimljen] |
-| Završni pregled | [Poveznica na završnu inačicu projekta] | [Poveznica na video završne demonstracije, ako je snimljen] |
+| Iteracija 1 | https://ecosentry-6rg1.onrender.com | — |
+| Završni pregled | [Poveznica na završnu inačicu projekta] | — |
 
 Dokumentacija se kontinuirano ažurira kako se aplikacija razvija.
 
 ## Organizacija projekta i razvojni proces
 
-**Način rada:** [Stvarni način rada i trajanje iteracije, ako je relevantno.]  
-**Praćenje trenutačnih zadataka i nedostataka:** [Poveznica na GitHub Issues ili stvarno korištenu ploču zadataka.]
-
-<details>
-<summary><strong>Opis načina rada tima</strong></summary>
-
-**Primjer — CrisisMap:**
-
-Navedite pristup koji tim stvarno koristi. Tim koji razvija CrisisMap može organizirati prijave, rad na karti i provjere kao GitHub Issues, jednom tjedno raspraviti prioritete i iznad postaviti poveznicu na svoju aktivnu ploču zadataka. Takav je konkretan opis procesa informativniji od tvrdnje da tim koristi „Scrum” ako zapravo ne primjenjuje njegove prakse. Stvarni tim treba navesti vlastiti ritam rada i odgovornosti; dokumentacija ne treba duplicirati ploču zadataka. Primjer opisuje mogući tijek rada (engl. workflow), a ne tvrdi da je objavljeni tim CrisisMapa radio upravo tako.
-
-</details>
+**Način rada:** Tim je podijeljen na frontend (svaki član radi stranicu jedne uloge), backend i dokumentaciju. Zadaci i odluke dogovaraju se na timskim kanalima i sastancima, a svaka promjena radi se na zasebnoj grani i ulazi u `master` preko pull requesta. Promjena na `master` automatski se postavlja na Render.  
+**Praćenje trenutačnih zadataka i nedostataka:** [Pull requestovi](https://github.com/garbage-collectors-fer/garbage-collectors/pulls) u repozitoriju.
 
 ## Pravila dokumentacije
 
-Dokumentacija se sastoji od međusobno povezanih Markdown stranica. Obavezni UML dijagrami izrađuju se u PlantUML-u, uz PlantUML izvor u dokumentaciji sačuvajte i čitljivu sliku. Primjeri u ovom predlošku kolegija pokazuju kako nešto dokumentirati; nisu dio rezultata studentskog projekta.
-
-<details>
-<summary><strong>Izvori dijagrama i nastavni primjeri</strong></summary>
-
-Nastavni primjeri pretpostavljaju React/Vite klijentski dio, Node.js poslužiteljski dio, PostgreSQL, smještaj aplikacije na Renderu i Selenium WebDriver (JavaScript). Vaš tehnološki skup može biti drukčiji; u dokumentaciji opišite ono što stvarno koristite.
-
-Za obrazac uporabe podnošenja prijave kriznog događaja u CrisisMapu tim može čuvati UML izvor u `.puml` datoteci, prikazati odgovarajuću sliku na relevantnoj stranici dokumentacije te ažurirati oboje kada se interakcija promijeni. Koristite stvarni dijagram i stvarno postavljanje vlastitog projekta. Domena ili tehnologija prikazana u primjeru ne postaje zahtjev osim ako je dio odobrenog zadatka.
-
->Napomena o primjerima: Blokovi „Primjer — CrisisMap" nastavni su scenarij, a ne rezultat ičijeg projekta; ne prepisujte ih. U primjerima se koriste React, Node.js, PostgreSQL, Render i Selenium samo radi dosljednosti. Vaš stog može biti drukčiji (npr. Java/Spring); dokumentirajte ono što stvarno koristite.</details>
+Dokumentacija se sastoji od međusobno povezanih Markdown stranica u direktoriju `docs/`. UML dijagrami izrađuju se u PlantUML-u: izvor se čuva u `docs/puml/`, a slika u `docs/assets/diagrams/` generira se automatski pri spajanju u `master`. Projekt koristi React i Vite za korisničko sučelje, Spring Boot za poslužitelj, H2 lokalno i PostgreSQL za javnu inačicu te Render za postavljanje.
 
 ## Akademski integritet, ponašanje i licenciranje
 
-README repozitorija sadrži projektnu [izjavu o uporabi umjetne inteligencije](../README_PREDLOZAK.md#ai-usage), [informacije o kodeksu ponašanja i podršci](../README_PREDLOZAK.md#code-of-conduct-and-support) te [status licence ili ponovne uporabe](../README_PREDLOZAK.md#license). Pristupni podaci i druge tajne nikada se ne objavljuju u dokumentaciji niti dijele u običnim porukama.
+README repozitorija sadrži projektnu [izjavu o uporabi umjetne inteligencije](../README.md#ai-usage), [informacije o kodeksu ponašanja i podršci](../README.md#code-of-conduct-and-support) te [status licence ili ponovne uporabe](../README.md#license). Pristupni podaci i druge tajne nikada se ne objavljuju u dokumentaciji niti dijele u običnim porukama.
 
 ## Izjava o uporabi umjetne inteligencije
 
-<!-- UPUTA: Ovo je detaljan zapis uporabe umjetne inteligencije; README sadrži kratak sažetak i poveznicu na ovaj odjeljak. Unesite samo ono što se stvarno dogodilo i uklonite neupotrijebljene retke. Ako nije korišten nijedan alat generativne umjetne inteligencije, zamijenite cijeli odjeljak jednom rečenicom koja to jasno navodi. Svaki redak mora upućivati na stranicu, datoteku, zahtjev za uključivanje promjena (PR) ili zadatak. Nikada ne unosite pristupne podatke, osobne podatke ni tuđi zaštićeni sadržaj u alate umjetne inteligencije. -->
-
-Kratak sažetak: [README – Uporaba umjetne inteligencije](../README_PREDLOZAK.md#ai-usage). Ovaj odjeljak bilježi koji su alati korišteni, za koju dokumentaciju ili kod te kako je tim provjerio rezultat. Slijedi FER-ova [pravila o primjerenoj uporabi umjetne inteligencije](https://www.fer.unizg.hr/_download/repository/Policy%20on%20the%20appropriate%20use%20of%20artificial%20intelligence%20at%20the%20faculty%20of%20electrical%20engineering%20and%20computing%5B1%5D.pdf).
+Kratak sažetak: [README – Uporaba umjetne inteligencije](../README.md#ai-usage). Slijedi FER-ova [pravila o primjerenoj uporabi umjetne inteligencije](https://www.fer.unizg.hr/_download/repository/Policy%20on%20the%20appropriate%20use%20of%20artificial%20intelligence%20at%20the%20faculty%20of%20electrical%20engineering%20and%20computing%5B1%5D.pdf).
 
 ### Korišteni alati
 
 | Alat | Inačica ili model | Koristio/la | Glavna svrha |
 | --- | --- | --- | --- |
-| [Naziv alata] | [Inačica ili model, ako je poznat] | [Član/članovi tima] | [npr. izrada nacrta dokumentacije, generiranje izvora dijagrama] |
+| Claude | Claude Opus | Članovi tima | Organizacija i strukturiranje projekta, izrada nacrta dokumentacije, prijedlog API-ja |
 
 ### Opseg doprinosa umjetne inteligencije
 
 | Stranica, datoteka ili artefakt | Vrsta pomoći | Što je alat proizveo | Što je tim zadao i promijenio | Lokacija |
 | --- | --- | --- | --- | --- |
-| [npr. 3. Obrasci uporabe, UC-002] | [Izrada nacrta / preoblikovanje / prijevod / izvor dijagrama / sažimanje] | [Kratak opis] | [Ulaz zadan alatu; dodane, ispravljene ili uklonjene činjenice] | [Stranica dokumentacije, `.puml` datoteka, PR] |
+| 1. Opseg projekta, 2. Analiza zahtjeva | Izrada nacrta, preoblikovanje | Nacrt teksta i tablica zahtjeva | Tim je zadao temu i dogovorene odluke, odredio prioritete te uklonio i spojio zahtjeve nakon dogovora s asistentom | `docs/1-Projekt.md`, `docs/2-Analiza-zahtjeva.md` |
+| 3. Obrasci uporabe | Usklađivanje | Izmjene UC-001, UC-004 i UC-008 nakon promjene zahtjeva | Tim je odlučio da nema lozinki ni službenog naloga | `docs/3-Obrasci-uporabe.md` |
+| Prijedlog API-ja | Izrada nacrta | Popis endpointa i oblika podataka | Tim je uskladio rute s backendom | `docs/api.md` |
 
-Stranice i artefakti koji nisu navedeni iznad izrađeni su bez pomoći generativne umjetne inteligencije. [Po želji: kao dodatne retke navedite kod ili ispitivanja izrađena uz pomoć umjetne inteligencije.]
 
 ### Provjera generiranog sadržaja
 
 | Provjera | Kako je provedena | Dokaz |
 | --- | --- | --- |
-| Činjenična točnost | [Svaka tvrdnja o funkcionalnostima, ponašanju ili arhitekturi uspoređena je s pokrenutom aplikacijom i kodom] | [Imena pregledavatelja; poveznice na zahtjev za uključivanje promjena (PR) ili zadatak] |
-| Nema tvrdnji o neostvarenim funkcionalnostima | [Provjereno je da opisane funkcionalnosti, ispitivanja i rezultati stvarno postoje; planirani rad označen je kao planiran] | [Usporedba s odjeljkom 5.4 (Ispitivanje) i odjeljkom 7.1 (Zaključak)] |
-| Dosljednost s drugim stranicama | [Nazivi, ID-ovi i dijagrami provjereni su prema Analizi zahtjeva, Obrascima uporabe, Arhitekturi i oblikovanju te Ispitivanju] | [Kontrolni popis ili bilješka pregleda] |
-| Izvori dijagrama | [Generirani PlantUML je iscrtan, ispravljen i odgovara implementiranom sustavu] | [`.puml` datoteka i izrađena slika] |
-| Povjerljivi sadržaj | [Kako je tim osigurao da u upite ili dokumentaciju nisu unesene tajne, pristupni podaci ni osobni podaci] | [Primijenjeni postupak] |
+| Činjenična točnost | Opisi funkcionalnosti u README-u i dokumentaciji uspoređeni su s pokrenutom aplikacijom i kodom u repozitoriju | Pull requestovi u repozitoriju |
+| Dosljednost s drugim stranicama | Nakon prenumeracije zahtjeva provjereno je da se brojevi u dokumentima 2 i 3 i u `api.md` poklapaju | `docs/2-Analiza-zahtjeva.md`, `docs/3-Obrasci-uporabe.md`, `docs/api.md` |
 
 ### Pogreške pronađene u izlazu umjetne inteligencije
 
 | Problem | Kako je pronađen | Rješenje |
 | --- | --- | --- |
-| [Netočna, izmišljena ili iz predloška preuzeta tvrdnja] | [Pregled, ispitivanje ili usporedba s aplikacijom] | [Ispravak s poveznicom] |
 
-<!-- UPUTA: Zabilježite stvarne ispravke ili napišite „Nisu utvrđene”. Općenita tvrdnja poput „sav tekst je pregledan” nije dokaz; dokaz su prethodne tablice. Tim mora moći objasniti svaku rečenicu koju objavi. -->
-
-<details>
-<summary><strong>Primjer zapisa uporabe umjetne inteligencije</strong></summary>
-
-**Primjer — CrisisMap:**
-
-| Stranica ili artefakt | Vrsta pomoći | Što je alat proizveo | Što je tim zadao i promijenio | Lokacija |
-| --- | --- | --- | --- | --- |
-| 3. Obrasci uporabe, UC-002 | Izrada nacrta | Prvu inačicu glavnog i alternativnih tijekova | Tim je zadao stvarna polja obrasca i uklonio granu prijave u sustav koja u aplikaciji ne postoji | Primjer PR #31 |
-| Sekvencijski dijagram, podnošenje prijave | Izvor dijagrama | Nacrt PlantUML-a | Tim je uskladio nazive sudionika s komponentama i uklonio korak slanja obavijesti koji nije implementiran | `diagrams/report-submission.puml` (primjer) |
-
-| Problem | Kako je pronađen | Rješenje |
-| --- | --- | --- |
-| U tekstu je stajalo da se obavijesti dostavljaju unutar jedne minute | Usporedba s Ispitivanjem (5.4): dostava nikada nije ispitana | Tvrdnja je uklonjena; obavijesti su navedene pod Budućim radom |
-| Nacrt je kopirao primjer zahtjeva F-005 iz predloška kao projektni zahtjev | Usporedba s vlastitim popisom zahtjeva tima | Zamijenjeno stvarnim zahtjevom tima |
-
-**Analiza primjera:** Svaki redak navodi stranicu ili datoteku, ono što je alat generirao i ono što je tim promijenio. Pogreške su tipične za generiranu dokumentaciju: funkcionalnost koja ne postoji i tekst predloška prikazan kao činjenica o projektu. Tvrdnje poput „AI je korišten svugdje” ili „sav tekst je pregledan” nije moguće provjeriti. Ovo je nastavni scenarij, a ne opis objavljenog projekta.
-
-</details>
