@@ -1,17 +1,10 @@
 
-export const KATEGORIJE = ['PLASTIKA', 'GRADEVINSKI', 'GLOMAZNI', 'OSTALO'];
-
+//kategorija s backenda je objekt { id, naziv }
 export function nazivKategorije(kategorija) {
-  if (kategorija === 'PLASTIKA') {
-    return 'Plastika';
-  } else if (kategorija === 'GRADEVINSKI') {
-    return 'Građevinski otpad';
-  } else if (kategorija === 'GLOMAZNI') {
-    return 'Glomazni otpad';
-  } else if (kategorija === 'OSTALO') {
-    return 'Ostalo';
+  if (!kategorija) {
+    return '-';
   }
-  return kategorija;
+  return kategorija.naziv;
 }
 
 export function nazivStatusa(status) {

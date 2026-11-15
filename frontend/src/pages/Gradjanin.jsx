@@ -1,8 +1,12 @@
 import { useEffect, useRef, useState } from 'react';
 import KartaPrijava from '../components/KartaPrijava.jsx';
-import { dohvatiPrijave, dohvatiMojePrijave, posaljiNovuPrijavu } from '../services/prijaveServis.js';
 import {
-  KATEGORIJE,
+  dohvatiPrijave,
+  dohvatiMojePrijave,
+  posaljiNovuPrijavu,
+  dohvatiKategorije,
+} from '../services/prijaveServis.js';
+import {
   nazivKategorije,
   nazivStatusa,
   bojaStatusa,
@@ -231,6 +235,7 @@ function DetaljiPrijave({ prijava }) {
 function NovaPrijava({ postojecePrijave, onPoslano, onOdustani }) {
   const [lokacija, setLokacija] = useState(null);
   const [porukaLokacije, setPorukaLokacije] = useState(null);
+  const [kategorije, setKategorije] = useState([]);
   const [kategorija, setKategorija] = useState('');
   const [slika, setSlika] = useState(null);
   const [pregledSlike, setPregledSlike] = useState(null);
@@ -253,6 +258,16 @@ function NovaPrijava({ postojecePrijave, onPoslano, onOdustani }) {
       }
     );
   }
+
+  useEffect(function () {
+    dohvatiKategorije()
+      .then(function (dohvaceno) {
+        setKategorije(dohvaceno);
+      })
+      .catch(function () {
+        setKategorije([]);
+      });
+  }, []);
 
   //odmah pokusaj uzeti trenutnu lokaciju
   useEffect(function () {
@@ -308,7 +323,7 @@ function NovaPrijava({ postojecePrijave, onPoslano, onOdustani }) {
     }
 
     setSlanjeUTijeku(true);
-    posaljiNovuPrijavu(slika, lokacija.lat, lokacija.lng, kategorija)
+    posaljiNovuPrijavu(slika, lokacija.lat, lokacija.lng, Number(kategorija))
       .then(function (novaPrijava) {
         onPoslano(novaPrijava);
       })
@@ -351,14 +366,15 @@ function NovaPrijava({ postojecePrijave, onPoslano, onOdustani }) {
             }}
           >
             <option value="">Odaberi kategoriju</option>
-            {KATEGORIJE.map(function (kat) {
+            {kategorije.map(function (kat) {
               return (
-                <option key={kat} value={kat}>
-                  {nazivKategorije(kat)}
+                <option key={kat.id} value={kat.id}>
+                  {kat.naziv}
                 </option>
               );
             })}
           </select>
+          {kategorije.length === 0 && <span className="gradjanin-napomena">Kategorije trenutno nisu dostupne.</span>}
         </div>
 
         <div className="gradjanin-polje">

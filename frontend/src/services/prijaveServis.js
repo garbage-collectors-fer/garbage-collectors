@@ -1,5 +1,5 @@
 
-import { prijave as mockPrijave } from './mockPodaci.js';
+import { prijave as mockPrijave, kategorije as mockKategorije } from './mockPodaci.js';
 import { API_ADRESA, procitajXsrfToken } from './autentikacijaServis.js';
 
 const KORISTI_MOCK = false;
@@ -60,6 +60,25 @@ function pronadiMockPrijavu(id) {
 }
 
 
+function pronadiMockKategoriju(id) {
+  for (let i = 0; i < mockKategorije.length; i++) {
+    if (mockKategorije[i].id === id) {
+      return mockKategorije[i];
+    }
+  }
+  throw new Error('Kategorija ne postoji.');
+}
+
+
+export async function dohvatiKategorije() {
+  if (KORISTI_MOCK) {
+    await pricekaj();
+    return [...mockKategorije];
+  }
+  return posaljiZahtjev('GET', '/kategorije');
+}
+
+
 export async function dohvatiPrijave() {
   if (KORISTI_MOCK) {
     await pricekaj();
@@ -93,7 +112,7 @@ export async function dohvatiMojePrijave() {
 
 
 //nova prijava gradanina
-export async function posaljiNovuPrijavu(slika, lat, lng, kategorija) {
+export async function posaljiNovuPrijavu(slika, lat, lng, kategorijaId) {
   if (KORISTI_MOCK) {
     await pricekaj();
     const novaPrijava = {
@@ -101,7 +120,7 @@ export async function posaljiNovuPrijavu(slika, lat, lng, kategorija) {
       lat: lat,
       lng: lng,
       adresa: null,
-      kategorija: kategorija,
+      kategorija: pronadiMockKategoriju(kategorijaId),
       status: 'PRIJAVLJENO',
       provjerena: false,
       nacinSanacije: null,
@@ -117,7 +136,7 @@ export async function posaljiNovuPrijavu(slika, lat, lng, kategorija) {
   podaci.append('slika', slika);
   podaci.append('lat', lat);
   podaci.append('lng', lng);
-  podaci.append('kategorija', kategorija);
+  podaci.append('kategorija', kategorijaId);
   return posaljiZahtjev('POST', '/prijave', podaci);
 }
 
@@ -176,12 +195,12 @@ export async function posaljiNaSluzbenuSanaciju(id) {
   return posaljiZahtjev('PATCH', '/prijave/' + id, { nacinSanacije: 'SLUZBENA' });
 }
 
-export async function promijeniKategoriju(id, novaKategorija) {
+export async function promijeniKategoriju(id, kategorijaId) {
   if (KORISTI_MOCK) {
     await pricekaj();
     const prijava = pronadiMockPrijavu(id);
-    prijava.kategorija = novaKategorija;
+    prijava.kategorija = pronadiMockKategoriju(kategorijaId);
     return { ...prijava };
   }
-  return posaljiZahtjev('PATCH', '/prijave/' + id, { kategorija: novaKategorija });
+  return posaljiZahtjev('PATCH', '/prijave/' + id, { kategorija: kategorijaId });
 }

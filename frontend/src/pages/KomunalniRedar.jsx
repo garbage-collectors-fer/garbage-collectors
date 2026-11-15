@@ -7,9 +7,9 @@ import {
   posaljiEkoUdrugama,
   posaljiNaSluzbenuSanaciju,
   promijeniKategoriju,
+  dohvatiKategorije,
 } from '../services/prijaveServis.js';
 import {
-  KATEGORIJE,
   nazivKategorije,
   nazivStatusa,
   nazivNacinaSanacije,
@@ -43,6 +43,7 @@ export default function KomunalniRedar() {
   const [odabranaPrijavaId, setOdabranaPrijavaId] = useState(null);
   const [radnjaUTijeku, setRadnjaUTijeku] = useState(false);
   const [poruka, setPoruka] = useState(null);
+  const [kategorije, setKategorije] = useState([]);
 
   //ucitavanje prijava
   useEffect(function () {
@@ -55,6 +56,16 @@ export default function KomunalniRedar() {
       })
       .finally(function () {
         setUcitavanje(false);
+      });
+  }, []);
+
+  useEffect(function () {
+    dohvatiKategorije()
+      .then(function (dohvaceno) {
+        setKategorije(dohvaceno);
+      })
+      .catch(function () {
+        setKategorije([]);
       });
   }, []);
 
@@ -256,6 +267,7 @@ export default function KomunalniRedar() {
               <DetaljiPrijave
                 key={odabranaPrijava.id}
                 prijava={odabranaPrijava}
+                kategorije={kategorije}
                 radnjaUTijeku={radnjaUTijeku}
                 onPrihvati={obradiPrihvacanje}
                 onOdbaci={obradiOdbacivanje}
@@ -273,6 +285,7 @@ export default function KomunalniRedar() {
 
 function DetaljiPrijave({
   prijava,
+  kategorije,
   radnjaUTijeku,
   onPrihvati,
   onOdbaci,
@@ -303,22 +316,25 @@ function DetaljiPrijave({
         <dl className="redar-podaci">
           <dt>Kategorija</dt>
           <dd>
-            <select
-              aria-label="Kategorija otpada"
-              value={prijava.kategorija}
-              disabled={radnjaUTijeku}
-              onChange={function (dogadaj) {
-                onPromijeniKategoriju(prijava.id, dogadaj.target.value);
-              }}
-            >
-              {KATEGORIJE.map(function (kategorija) {
-                return (
-                  <option key={kategorija} value={kategorija}>
-                    {nazivKategorije(kategorija)}
-                  </option>
-                );
-              })}
-            </select>
+            {kategorije.length === 0 && nazivKategorije(prijava.kategorija)}
+            {kategorije.length > 0 && (
+              <select
+                aria-label="Kategorija otpada"
+                value={prijava.kategorija ? prijava.kategorija.id : ''}
+                disabled={radnjaUTijeku}
+                onChange={function (dogadaj) {
+                  onPromijeniKategoriju(prijava.id, Number(dogadaj.target.value));
+                }}
+              >
+                {kategorije.map(function (kategorija) {
+                  return (
+                    <option key={kategorija.id} value={kategorija.id}>
+                      {kategorija.naziv}
+                    </option>
+                  );
+                })}
+              </select>
+            )}
           </dd>
           <dt>Lokacija</dt>
           <dd>{opisLokacije(prijava)}</dd>

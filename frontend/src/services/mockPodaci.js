@@ -1,12 +1,19 @@
 //Lazni podaci dok backend nema prijave
 
+export const kategorije = [
+  { id: 1, naziv: 'Plastika' },
+  { id: 2, naziv: 'Građevinski otpad' },
+  { id: 3, naziv: 'Glomazni otpad' },
+  { id: 4, naziv: 'Ostalo' },
+];
+
 export const prijave = [
   {
     id: 101,
     lat: 45.8139,
     lng: 15.9497,
     adresa: 'Ilica 242, Zagreb',
-    kategorija: 'GLOMAZNI',
+    kategorija: { id: 3, naziv: 'Glomazni otpad' },
     status: 'PRIJAVLJENO',
     provjerena: false,
     nacinSanacije: null,
@@ -19,7 +26,7 @@ export const prijave = [
     lat: 45.8199,
     lng: 16.0156,
     adresa: 'Maksimirska cesta 128, Zagreb',
-    kategorija: 'PLASTIKA',
+    kategorija: { id: 1, naziv: 'Plastika' },
     status: 'PRIJAVLJENO',
     provjerena: false,
     nacinSanacije: null,
@@ -33,7 +40,7 @@ export const prijave = [
     lng: 15.9214,
     // Namjerno bez adrese, da se vidi kako sucelje izgleda kad adresa nedostaje.
     adresa: null,
-    kategorija: 'GRADEVINSKI',
+    kategorija: { id: 2, naziv: 'Građevinski otpad' },
     status: 'PRIJAVLJENO',
     provjerena: false,
     nacinSanacije: null,
@@ -47,7 +54,7 @@ export const prijave = [
     lat: 45.8305,
     lng: 16.0560,
     adresa: 'Avenija Dubrava 50, Zagreb',
-    kategorija: 'PLASTIKA',
+    kategorija: { id: 1, naziv: 'Plastika' },
     status: 'PRIJAVLJENO',
     provjerena: true,
     nacinSanacije: null,
@@ -61,7 +68,7 @@ export const prijave = [
     lat: 45.8000,
     lng: 15.9500,
     adresa: 'Ozaljska ulica 90, Zagreb',
-    kategorija: 'PLASTIKA',
+    kategorija: { id: 1, naziv: 'Plastika' },
     status: 'PRIJAVLJENO',
     provjerena: true,
     nacinSanacije: 'UDRUGA',
@@ -74,7 +81,7 @@ export const prijave = [
     lat: 45.8590,
     lng: 15.9705,
     adresa: 'Gračanska cesta 120, Zagreb',
-    kategorija: 'OSTALO',
+    kategorija: { id: 4, naziv: 'Ostalo' },
     status: 'AKCIJA_U_TIJEKU',
     provjerena: true,
     nacinSanacije: 'UDRUGA',
@@ -87,7 +94,7 @@ export const prijave = [
     lat: 45.7884,
     lng: 15.9690,
     adresa: 'Savski nasip, Zagreb',
-    kategorija: 'GRADEVINSKI',
+    kategorija: { id: 2, naziv: 'Građevinski otpad' },
     status: 'SLUZBENA_SANACIJA',
     provjerena: true,
     nacinSanacije: 'SLUZBENA',
@@ -100,7 +107,7 @@ export const prijave = [
     lat: 45.7856,
     lng: 15.9895,
     adresa: 'Bundek, Zagreb',
-    kategorija: 'GLOMAZNI',
+    kategorija: { id: 3, naziv: 'Glomazni otpad' },
     status: 'OCISCENO',
     provjerena: true,
     nacinSanacije: 'UDRUGA',
