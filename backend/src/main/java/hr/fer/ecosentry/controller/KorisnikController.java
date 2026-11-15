@@ -2,17 +2,27 @@ package hr.fer.ecosentry.controller;
 
 import java.util.Map;
 
+
+import hr.fer.ecosentry.dto.KorisnikDto;
+import hr.fer.ecosentry.repository.KorisnikRepository;
+import org.springframework.http.HttpStatus;
+
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
 
 @RestController
 @RequestMapping("/api")
 public class KorisnikController {
 
-	public record Korisnik(Long id, String ime, String email, String uloga, boolean blokiran, String razlogBlokade) {
+
+	private final KorisnikRepository korisnikRepository;
+
+	public KorisnikController(KorisnikRepository korisnikRepository) {
+		this.korisnikRepository = korisnikRepository;
 	}
 
 	@GetMapping("/health")
@@ -21,21 +31,10 @@ public class KorisnikController {
 	}
 
 	@GetMapping("/me")
-	public Korisnik me(@AuthenticationPrincipal OidcUser user) {
-		String uloga = user.getAuthorities().stream()
-			.map(authority -> authority.getAuthority())
-			.filter(authority -> authority.startsWith("ROLE_"))
-			.map(authority -> authority.substring(5))
-			.findFirst()
-			.orElse("nepoznato");
-
-		return new Korisnik(
-			null,
-			user.getFullName(),
-			user.getEmail(),
-			uloga,
-			false,
-			null
-		);
+	public KorisnikDto me(@AuthenticationPrincipal OidcUser user) {
+		return korisnikRepository.findByEmail(user.getEmail())
+				.map(KorisnikDto::iz)
+				.orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED));
 	}
+
 }

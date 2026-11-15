@@ -35,3 +35,7 @@ build/
 
 ### Lokalna H2 baza ###
 data/
+
+
+### Ucitane slike ###
+uploads/

@@ -9,6 +9,11 @@ public class Prijava {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @ManyToOne
+    @JoinColumn(name = "prijavitelj_id")
+    private Korisnik prijavitelj;
+
+
     @Column(nullable = false)
     private Double lat;
 
@@ -54,6 +59,13 @@ public class Prijava {
         return id;
     }
 
+    public Korisnik getPrijavitelj() {
+        return prijavitelj;
+    }
+
+    public void setPrijavitelj(Korisnik prijavitelj){
+        this.prijavitelj = prijavitelj;
+    }
 
     public Double getLat() {
         return lat;
