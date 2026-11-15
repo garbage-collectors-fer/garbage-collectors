@@ -1,20 +1,20 @@
 package hr.fer.ecosentry.service;
 
+import hr.fer.ecosentry.dto.PrijavaDto;
 import hr.fer.ecosentry.dto.PrijavaIzmjenaDto;
-import hr.fer.ecosentry.model.KategorijaOtpada;
+import hr.fer.ecosentry.model.Kategorija;
 import hr.fer.ecosentry.model.Korisnik;
+import hr.fer.ecosentry.model.NacinSanacije;
 import hr.fer.ecosentry.model.Prijava;
+import hr.fer.ecosentry.model.StatusPrijave;
+import hr.fer.ecosentry.model.Uloga;
+import hr.fer.ecosentry.repository.KategorijaRepository;
 import hr.fer.ecosentry.repository.KorisnikRepository;
+import hr.fer.ecosentry.repository.PrijavaRepository;
 import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
-
-import hr.fer.ecosentry.dto.PrijavaDto;
-import hr.fer.ecosentry.model.NacinSanacije;
-import hr.fer.ecosentry.model.StatusPrijave;
-import hr.fer.ecosentry.repository.PrijavaRepository;
-import org.springframework.stereotype.Service;
-import hr.fer.ecosentry.model.Uloga;
 
 import java.util.List;
 
@@ -24,11 +24,14 @@ public class PrijavaService  {
 
     private final PrijavaRepository prijavaRepository;
     private final KorisnikRepository korisnikRepository;
+    private final KategorijaRepository kategorijaRepository;
     private final SlikaService slikaService;
 
-    public PrijavaService(PrijavaRepository prijavaRepository, KorisnikRepository korisnikRepository, SlikaService slikaService){
+    public PrijavaService(PrijavaRepository prijavaRepository, KorisnikRepository korisnikRepository,
+                          KategorijaRepository kategorijaRepository, SlikaService slikaService){
         this.prijavaRepository = prijavaRepository;
         this.korisnikRepository = korisnikRepository;
+        this.kategorijaRepository = kategorijaRepository;
         this.slikaService = slikaService;
     }
 
@@ -50,6 +53,15 @@ public class PrijavaService  {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Korisnik nije prijavljen"));
     }
 
+    // kategorija dolazi kao ID iz tablice kategorija
+    private Kategorija kategorija(Long kategorijaId) {
+        if (kategorijaId == null) {
+            throw neispravno("Kategorija je obavezna.");
+        }
+        return kategorijaRepository.findById(kategorijaId)
+                .orElseThrow(() -> neispravno("Kategorija ne postoji."));
+    }
+
     private boolean smijeVidjetiPrijavitelja(Prijava p, Korisnik gledatelj) {
         if(gledatelj.getUloga() == Uloga.REDAR) {
             return true;
@@ -61,7 +73,7 @@ public class PrijavaService  {
         Korisnik gledatelj = trenutniKorisnik(email);
 
         Prijava p = prijavaRepository.findById(id)
-                .filter(pr -> smijeVidjetiPrijavu(pr, gledatelj))      // nevidljiva = kao da ne postoji
+                .filter(pr -> smijeVidjetiPrijavu(pr, gledatelj))      //nevidljiva = kao da ne postoji
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Prijava ne postoji"));
 
         return PrijavaDto.iz(p, smijeVidjetiPrijavitelja(p, gledatelj));
@@ -71,8 +83,8 @@ public class PrijavaService  {
         Korisnik gledatelj = trenutniKorisnik(email);
 
         return prijavaRepository.findByPrijaviteljOrderByDatumDesc(gledatelj)
-                .stream()                                   // moze vidjeti odbacene i sluzbene sanacije
-                .map(p -> PrijavaDto.iz(p, true))     // sve su njegove, pa uvijek vidi prijavitelja
+                .stream()                                   //moze vidjeti odbacene i sluzbene sanacije
+                .map(p -> PrijavaDto.iz(p, true))     //sve su njegove, pa uvijek vidi prijavitelja
                 .toList();
     }
 
@@ -83,10 +95,10 @@ public class PrijavaService  {
             return true;                                    // redar vidi sve, i odbačene
         }
         if (p.getPrijavitelj() != null && p.getPrijavitelj().getId().equals(gledatelj.getId())) {
-            return true;                                    // svoje prijave korisnik uvijek vidi
+            return true;                                    //svoje prijave korisnik uvijek vidi
         }
         if (SKRIVENI_STATUSI.contains(p.getStatus())) {
-            return false;                                   // odbačene i službene ostali ne vide
+            return false;                                   //odbačene i službene ostali ne vide
         }
         if (gledatelj.getUloga() == Uloga.UDRUGA) {
             return p.getNacinSanacije() == NacinSanacije.UDRUGA;
@@ -94,7 +106,7 @@ public class PrijavaService  {
         return true;
     }
 
-    public PrijavaDto stvori(String email, MultipartFile slika, double lat, double lng, KategorijaOtpada kategorija) {
+    public PrijavaDto stvori(String email, MultipartFile slika, double lat, double lng, Long kategorijaId) {
         Korisnik prijavitelj = trenutniKorisnik(email);
 
         if (prijavitelj.isBlokiran()) {
@@ -104,6 +116,8 @@ public class PrijavaService  {
         if (lat < -90 || lat > 90 || lng < -180 || lng > 180) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Neispravna lokacija");
         }
+
+        Kategorija kategorija = kategorija(kategorijaId);
 
         // slika se sprema tek kad je sve ostalo provjereno, da ne ostanu datoteke od odbijenih zahtjeva
         String slikaUrl = slikaService.spremi(slika);
@@ -128,12 +142,12 @@ public class PrijavaService  {
         Prijava p = prijavaRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Prijava ne postoji"));
 
-        // promjena kategorije
+        // promjena kategorije (izmjena.kategorija() je ID kategorije)
         if (izmjena.kategorija() != null) {
             if (p.getStatus() == StatusPrijave.ODBACENO) {
                 throw sukob("Odbačenoj prijavi ne može se mijenjati kategorija.");
             }
-            p.setKategorija(izmjena.kategorija());
+            p.setKategorija(kategorija(izmjena.kategorija()));
         }
 
         // prihvaćanje
@@ -186,5 +200,3 @@ public class PrijavaService  {
     }
 
 }
-
-

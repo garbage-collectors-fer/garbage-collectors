@@ -1,31 +1,47 @@
 package hr.fer.ecosentry.model;
+
 import jakarta.persistence.*;
+
+import java.math.BigDecimal;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 
+/**
+ * Tablica PRIJAVA (V1__init.sql). Imena java polja i getteri/setteri ostali su isti
+ * kao prije, mijenjala su se samo imena stupaca, da postojeći radi.
+ */
 @Entity
+@Table(name = "prijava")
 public class Prijava {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id_prijava")
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "prijavitelj_id")
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "id_korisnik", nullable = false)
     private Korisnik prijavitelj;
 
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "id_kategorija", nullable = false)
+    private Kategorija kategorija;
 
-    @Column(nullable = false)
-    private Double lat;
+    /** NUMERIC(9,6) u bazi; preciznost oko 10cm, getteri ce i dalje vracat double */
+    @Column(name = "latituda", nullable = false, precision = 9, scale = 6)
+    private BigDecimal lat;
 
-    @Column(nullable = false)
+    @Column(name = "longituda", nullable = false, precision = 9, scale = 6)
+    private BigDecimal lng;
 
-    private Double lng;
+    private String adresa;          // iz geokodiranja, nije obavezna(dogovorno)
 
-    private String adresa;
+    private String kvart;           // za statistiku po kvartovima
 
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private KategorijaOtpada kategorija;
+    private String opis;
+
+    @Column(name = "volumen_estm")
+    private String volumenEstm;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
@@ -34,16 +50,24 @@ public class Prijava {
     @Column(nullable = false)
     private boolean provjerena = false;
 
+    /** Redar odlucuje ide li prijava eko-udrugama ili na sluzbenu sanaciju; NULL dok ne odluci. */
     @Enumerated(EnumType.STRING)
+    @Column(name = "nacin_sanacije")
     private NacinSanacije nacinSanacije;
 
-    @Column(nullable = false)
+    /** Broj službenog naloga; obavezan za status SLUZBENA_SANACIJA. */
+    @Column(name = "nalog_broj", unique = true)
+    private String nalogBroj;
+
+    @Column(name = "url_fotografija", nullable = false)
     private String slikaUrl;
 
+    /** Fotografija kad redar sam zatvara prijavu (prema F-019). */
+    @Column(name = "url_foto_sanacija")
     private String slikaSanacijeUrl;
 
-    @Column(nullable = false)
-    private Instant datum;          // Datumi su u ISO 8601 formatu u UTC-u, npr. "2026-10-20T14:32:00Z"
+    @Column(name = "datum_kreiranja", nullable = false, updatable = false)
+    private Instant datum;          // ISO 8601 u UTCu
 
     public Prijava() {
     }
@@ -51,8 +75,18 @@ public class Prijava {
     @PrePersist
     void prijeSpremanja() {
         if (datum == null) {
-            datum = Instant.now().truncatedTo(ChronoUnit.SECONDS);  // "2026-10-20T14:32:00Z" zadovoljen ovaj format
+            datum = Instant.now().truncatedTo(ChronoUnit.SECONDS);
         }
+    }
+
+    //getteri  i setteri
+
+    public NacinSanacije getNacinSanacije() {
+        return nacinSanacije;
+    }
+
+    public void setNacinSanacije(NacinSanacije nacinSanacije) {
+        this.nacinSanacije = nacinSanacije;
     }
 
     public Long getId() {
@@ -63,24 +97,32 @@ public class Prijava {
         return prijavitelj;
     }
 
-    public void setPrijavitelj(Korisnik prijavitelj){
+    public void setPrijavitelj(Korisnik prijavitelj) {
         this.prijavitelj = prijavitelj;
     }
 
+    public Kategorija getKategorija() {
+        return kategorija;
+    }
+
+    public void setKategorija(Kategorija kategorija) {
+        this.kategorija = kategorija;
+    }
+
     public Double getLat() {
-        return lat;
+        return lat == null ? null : lat.doubleValue();
     }
 
     public void setLat(Double lat) {
-        this.lat = lat;
+        this.lat = lat == null ? null : BigDecimal.valueOf(lat);
     }
 
     public Double getLng() {
-        return lng;
+        return lng == null ? null : lng.doubleValue();
     }
 
     public void setLng(Double lng) {
-        this.lng = lng;
+        this.lng = lng == null ? null : BigDecimal.valueOf(lng);
     }
 
     public String getAdresa() {
@@ -91,12 +133,28 @@ public class Prijava {
         this.adresa = adresa;
     }
 
-    public KategorijaOtpada getKategorija() {
-        return kategorija;
+    public String getKvart() {
+        return kvart;
     }
 
-    public void setKategorija(KategorijaOtpada kategorija) {
-        this.kategorija = kategorija;
+    public void setKvart(String kvart) {
+        this.kvart = kvart;
+    }
+
+    public String getOpis() {
+        return opis;
+    }
+
+    public void setOpis(String opis) {
+        this.opis = opis;
+    }
+
+    public String getVolumenEstm() {
+        return volumenEstm;
+    }
+
+    public void setVolumenEstm(String volumenEstm) {
+        this.volumenEstm = volumenEstm;
     }
 
     public StatusPrijave getStatus() {
@@ -115,12 +173,12 @@ public class Prijava {
         this.provjerena = provjerena;
     }
 
-    public NacinSanacije getNacinSanacije() {
-        return nacinSanacije;
+    public String getNalogBroj() {
+        return nalogBroj;
     }
 
-    public void setNacinSanacije(NacinSanacije nacinSanacije) {
-        this.nacinSanacije = nacinSanacije;
+    public void setNalogBroj(String nalogBroj) {
+        this.nalogBroj = nalogBroj;
     }
 
     public String getSlikaUrl() {

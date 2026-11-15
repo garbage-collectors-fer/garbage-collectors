@@ -1,6 +1,5 @@
 package hr.fer.ecosentry.controller;
 
-import hr.fer.ecosentry.model.KategorijaOtpada;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -33,7 +32,7 @@ public class PrijavaController {
     @GetMapping
     public List<PrijavaDto> dohvatiSve(
             @RequestParam(required = false) StatusPrijave status,
-            @RequestParam(required = false) Boolean provjerena,   // potrebna su tri stanja, T, F i null
+            @RequestParam(required = false) Boolean provjerena,   //potrebna su tri stanja, T, F i null
             @AuthenticationPrincipal OidcUser user) {
 
         return prijavaService.dohvatiVidljive(user.getEmail(), status, provjerena);
@@ -41,15 +40,15 @@ public class PrijavaController {
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
-    @PreAuthorize("hasRole('GRADANIN')")        // samo građanin može prijaviti otpad
+    @PreAuthorize("hasRole('GRADANIN')")        //samo građanin može prijaviti otpad
     public PrijavaDto stvori(
             @RequestParam MultipartFile slika,
             @RequestParam double lat,
             @RequestParam double lng,
-            @RequestParam KategorijaOtpada kategorija,
+            @RequestParam("kategorija") Long kategorijaId,   //ID iz tablice kategorija,
             @AuthenticationPrincipal OidcUser user) {
 
-        return prijavaService.stvori(user.getEmail(), slika, lat, lng, kategorija);
+        return prijavaService.stvori(user.getEmail(), slika, lat, lng, kategorijaId);
     }
 
     @GetMapping("/{id}")
@@ -58,13 +57,13 @@ public class PrijavaController {
     }
 
     @GetMapping("/moje")
-    @PreAuthorize("hasRole('GRADANIN')")        // samo građanin ima svoje prijave
+    @PreAuthorize("hasRole('GRADANIN')")        //samo građanin ima svoje prijave
     public List<PrijavaDto> dohvatiMoje(@AuthenticationPrincipal OidcUser user) {
         return prijavaService.dohvatiMoje(user.getEmail());
     }
 
     @PatchMapping("/{id}")
-    @PreAuthorize("hasRole('REDAR')")           // samo redar odlučuje o prijavama
+    @PreAuthorize("hasRole('REDAR')")           //samo redar odlučuje o prijavama
     public PrijavaDto izmijeni(@PathVariable Long id, @RequestBody PrijavaIzmjenaDto izmjena) {
         return prijavaService.izmijeni(id, izmjena);
     }
