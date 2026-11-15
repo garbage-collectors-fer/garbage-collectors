@@ -13,6 +13,9 @@ import hr.fer.ecosentry.dto.PrijavaDto;
 import hr.fer.ecosentry.model.StatusPrijave;
 import hr.fer.ecosentry.repository.PrijavaRepository;
 import hr.fer.ecosentry.service.PrijavaService;
+import hr.fer.ecosentry.dto.PrijavaIzmjenaDto;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
 @RestController
@@ -58,6 +61,12 @@ public class PrijavaController {
     @PreAuthorize("hasRole('GRADANIN')")        // samo građanin ima svoje prijave
     public List<PrijavaDto> dohvatiMoje(@AuthenticationPrincipal OidcUser user) {
         return prijavaService.dohvatiMoje(user.getEmail());
+    }
+
+    @PatchMapping("/{id}")
+    @PreAuthorize("hasRole('REDAR')")           // samo redar odlučuje o prijavama
+    public PrijavaDto izmijeni(@PathVariable Long id, @RequestBody PrijavaIzmjenaDto izmjena) {
+        return prijavaService.izmijeni(id, izmjena);
     }
 
 }

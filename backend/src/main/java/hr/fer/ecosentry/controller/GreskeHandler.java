@@ -11,6 +11,7 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 import org.springframework.web.multipart.MaxUploadSizeExceededException;
 import org.springframework.web.multipart.support.MissingServletRequestPartException;
 import org.springframework.web.server.ResponseStatusException;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 
 
 @RestControllerAdvice
@@ -49,5 +50,11 @@ public class GreskeHandler {
 
     private static ResponseEntity<Map<String, String>> odgovor(HttpStatus status, String poruka) {
         return ResponseEntity.status(status).body(Map.of("poruka", poruka));
+    }
+
+    // neispravan JSON ili nepostojeća vrijednost, npr. "status": "NESTO"
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<Map<String, String>> neispravanJson(HttpMessageNotReadableException e) {
+        return odgovor(HttpStatus.BAD_REQUEST, "Neispravni podaci");
     }
 }

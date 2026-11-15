@@ -8,19 +8,19 @@ import hr.fer.ecosentry.model.StatusPrijave;
 import java.time.Instant;
 
 public record PrijavaDto (
-        Long id,
-                          Double lat,
-                          Double lng,
-                          String adresa,
-                          KategorijaOtpada kategorija,
-                          StatusPrijave status,
-                          boolean provjerena,
-                          NacinSanacije nacinSanacije,
-                          String slikaUrl,
-                          String slikaSanacijeUrl,
-                          Instant datum,
-                          PrijaviteljDto prijavitelj,
-                          Long akcijaId) {
+                        Long id,
+                        Double lat,
+                        Double lng,
+                        String adresa,
+                        KategorijaOtpada kategorija,
+                        StatusPrijave status,
+                        boolean provjerena,
+                        NacinSanacije nacinSanacije,
+                        String slikaUrl,
+                        String slikaSanacijeUrl,
+                        Instant datum,
+                        PrijaviteljDto prijavitelj,
+                        Long akcijaId) {
     public record PrijaviteljDto(Long id, String ime) {
     }
 

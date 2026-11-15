@@ -1,5 +1,6 @@
 package hr.fer.ecosentry.service;
 
+import hr.fer.ecosentry.dto.PrijavaIzmjenaDto;
 import hr.fer.ecosentry.model.KategorijaOtpada;
 import hr.fer.ecosentry.model.Korisnik;
 import hr.fer.ecosentry.model.Prijava;
@@ -116,6 +117,72 @@ public class PrijavaService  {
         // status (PRIJAVLJENO), provjerena (false) i datum postavljaju se sami u entitetu
 
         return PrijavaDto.iz(prijavaRepository.save(prijava), true);
+    }
+
+    public PrijavaDto izmijeni(Long id, PrijavaIzmjenaDto izmjena) {
+        if (izmjena.provjerena() == null && izmjena.status() == null
+                && izmjena.nacinSanacije() == null && izmjena.kategorija() == null) {
+            throw neispravno("Nema podataka za izmjenu");
+        }
+
+        Prijava p = prijavaRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Prijava ne postoji"));
+
+        // promjena kategorije
+        if (izmjena.kategorija() != null) {
+            if (p.getStatus() == StatusPrijave.ODBACENO) {
+                throw sukob("Odbačenoj prijavi ne može se mijenjati kategorija.");
+            }
+            p.setKategorija(izmjena.kategorija());
+        }
+
+        // prihvaćanje
+        if (izmjena.provjerena() != null) {
+            if (!izmjena.provjerena()) {
+                throw neispravno("Prihvaćena prijava ne može se vratiti u neprovjerene.");
+            }
+            if (p.getStatus() != StatusPrijave.PRIJAVLJENO) {
+                throw sukob("Prijava je već riješena.");
+            }
+            p.setProvjerena(true);
+        }
+
+        // odbacivanje
+        if (izmjena.status() != null) {
+            if (izmjena.status() != StatusPrijave.ODBACENO) {
+                throw neispravno("Ovdje se prijava može samo odbaciti.");
+            }
+            if (p.getStatus() != StatusPrijave.PRIJAVLJENO) {
+                throw sukob("Prijava je već u akciji čišćenja ili riješena.");
+            }
+            p.setStatus(StatusPrijave.ODBACENO);
+            p.setProvjerena(true);
+            // TODO: obavijest prijavitelju (F-016), kad budu obavijesti
+        }
+
+        // slanje eko-udrugama
+        if (izmjena.nacinSanacije() != null) {
+            if (izmjena.nacinSanacije() != NacinSanacije.UDRUGA) {
+                throw neispravno("Službena sanacija šalje se preko naloga.");
+            }
+            if (!p.isProvjerena()) {
+                throw sukob("Prijavu prvo treba prihvatiti.");
+            }
+            if (p.getStatus() != StatusPrijave.PRIJAVLJENO) {
+                throw sukob("Prijava je već u akciji čišćenja ili riješena.");
+            }
+            p.setNacinSanacije(NacinSanacije.UDRUGA);
+        }
+
+        return PrijavaDto.iz(prijavaRepository.save(p), true);    // redar uvijek vidi prijavitelja
+    }
+
+    private static ResponseStatusException neispravno(String poruka) {
+        return new ResponseStatusException(HttpStatus.BAD_REQUEST, poruka);
+    }
+
+    private static ResponseStatusException sukob(String poruka) {
+        return new ResponseStatusException(HttpStatus.CONFLICT, poruka);
     }
 
 }
