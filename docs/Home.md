@@ -47,7 +47,7 @@ Dokumentacija se kontinuirano ažurira kako se aplikacija razvija.
 
 ## Pravila dokumentacije
 
-Dokumentacija se sastoji od međusobno povezanih Markdown stranica u direktoriju `docs/`. UML dijagrami izrađuju se u PlantUML-u: izvor se čuva u `docs/puml/`, a slika u `docs/assets/diagrams/` generira se automatski pri spajanju u `master`. Projekt koristi React i Vite za korisničko sučelje, Spring Boot za poslužitelj, H2 lokalno i PostgreSQL za javnu inačicu te Render za postavljanje.
+Dokumentacija se sastoji od međusobno povezanih Markdown stranica u direktoriju `docs/`. UML dijagrami izrađuju se u PlantUML-u: izvor se čuva u `docs/puml/`, a slika u `docs/assets/diagrams/` generira se automatski pri spajanju u `master`. Projekt koristi React i Vite za korisničko sučelje, Spring Boot za poslužitelj, PostgreSQL na Neonu za bazu podataka te Render za postavljanje.
 
 ## Akademski integritet, ponašanje i licenciranje
 
