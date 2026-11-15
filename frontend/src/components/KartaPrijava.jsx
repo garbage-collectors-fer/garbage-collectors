@@ -38,10 +38,14 @@ function ucitajGoogleMaps() {
   return ucitavanjeKarte;
 }
 
-export default function KartaPrijava({ prijave, odabranaPrijavaId, onOdaberi }) {
+//onKlikNaKartu i odabranaLokacija koriste se samo kod nove prijave
+export default function KartaPrijava({ prijave, odabranaPrijavaId, onOdaberi, onKlikNaKartu, odabranaLokacija }) {
   const elementKarte = useRef(null);
   const karta = useRef(null);
   const pribadace = useRef([]);
+  const pribadacaLokacije = useRef(null);
+  const klikNaKartu = useRef(onKlikNaKartu);
+  klikNaKartu.current = onKlikNaKartu;
   const [kartaSpremna, setKartaSpremna] = useState(false);
   const [greska, setGreska] = useState(null);
 
@@ -62,6 +66,11 @@ export default function KartaPrijava({ prijave, odabranaPrijavaId, onOdaberi }) 
           mapId: GOOGLE_MAPS_MAP_ID,
           streetViewControl: false,
           mapTypeControl: false,
+        });
+        karta.current.addListener('click', function (dogadaj) {
+          if (klikNaKartu.current) {
+            klikNaKartu.current(dogadaj.latLng.lat(), dogadaj.latLng.lng());
+          }
         });
         setKartaSpremna(true);
       })
@@ -127,6 +136,38 @@ export default function KartaPrijava({ prijave, odabranaPrijavaId, onOdaberi }) 
       }
     },
     [kartaSpremna, odabranaPrijavaId, prijave]
+  );
+
+  //pribadaca za lokaciju nove prijave
+  useEffect(
+    function () {
+      if (!kartaSpremna) {
+        return;
+      }
+      if (pribadacaLokacije.current !== null) {
+        pribadacaLokacije.current.map = null;
+        pribadacaLokacije.current = null;
+      }
+      if (!odabranaLokacija) {
+        return;
+      }
+
+      const izgledPribadace = new window.google.maps.marker.PinElement({
+        background: '#4ADBC8',
+        borderColor: '#3F4B3B',
+        glyphColor: '#3F4B3B',
+        scale: 1.4,
+      });
+
+      pribadacaLokacije.current = new window.google.maps.marker.AdvancedMarkerElement({
+        map: karta.current,
+        position: odabranaLokacija,
+        content: izgledPribadace.element,
+        title: 'Lokacija nove prijave',
+      });
+      karta.current.panTo(odabranaLokacija);
+    },
+    [kartaSpremna, odabranaLokacija]
   );
 
   if (!GOOGLE_MAPS_KLJUC) {
