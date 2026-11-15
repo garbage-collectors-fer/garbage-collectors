@@ -55,9 +55,6 @@ public class Prijava {
     @Column(name = "nacin_sanacije")
     private NacinSanacije nacinSanacije;
 
-    /** Broj službenog naloga; obavezan za status SLUZBENA_SANACIJA. */
-    @Column(name = "nalog_broj", unique = true)
-    private String nalogBroj;
 
     @Column(name = "url_fotografija", nullable = false)
     private String slikaUrl;
@@ -171,14 +168,6 @@ public class Prijava {
 
     public void setProvjerena(boolean provjerena) {
         this.provjerena = provjerena;
-    }
-
-    public String getNalogBroj() {
-        return nalogBroj;
-    }
-
-    public void setNalogBroj(String nalogBroj) {
-        this.nalogBroj = nalogBroj;
     }
 
     public String getSlikaUrl() {
