@@ -54,7 +54,7 @@ rectangle "Sustav EcoSentry" {
     usecase "UC-007\nPotvrda sanacije" as UC007
 
     usecase "UC-004\nVerifikacija prijave" as UC004
-    usecase "UC-008\nIzdavanje službenog\nnaloga" as UC008
+    usecase "UC-008\nSlanje na službenu\nsanaciju" as UC008
     usecase "UC-011\nPregled statistike" as UC011
 
 }
