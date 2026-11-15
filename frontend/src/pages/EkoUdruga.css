@@ -23,7 +23,9 @@
 .udruga-volonteri progress::-webkit-progress-value { background: #5CAB7D; border-radius: 999px; }
 .udruga-volonteri > span { font-size: 14px; }
 .udruga-panel .udruga-napomena { margin: 22px 0 0; font-size: 13px; opacity: .7; }
-.udruga-karta { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; min-height: 180px; padding: 20px; margin: 20px 0; border: 1px dashed #c5d9cb; border-radius: 12px; background: var(--boja-pozadina); text-align: center; color: #647768; }
+.udruga-karta { margin: 20px 0; border: 1px solid #dce8df; border-radius: 12px; overflow: hidden; background: #f4f8f5; }
+.udruga-karta .karta { height: 360px; border-radius: 0; }
+.udruga-karta > p { margin: 0; padding: 10px 14px; font-size: 13px; color: #647768; }
 .udruga-stranica button:focus-visible { outline: 3px solid #5A9367; outline-offset: 3px; }
 .udruga-ikona { display: inline-block; width: 19px; height: 19px; flex-shrink: 0; }
 .udruga-naslov-grupa { display: flex; align-items: center; gap: 14px; }

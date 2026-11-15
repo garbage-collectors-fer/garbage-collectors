@@ -54,12 +54,16 @@ export default function KartaPrijava({ prijave, odabranaPrijavaId, onOdaberi, on
       return;
     }
 
-    window.gm_authFailure = function () {
+    let otkazano = false;
+    const prethodnaGreskaAutorizacije = window.gm_authFailure;
+    const greskaAutorizacije = function () {
       setGreska('Google Maps ključ nije ispravan ili nema dozvolu za Maps JavaScript API.');
     };
+    window.gm_authFailure = greskaAutorizacije;
 
     ucitajGoogleMaps()
       .then(function () {
+        if (otkazano || !elementKarte.current) return;
         karta.current = new window.google.maps.Map(elementKarte.current, {
           center: SREDISTE_ZAGREBA,
           zoom: 12,
@@ -75,8 +79,19 @@ export default function KartaPrijava({ prijave, odabranaPrijavaId, onOdaberi, on
         setKartaSpremna(true);
       })
       .catch(function (greskaUcitavanja) {
-        setGreska(greskaUcitavanja.message);
+        if (!otkazano) setGreska(greskaUcitavanja.message);
       });
+
+    return function () {
+      otkazano = true;
+      if (window.gm_authFailure === greskaAutorizacije) {
+        window.gm_authFailure = prethodnaGreskaAutorizacije;
+      }
+      for (const pribadaca of pribadace.current) pribadaca.map = null;
+      if (pribadacaLokacije.current) pribadacaLokacije.current.map = null;
+      if (karta.current) window.google.maps.event.clearInstanceListeners(karta.current);
+      karta.current = null;
+    };
   }, []);
 
   useEffect(

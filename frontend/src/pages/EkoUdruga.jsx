@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import KartaPrijava from '../components/KartaPrijava.jsx';
 import { dohvatiPrijave } from '../services/prijaveServis.js';
 import { nazivKategorije } from '../services/oznake.js';
 import './KomunalniRedar.css';
@@ -30,11 +31,14 @@ export default function EkoUdruga() {
   const [prikaz, setPrikaz] = useState('AKCIJE');
   const [odabraniId, setOdabraniId] = useState(1);
   const [prijave, setPrijave] = useState([]);
+  const [ucitavanje, setUcitavanje] = useState(true);
+  const [greska, setGreska] = useState(null);
 
   useEffect(() => {
     dohvatiPrijave()
       .then((dohvaceno) => setPrijave(dohvaceno))
-      .catch(() => setPrijave([]));
+      .catch(() => setGreska('Prijave se nisu uspjele učitati. Pokušaj osvježiti stranicu.'))
+      .finally(() => setUcitavanje(false));
   }, []);
 
   const dostupne = prijave.filter((p) => p.provjerena && p.status === 'PRIJAVLJENO' && p.nacinSanacije === 'UDRUGA');
@@ -74,12 +78,14 @@ export default function EkoUdruga() {
               <span className="udruga-stavka-ikona"><Ikona naziv={prikaz === 'ODLAGALISTA' ? 'lokacija' : stavka.zavrsena ? 'potvrda' : 'list'} /></span>
               <span className="redar-stavka-tekst">
                 <span className="redar-stavka-naslov">{prikaz === 'ODLAGALISTA' ? nazivKategorije(stavka.kategorija) : stavka.naziv}</span>
-                <span className="redar-stavka-detalj">{stavka.lokacija || stavka.adresa}</span>
+                <span className="redar-stavka-detalj">{stavka.lokacija || stavka.adresa || `${stavka.lat.toFixed(4)}, ${stavka.lng.toFixed(4)}`}</span>
                 <span className="udruga-stavka-datum"><Ikona naziv={prikaz === 'ODLAGALISTA' ? 'potvrda' : 'kalendar'} />{prikaz === 'ODLAGALISTA' ? 'Dostupno za akciju' : stavka.datum}</span>
               </span>
             </button>
           ))}
-          {popis.length === 0 && <p className="redar-prazno">Trenutačno nema stavki.</p>}
+          {prikaz === 'ODLAGALISTA' && ucitavanje && <p role="status">Učitavanje odlagališta...</p>}
+          {prikaz === 'ODLAGALISTA' && greska && <p role="alert">{greska}</p>}
+          {popis.length === 0 && !(prikaz === 'ODLAGALISTA' && (ucitavanje || greska)) && <p className="redar-prazno">Trenutačno nema stavki.</p>}
         </section>
 
         {odabrano && (
@@ -87,14 +93,21 @@ export default function EkoUdruga() {
             {prikaz === 'ODLAGALISTA' ? (
               <>
                 <span className="udruga-oznaka"><Ikona naziv="potvrda" />Provjerena prijava #{odabrano.id}</span>
-                <h2>{odabrano.adresa}</h2>
+                <h2>{odabrano.adresa || `Odlagalište #${odabrano.id}`}</h2>
                 <p>Ovu je prijavu redar proslijedio eko-udrugama. Dostupna je za organiziranje akcije čišćenja.</p>
                 <dl className="redar-podaci">
                   <dt><Ikona naziv="oznaka" />Kategorija</dt><dd>{nazivKategorije(odabrano.kategorija)}</dd>
                   <dt><Ikona naziv="potvrda" />Status</dt><dd>Prijavljeno</dd>
                   <dt><Ikona naziv="lokacija" />Lokacija</dt><dd>{odabrano.lat.toFixed(4)}, {odabrano.lng.toFixed(4)}</dd>
                 </dl>
-                <div className="udruga-karta"><Ikona naziv="lokacija" /><span>Karta lokacije još nije dostupna.</span></div>
+                <div className="udruga-karta" aria-label="Karta dostupnih odlagališta">
+                  <KartaPrijava
+                    prijave={dostupne}
+                    odabranaPrijavaId={odabrano.id}
+                    onOdaberi={setOdabraniId}
+                  />
+                  <p>Odaberi odlagalište na karti ili u popisu za prikaz detalja.</p>
+                </div>
                 <button type="button" className="redar-gumb redar-gumb-glavni" title="Funkcionalnost još nije implementirana"><Ikona naziv="plus" />Organiziraj akciju</button>
               </>
             ) : (
