@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { prijave } from '../services/mockPodaci.js';
+import { useEffect, useState } from 'react';
+import { dohvatiPrijave } from '../services/prijaveServis.js';
 import { nazivKategorije } from '../services/oznake.js';
 import './KomunalniRedar.css';
 import './EkoUdruga.css';
@@ -29,6 +29,14 @@ const akcije = [
 export default function EkoUdruga() {
   const [prikaz, setPrikaz] = useState('AKCIJE');
   const [odabraniId, setOdabraniId] = useState(1);
+  const [prijave, setPrijave] = useState([]);
+
+  useEffect(() => {
+    dohvatiPrijave()
+      .then((dohvaceno) => setPrijave(dohvaceno))
+      .catch(() => setPrijave([]));
+  }, []);
+
   const dostupne = prijave.filter((p) => p.provjerena && p.status === 'PRIJAVLJENO' && p.nacinSanacije === 'UDRUGA');
   const popis = prikaz === 'ODLAGALISTA' ? dostupne : akcije.filter((a) => a.zavrsena === (prikaz === 'ZAVRSENE'));
   const odabrano = popis.find((stavka) => stavka.id === odabraniId) || popis[0];

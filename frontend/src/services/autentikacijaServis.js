@@ -23,7 +23,7 @@ export function prijaviSeGoogleom() {
 }
 
 
-function procitajXsrfToken() {
+export function procitajXsrfToken() {
   const kolacici = document.cookie.split('; ');
   for (let i = 0; i < kolacici.length; i++) {
     if (kolacici[i].startsWith('XSRF-TOKEN=')) {

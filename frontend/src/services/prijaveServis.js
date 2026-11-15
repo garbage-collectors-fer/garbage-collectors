@@ -1,5 +1,6 @@
 
 import { prijave as mockPrijave } from './mockPodaci.js';
+import { API_ADRESA, procitajXsrfToken } from './autentikacijaServis.js';
 
 const KORISTI_MOCK = true;
 
@@ -17,12 +18,22 @@ async function posaljiZahtjev(metoda, putanja, tijelo) {
     credentials: 'include',
     headers: {},
   };
-  if (tijelo !== undefined) {
+
+  if (metoda !== 'GET') {
+    const xsrfToken = procitajXsrfToken();
+    if (xsrfToken !== null) {
+      postavke.headers['X-XSRF-TOKEN'] = xsrfToken;
+    }
+  }
+
+  if (tijelo instanceof FormData) {
+    postavke.body = tijelo;
+  } else if (tijelo !== undefined) {
     postavke.headers['Content-Type'] = 'application/json';
     postavke.body = JSON.stringify(tijelo);
   }
 
-  const odgovor = await fetch('/api' + putanja, postavke);
+  const odgovor = await fetch(API_ADRESA + '/api' + putanja, postavke);
 
   if (!odgovor.ok) {
     let poruka = 'Došlo je do greške (' + odgovor.status + ').';
@@ -62,6 +73,52 @@ export async function dohvatiPrijave() {
     return rezultat;
   }
   return posaljiZahtjev('GET', '/prijave');
+}
+
+
+//prijave prijavljenog gradanina
+export async function dohvatiMojePrijave() {
+  if (KORISTI_MOCK) {
+    await pricekaj();
+    const rezultat = [];
+    for (let i = 0; i < mockPrijave.length; i++) {
+      if (mockPrijave[i].mojaPrijava === true) {
+        rezultat.push({ ...mockPrijave[i] });
+      }
+    }
+    return rezultat;
+  }
+  return posaljiZahtjev('GET', '/prijave/moje');
+}
+
+
+//nova prijava gradanina
+export async function posaljiNovuPrijavu(slika, lat, lng, kategorija) {
+  if (KORISTI_MOCK) {
+    await pricekaj();
+    const novaPrijava = {
+      id: 1000 + mockPrijave.length,
+      lat: lat,
+      lng: lng,
+      adresa: null,
+      kategorija: kategorija,
+      status: 'PRIJAVLJENO',
+      provjerena: false,
+      nacinSanacije: null,
+      slikaUrl: URL.createObjectURL(slika),
+      datum: new Date().toISOString(),
+      prijavitelj: { id: 0, ime: 'Ja' },
+      mojaPrijava: true,
+    };
+    mockPrijave.push(novaPrijava);
+    return { ...novaPrijava };
+  }
+  const podaci = new FormData();
+  podaci.append('slika', slika);
+  podaci.append('lat', lat);
+  podaci.append('lng', lng);
+  podaci.append('kategorija', kategorija);
+  return posaljiZahtjev('POST', '/prijave', podaci);
 }
 
 
