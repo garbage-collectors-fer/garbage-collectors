@@ -1,3 +1,4 @@
+/* Gradanin koristi stil redara (KomunalniRedar.css), ovdje je samo ono sto je dodatno. */
 
 .gradjanin-gornji-red {
   display: flex;
@@ -10,6 +11,10 @@
 
 .gradjanin-gornji-red .redar-filteri {
   margin-bottom: 0;
+}
+
+.gradjanin-stranica .redar-raspored > * {
+  min-width: 0;
 }
 
 .gradjanin-forma {
@@ -40,6 +45,9 @@
 
 .gradjanin-polje select,
 .gradjanin-polje input[type='file'] {
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
   padding: 8px 10px;
   border: 2px solid var(--boja-rub);
   border-radius: 8px;
@@ -77,4 +85,45 @@
 .gradjanin-greske {
   margin: 0;
   padding-left: 36px;
+}
+
+@media (max-width: 900px) {
+  /* karta iznad popisa, a kod nove prijave iznad forme */
+  .gradjanin-stranica .redar-desno {
+    order: -1;
+  }
+
+  .gradjanin-stranica .karta {
+    height: 300px;
+  }
+}
+
+@media (max-width: 600px) {
+  .gradjanin-stranica {
+    font-size: 16px;
+  }
+
+  .gradjanin-gornji-red > .redar-gumb {
+    width: 100%;
+  }
+
+  .gradjanin-forma {
+    padding: 18px;
+  }
+
+  .gradjanin-forma h2,
+  .gradjanin-stranica .redar-detalji-zaglavlje h2 {
+    font-size: 21px;
+  }
+
+  .gradjanin-forma .redar-radnje .redar-gumb {
+    flex: 1;
+    padding: 12px 10px;
+    white-space: nowrap;
+  }
+
+  .gradjanin-stranica .redar-slika {
+    min-height: 180px;
+    max-height: 240px;
+  }
 }
