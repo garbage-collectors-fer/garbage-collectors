@@ -39,3 +39,6 @@ data/
 
 ### Ucitane slike ###
 uploads/
+
+### Tajne (lozinke, kljucevi) ###
+.env
