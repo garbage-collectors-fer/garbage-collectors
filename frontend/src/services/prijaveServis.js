@@ -2,7 +2,7 @@
 import { prijave as mockPrijave } from './mockPodaci.js';
 import { API_ADRESA, procitajXsrfToken } from './autentikacijaServis.js';
 
-const KORISTI_MOCK = true;
+const KORISTI_MOCK = false;
 
 
 function pricekaj() {

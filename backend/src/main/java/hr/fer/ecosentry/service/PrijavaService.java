@@ -162,16 +162,19 @@ public class PrijavaService  {
 
         // slanje eko-udrugama
         if (izmjena.nacinSanacije() != null) {
-            if (izmjena.nacinSanacije() != NacinSanacije.UDRUGA) {
-                throw neispravno("Službena sanacija šalje se preko naloga.");
-            }
+
             if (!p.isProvjerena()) {
                 throw sukob("Prijavu prvo treba prihvatiti.");
             }
             if (p.getStatus() != StatusPrijave.PRIJAVLJENO) {
                 throw sukob("Prijava je već u akciji čišćenja ili riješena.");
             }
-            p.setNacinSanacije(NacinSanacije.UDRUGA);
+
+            p.setNacinSanacije(izmjena.nacinSanacije());
+
+            if (izmjena.nacinSanacije().equals(NacinSanacije.SLUZBENA)) {
+                p.setStatus(StatusPrijave.SLUZBENA_SANACIJA);
+            }
         }
 
         return PrijavaDto.iz(prijavaRepository.save(p), true);    // redar uvijek vidi prijavitelja
