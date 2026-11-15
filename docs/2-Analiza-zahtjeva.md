@@ -129,24 +129,27 @@ Prioriteti su zadani po MoSCoW metodi: Must (mora biti), Should (trebalo bi biti
 
 ## 2.6 Sljedivost zahtjeva
 
-Tablica pokriva zahtjeve realizirane u prvom ciklusu.
+Tablica pokriva zahtjeve realizirane u prvom ciklusu. Oznake CT i ST upućuju na ispitne slučajeve u dokumentu [5. Ispitivanje](5-Ispitivanje.md), gdje se bilježi i ishod svakog slučaja. Zahtjevi koji nisu navedeni u tablici nisu realizirani u prvom ciklusu (popis ispod tablice).
 
 | ID zahtjeva | Obrazac uporabe / modul | Arhitekturna realizacija | Ispitivanje ili provjera |
 | --- | --- | --- | --- |
-| F-001 | UC-001 | Frontend: `Prijava.jsx`, `App.jsx`, `autentikacijaServis.js`. Backend: `SecurityConfig`, `CustomOidcUserService`, `GET /api/me` |  |
-| F-005 | UC-002 | Frontend: `Gradjanin.jsx` (nova prijava), `prijaveServis.js`. Backend: `POST /api/prijave`, `PrijavaService`, `SlikaService` |  |
-| F-006 | UC-002 | Frontend: `Gradjanin.jsx` (geolokacija preglednika), `KartaPrijava.jsx` (odabir lokacije klikom na kartu) |  |
-| F-007 | UC-002 | Frontend: polje za odabir slike u `Gradjanin.jsx` (na mobitelu nudi kameru i galeriju) |  |
-| F-008 | UC-009 | Frontend: `Gradjanin.jsx` (Moje prijave). Backend: `GET /api/prijave/moje` |  |
-| F-010 | UC-003 | Frontend: `KartaPrijava.jsx` (Google Maps, boja pribadače po statusu). Backend: `GET /api/prijave` bez odbačenih prijava i prijava na službenoj sanaciji |  |
-| F-011 | UC-003 | Frontend: odabir pribadače u `KartaPrijava.jsx`, detalji prijave u `Gradjanin.jsx` i `KomunalniRedar.jsx` |  |
-| F-015 | UC-004 | Frontend: `KomunalniRedar.jsx` (Prihvati / Odbaci). Backend: `PATCH /api/prijave/:id`, `PrijavaService` |  |
-| F-016 | UC-004 | Frontend: `KomunalniRedar.jsx` (odabir kategorije). Backend: `PATCH /api/prijave/:id` |  |
-| F-017 | UC-004, UC-008 | Frontend: `KomunalniRedar.jsx` (Eko-udrugama / Službena sanacija), `EkoUdruga.jsx`. Backend: `PATCH /api/prijave/:id` s `nacinSanacije`, filtriranje u `GET /api/prijave` |  |
-| NF-01 | svi | Prilagodba za mobitel u `Gradjanin.css` |  |
-| NF-02 | svi | Backend: `@PreAuthorize` po ulozi u `PrijavaController`, uloga se čita iz tablice korisnika |  |
-| NF-03 | svi | Javno postavljanje na Renderu preko HTTPS-a |  |
-| NF-04 | UC-002 | Frontend: provjera vrste i veličine slike u `Gradjanin.jsx`. Backend: provjera u `SlikaService`, najveća veličina u `application.properties` |  |
+| F-001 | UC-001 | Frontend: `Prijava.jsx`, `App.jsx`, `autentikacijaServis.js`. Backend: `SecurityConfig`, `CustomOidcUserService`, `GET /api/me` | CT-36; ST-01–ST-05 (Google prijava, prvi pristup, prikaz stranice prema ulozi, odjava) |
+| F-004 (djelomično) | UC-002 | Backend: provjera blokiranog korisnika pri podnošenju prijave u `PrijavaService`. Blokiranje i uklanjanje blokade (endpointi i sučelje redara) nisu realizirani | CT-05 |
+| F-005 | UC-002 | Frontend: `Gradjanin.jsx` (nova prijava), `prijaveServis.js`. Backend: `POST /api/prijave`, `GET /api/kategorije`, `PrijavaService`, `SlikaService` | CT-01–CT-06, CT-23, CT-25, CT-30, CT-34–CT-35; ST-06–ST-07 |
+| F-006 | UC-002 | Frontend: `Gradjanin.jsx` (geolokacija preglednika), `KartaPrijava.jsx` (odabir lokacije klikom na kartu) | ST-06 (GPS i/ili odabir lokacije na karti) |
+| F-007 | UC-002 | Frontend: polje za odabir slike u `Gradjanin.jsx` (na mobitelu nudi kameru i galeriju) | CT-22–CT-24; ST-06–ST-07 |
+| F-008 | UC-009 | Frontend: `Gradjanin.jsx` (Moje prijave). Backend: `GET /api/prijave/moje` | CT-26, CT-32, CT-37; ST-06 |
+| F-010 | UC-003 | Frontend: `KartaPrijava.jsx` (Google Maps, boja pribadače po statusu). Backend: `GET /api/prijave` bez odbačenih prijava i prijava na službenoj sanaciji | CT-15–CT-18, CT-29, CT-38; ST-06, ST-08–ST-09 |
+| F-011 | UC-003 | Frontend: odabir pribadače u `KartaPrijava.jsx`, detalji prijave u `Gradjanin.jsx` i `KomunalniRedar.jsx` | CT-19–CT-21, CT-31; ST-06 (detalji odabrane pribadače) |
+| F-015 | UC-004 | Frontend: `KomunalniRedar.jsx` (Prihvati / Odbaci). Backend: `PATCH /api/prijave/:id`, `PrijavaService` | CT-07–CT-11, CT-27, CT-33; ST-08 |
+| F-016 | UC-004 | Frontend: `KomunalniRedar.jsx` (odabir kategorije). Backend: `PATCH /api/prijave/:id`, `GET /api/kategorije` | CT-14; ST-08 |
+| F-017 | UC-004, UC-008 | Frontend: `KomunalniRedar.jsx` (Eko-udrugama / Službena sanacija), `EkoUdruga.jsx`. Backend: `PATCH /api/prijave/:id` s `nacinSanacije`, filtriranje u `GET /api/prijave` | CT-12–CT-13, CT-16, CT-21; ST-09 |
+| NF-01 | svi | Prilagodba za mobitel u `Gradjanin.css` | ST-10 (prikaz širine 360 px) |
+| NF-02 | svi | Backend: `@PreAuthorize` po ulozi u `PrijavaController`, uloga se čita iz tablice korisnika | CT-25–CT-28 (provjera anotacija @PreAuthorize); ST-04, ST-08–ST-09 (ručna provjera uloga) |
+| NF-03 | svi | Javno postavljanje na Renderu preko HTTPS-a | ST-11 (HTTPS i javna adresa) |
+| NF-04 | UC-002 | Frontend: provjera vrste i veličine slike u `Gradjanin.jsx`. Backend: provjera u `SlikaService`, najveća veličina u `application.properties` | CT-22–CT-24; ST-07 |
+
+**Zahtjevi koji nisu realizirani u prvom ciklusu.** Od zahtjeva prioriteta Must nisu realizirani F-002 (dodavanje redara u aplikaciji; redari su za sada upisani u bazu), F-003 (zahtjev za račun udruge), F-009 (obavijesti), F-014 (mjesto okupljanja i ruta), F-018 (zatvaranje prijave), F-020 (kreiranje akcije), F-024 (zahtjev za zatvaranje), F-025 (prijava volontera na akciju), F-027 i F-028 (Google Calendar), F-030 i F-031 (prognoza i upozorenje na nevrijeme). Stranica eko-udruge u sučelju trenutačno prikazuje probne akcije. Od zahtjeva prioriteta Should realizirani su F-016 i NF-04, F-004 djelomično, a ostali funkcijski zahtjevi (F-012, F-013, F-019, F-021, F-022, F-023, F-026, F-029) nisu. Zahtjevi NF-05 i NF-06 nemaju posebna ispitivanja.
 
 ## 2.7 Pregled zahtjeva
 

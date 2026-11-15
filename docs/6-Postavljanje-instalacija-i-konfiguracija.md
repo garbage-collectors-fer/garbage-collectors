@@ -2,190 +2,193 @@
 
 **Cilj:** Detaljno dokumentirati topologiju izvođenja, postupak lokalne instalacije i konfiguracije iz izvornog koda te način javnog postavljanja i administracije programa. [README](../README.md) navodi javnu adresu i sažeti postupak lokalnog pokretanja; ova stranica donosi potpun inženjerski postupak koji osigurava točnu ponovljivost na drugom računalu.
 
-Zamijenite oglednu topologiju, naredbe i postavke onima koje vaš tim stvarno koristi (u primjeru se koristi Render; dokumentirajte platformu odabranu za vaš projekt).
+EcoSentry se sastoji od React klijenta (`frontend/`, Vite), Java poslužitelja (`backend/`, Spring Boot) i PostgreSQL baze na usluzi Neon. Lokalno se klijent i poslužitelj pokreću kao dva procesa. Na javnoj adresi izvode se kao **jedna** Docker web-usluga na platformi Render: `Dockerfile` u korijenu repozitorija izgrađuje klijent i ugrađuje ga u poslužitelj, koji ga poslužuje uz REST API.
 
 ---
 
 ## 6.1 Prikaz razmještaja
 
-**Cilj:** Prikazati okruženja izvođenja, raspodijeljene dijelove programa, spremište podataka i relevantne vanjske usluge. Njihovu komunikaciju i mrežne protokole prikažite jednim UML dijagramom razmještaja. Dok dijagram komponenata iz Poglavlja 4 prikazuje logičke odgovornosti, dijagram razmještaja pokazuje gdje se izvršni artefakti fizički ili virtualno izvode.
+**Cilj:** Prikazati okruženja izvođenja, raspodijeljene dijelove programa, spremište podataka i relevantne vanjske usluge.
 
-**Dijagram razmještaja:** [Ugradite čitljivu sliku UML dijagrama razmještaja.]  
-**PlantUML izvor:** [Poveznica na odgovarajuću `.puml` datoteku.]  
-**Javno dostupna aplikacija:** [Poveznica na javnu adresu navedenu u README-u ili na njegov odjeljak o postavljanju.]
+**Dijagram razmještaja:**
 
-*Pravila izrade prikaza:*
-* Označite stvarne čvorove na kojima se program izvodi (korisnički uređaj, poslužitelj, baza podataka) i protokole među njima.
-* Bazu podataka ili vanjskog pružatelja usluga uključite samo ako ih postavljeni program stvarno koristi.
-* Razvojno računalo nije javni poslužitelj; prikažite isključivo produkcijsko okruženje.
-* Ako se planirana arhitektura tijekom implementacije promijenila, ovdje prikažite stvarni razmještaj i odgovarajuće ažurirajte opis arhitekture.
+![UML dijagram razmještaja sustava EcoSentry](./assets/diagrams/6-1-ecosentry-DD.svg)
 
-<details>
-<summary><strong>Primjer: Javno postavljanje programa za prijave i obavijesti </strong></summary>
+**Slika 6.1. UML dijagram razmještaja sustava EcoSentry**
 
-**Primjer — CrisisMap:**
-Predloženi klijentski dio gradi se kao statičko web-mjesto. Poslužiteljska web-usluga obrađuje prijave i asinkrono šalje obavijesti unutar **iste postavljene poslužiteljske aplikacije**. PostgreSQL sprema podatke prijava, pružatelj kartografskih usluga isporučuje kartografske pločice pregledniku, a Firebase Cloud Messaging prima zahtjeve za slanje upozorenja iz poslužiteljskog dijela. Primjer pretpostavlja da obavijesti pripadaju opsegu tog konkretnog projekta.
+**PlantUML izvor:** [izvor](./puml/6-1-ecosentry-DD.puml)  
+**Javno dostupna aplikacija:** https://ecosentry-6rg1.onrender.com (ista adresa navedena je u `README.md`; prije predaje provjeriti da je i dalje dostupna).
 
-![UML dijagram razmještaja sustava CrisisMap](./assets/diagrams/6-1-crisismap-DD.svg)
-
-**Slika 6.1. UML dijagram razmještaja sustava CrisisMap**
-
-**PlantUML izvor:** [izvor](./puml/6-1-crisismap-DD.puml)
 **Analiza razmještaja:**
-* **Korisnički uređaj:** Web-preglednik izvršava klijentski kod nakon preuzimanja statičkih datoteka.
-* **Poslužiteljski čvor:** Poslužiteljski API i pozadinski zadaci nalaze se unutar jedne usluge (jednog izvršnog procesa).
-* **Baza podataka:** Veza s bazom uspostavlja se isključivo iz poslužiteljskog dijela putem interne mreže, a nikada izravno iz klijentskog preglednika.
-* **Vanjske usluge:** Pružatelj kartografskih usluga i pružatelj obavijesti nalaze se izvan infrastrukture koju postavlja tim.
-</details>
+* **Korisnički uređaj:** web-preglednik preuzima izgrađeni React klijent i izvršava ga. Kartu učitava izravno s Google Maps JavaScript API-ja.
+* **Web-usluga na Renderu:** jedan proces (`java -jar app.jar`) poslužuje statičke datoteke klijenta, REST API pod putanjom `/api` i slike prijava pod putanjom `/uploads`. Klijent i API zato dolaze s iste adrese pa za javno postavljanje nije potreban CORS.
+* **Baza podataka:** PostgreSQL na usluzi Neon, izvan Rendera. Veza se uspostavlja isključivo iz poslužitelja (JDBC uz `sslmode=require`), nikada iz preglednika. Shemu pri pokretanju poslužitelja stvara Flyway.
+* **Slike prijava:** poslužitelj ih sprema kao datoteke u mapu `uploads/` na disku usluge, a u bazi je samo URL. Taj disk na Renderu nije trajan (vidi 6.3).
+* **Google prijava:** preglednik se preusmjerava na Google, a poslužitelj od Googlea razmjenjuje kod za token i dohvaća podatke o korisniku.
 
 ---
 
 ## 6.2 Lokalna instalacija i konfiguracija
 
-Za pokretanje frontenda potrebni su Node.js i npm. U mapi `frontend` pokreću se naredbe `npm install` i `npm run dev`, a aplikacija se otvara na adresi koju ispiše Vite.
-
-Za Google prijavu potrebno je pokrenuti i Java backend te postaviti `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET` i `FRONTEND_URL` u njegovoj konfiguraciji. Frontend koristi `VITE_API_URL` za adresu backenda. Stvarne tajne vrijednosti ne upisuju se u dokumentaciju ni u repozitorij.
-
-Na računalu na kojem su pripremljene lokalne demo datoteke prikaz bez prijave dostupan je na `http://localhost:5173/demo-local.html`. Te datoteke nisu uključene u Git pa ova adresa neće raditi nakon običnog kloniranja projekta.
-
 **Cilj:** Omogućiti novom članu tima ili ocjenjivaču da iz čiste radne kopije repozitorija instalira i lokalno pokrene cijeli programski sustav, uključujući bazu podataka i početne podatke.
 
-1. **Preduvjeti i preuzimanje izvornog koda:**
-   * Navedite podržane verzije izvršnog okruženja, upravitelja paketa, baze podataka i CLI alata.
-   * Navedite točne naredbe za kloniranje repozitorija i radni direktorij; naznačite koje se naredbe pokreću iz korijena repozitorija, a koje iz poddirektorija.
-2. **Ovisnosti i konfiguracijske varijable:**
-   * Navedite točne naredbe za instalaciju ovisnosti za klijentski i poslužiteljski dio.
-   * Povežite predložak `.env.example`, opišite ulogu svake varijable, koje vrijednosti smiju biti javne i kako ovlašteni korisnik dobiva tajne vrijednosti.
-   * *Upozorenje:* Nikada ne objavljujte stvarne pristupne podatke i tajne ključeve.
-3. **Inicijalizacija baze podataka i migracije:**
-   * Navedite redoslijed naredbi za stvaranje lokalne baze, dodjelu korisničkih prava i izvođenje migracija sheme; navedite izvode li se migracije ručno ili pri pokretanju te stvarne putanje verzioniranih skripti.
-   * Objasnite kako se učitavaju nužni početni podaci (samo oni nužni) i kako spriječiti višestruko izvođenje početnih skripti.
-4. **Pokretanje i verifikacija:**
-   * Prikažite točan redoslijed pokretanja procesa i lokalne mrežne adrese na kojima su dostupni.
-   * Navedite točan korak provjere (npr. slanje probnog zahtjeva ili pregled u pregledniku) koji dokazuje da klijentski dio uspješno komunicira s poslužiteljskim API-jem i bazom te da se važni podaci trajno pohranjuju.
-   * Navedite gdje čitatelj može provjeriti pogreške ako neki korak ne uspije.
+Za pokretanje samo frontenda dovoljni su Node.js i npm: u mapi `frontend` pokreću se naredbe `npm install` i `npm run dev`, a aplikacija se otvara na adresi koju ispiše Vite. Prijava i prijave otpada traže pokrenut backend, jer frontend više ne koristi probne podatke. Stvarne tajne vrijednosti ne upisuju se u dokumentaciju ni u repozitorij.
 
-Uključite samo korake koje aplikacija stvarno zahtijeva. Ako README već sadrži potpun i ponovljiv postupak, povežite ga i ovdje dodajte samo ono što nedostaje umjesto održavanja dviju potpunih kopija istih uputa.
+### 1. Preduvjeti i preuzimanje izvornog koda
 
-<details>
-<summary><strong>Primjer: Instalacija programa s lokalnom PostgreSQL bazom (CrisisMap)</strong></summary>
-
-Ovaj nastavni primjer koristi klijentski dio temeljen na radnom okviru React/Vite (`frontend/`), poslužiteljski dio temeljen na Node.js okruženju (`backend/`) i PostgreSQL bazu podataka.
-
-#### 1. Inicijalizacija baze podataka
-
-U terminalu stvorite razvojnu bazu podataka i pokrenite početnu SQL skriptu iz korijena repozitorija:
+| Alat | Verzija | Napomena |
+| --- | --- | --- |
+| Git | bilo koja novija | za kloniranje repozitorija |
+| JDK | 21 | `backend/pom.xml` postavlja `java.version` na 21 |
+| Node.js i npm | Node.js 22 | ista verzija kao u `Dockerfile` (`node:22-alpine`) |
+| Maven | nije potreban | repozitorij sadrži Maven Wrapper (`backend/mvnw`, `backend/mvnw.cmd`) |
+| Baza podataka | nije potrebna lokalna instalacija | koristi se PostgreSQL na Neonu, pristupni podaci dobivaju se od tima |
 
 ```bash
-createdb crisismap_dev
-psql -d crisismap_dev -f backend/db/001_create_schema.sql
-psql -d crisismap_dev -c '\dt'
+git clone https://github.com/garbage-collectors-fer/garbage-collectors.git
+cd garbage-collectors
 ```
 
-Verzionirana SQL datoteka u ovom primjeru stvara tablice u **novoj** bazi podataka; provjera `\dt` treba ih prikazati. Konfigurirajte lokalni PostgreSQL račun koji može koristiti tu shemu; ako je riječ o zasebnom računu, zabilježite naredbe za njegovo stvaranje i dodjelu prava. Node.js poslužiteljski dio čita `DATABASE_URL`: lokalno ga postavite tako da se putem PostgreSQL URL-a povezuje na `crisismap_dev`, a potrebne pristupne podatke čuvajte u lokalnoj postavci koja se ne uključuje u repozitorij. Nemojte objaviti puni URL veze ako sadrži lozinku. Ako druga aplikacija koristi automatske migracije, pokrenite je prema uputama i provjerite jesu li migracije provedene umjesto zasebnog izvršavanja skripte početne sheme. Ako ogledne prijave zahtijevaju početne podatke, navedite stvarnu naredbu tog projekta i objasnite kada se treba koristiti.
+### 2. Konfiguracijske varijable
 
-#### 2. Konfiguracija i pokretanje poslužiteljskog dijela (backend)
+Konfiguracija se čita iz `.env` datoteka koje se ne commitaju (`.gitignore` ih isključuje). Predlošci su u repozitoriju:
 
-U prvom terminalu postavite ovisnosti, pripremite varijable okruženja i pokrenite poslužitelj:
+```bash
+cp backend/.env.example backend/.env
+cp frontend/.env.example frontend/.env
+```
+
+| Datoteka | Varijabla | Svrha | Tajna? |
+| --- | --- | --- | --- |
+| `backend/.env` | `GOOGLE_CLIENT_ID` | ID klijenta za Google prijavu (OAuth 2.0) | ne objavljivati |
+| `backend/.env` | `GOOGLE_CLIENT_SECRET` | tajna vrijednost klijenta za Google prijavu | **da** |
+| `backend/.env` | `DB_HOST` | adresa Neon baze, bez `-pooler` u imenu (pooler može stvarati probleme Flywayu) | ne objavljivati |
+| `backend/.env` | `DB_USER` | korisnik baze | ne objavljivati |
+| `backend/.env` | `DB_PASSWORD` | lozinka baze | **da** |
+| `backend/.env` | `FRONTEND_URL` | kamo backend vraća korisnika nakon prijave; neobavezno, zadano `http://localhost:5173` | ne |
+| `frontend/.env` | `VITE_GOOGLE_MAPS_API_KEY` | ključ za Google Maps JavaScript API; ulazi u izgrađeni klijent pa je vidljiv pregledniku | ne, ali ograničiti ključ u Google Cloud konzoli |
+| `frontend/.env` | `VITE_API_URL` | adresa backenda, lokalno `http://localhost:8080` | ne |
+| `frontend/.env` | `VITE_GOOGLE_MAPS_MAP_ID` | neobavezno; ID karte, zadano `DEMO_MAP_ID` | ne |
+
+Vrijednosti za Google prijavu dobivaju se od člana tima zaduženog za Google OAuth (Nikola), a podaci za bazu od člana zaduženog za bazu (Pavao). Backend `.env` datoteku čita iz **radnog direktorija** (`backend/.env`) ili, ako se pokreće iz korijena repozitorija, iz `backend/.env` relativno na korijen. Preporučeno je pokretati backend iz mape `backend/`. `.env` datoteke i arhive projekta koje ih sadrže ne šalju se u Git, e-poštom ni razgovorima. Sažet vodič za lokalno pokretanje nalazi se i u datoteci `LOCAL-START-HR.md` u korijenu repozitorija.
+
+U Google Cloud konzoli, u postavkama OAuth klijenta, mora biti dodana adresa povratka (*authorized redirect URI*):
+
+```
+http://localhost:8080/api/auth/google/callback
+```
+
+### 3. Baza podataka i početni podaci
+
+Baza je PostgreSQL na Neonu (ime baze `neondb` zapisano je u `backend/src/main/resources/application.properties`). Lokalno se **ne stvara** nova baza: backend se spaja na zajedničku Neon bazu koju koristi tim (i javno postavljena aplikacija), pa pri lokalnom pokretanju i testiranju treba paziti da se ne brišu tuđi podaci.
+
+Shemu i početne podatke stvara **Flyway** automatski pri svakom pokretanju backenda; ručnih naredbi nema. Verzionirane skripte su u `backend/src/main/resources/db/migration/`:
+
+- `V1__init.sql` stvara tablice (`kategorija`, `korisnik`, `prijava`, `akcija`, `obavijest` i dr.),
+- `V2__seed.sql` upisuje kategorije otpada i prvog komunalnog redara,
+- `V3__nalog_kategorije_uloge.sql` uklanja službeni nalog (pravilo `ck_prijava_nalog` i stupac `nalog_broj`), svodi kategorije na četiri (Plastika, Građevinski otpad, Glomazni otpad, Ostalo) i postavlja uloge redara i udruge dvama članovima tima,
+- `V4__test_racuni.sql` stvara zajedničke testne račune redara i udruge (Google računi dodani kao testni korisnici u Google Cloudu); lozinke se ne spremaju u bazu jer prijava ide preko Googlea.
+
+Flyway izvodi svaku skriptu samo jednom, pa ponovno pokretanje ne duplicira podatke. Hibernate shemu samo provjerava (`ddl-auto=validate`), pa se pri nepodudaranju entiteta i baze backend neće pokrenuti. Neon se uspavljuje kad nema prometa, pa prvo pokretanje ili prvi zahtjev može potrajati.
+
+**Uloge korisnika.** Svaki novi korisnik koji se prvi put prijavi Google računom dobiva ulogu građanina. Uloge redara i udruge za članove tima i testne račune već postavljaju migracije V2 do V4: redak korisnika stvara se unaprijed, a backend ga pri prvoj prijavi povezuje po e-mail adresi. Za bilo koji drugi račun ulogu redara ili udruge trenutačno se postavlja ručno u bazi (npr. u SQL uredniku na Neonu), nakon što se korisnik barem jednom prijavio:
+
+```sql
+UPDATE korisnik SET uloga = 'REDAR' WHERE email = 'adresa@example.com';
+
+-- za udrugu je obavezan i naziv udruge (ograničenje ck_korisnik_udruga)
+UPDATE korisnik SET uloga = 'UDRUGA', organizacija_naziv = 'Naziv udruge' WHERE email = 'adresa@example.com';
+```
+
+Uloga se čita iz baze pri svakoj prijavi, pa se korisnik nakon promjene mora ponovno prijaviti.
+
+### 4. Pokretanje
+
+Potrebna su dva terminala.
+
+**Terminal 1 – backend (Spring Boot, `http://localhost:8080`):**
 
 ```bash
 cd backend
-npm ci
-cp .env.example .env
-# Uredite .env datoteku: postavite DATABASE_URL=postgresql://localhost:5432/crisismap_dev
-npm start
+./mvnw spring-boot:run        # Windows: mvnw.cmd spring-boot:run
 ```
 
-*Poslužiteljski API pokreće se i sluša na:* `http://localhost:8080`
-
-#### 3. Pokretanje klijentskog dijela (frontend)
-
-U drugom terminalu instalirajte ovisnosti klijenta i pokrenite razvojni poslužitelj:
+**Terminal 2 – frontend (Vite, `http://localhost:5173`):**
 
 ```bash
 cd frontend
-npm ci
-VITE_API_BASE_URL=http://localhost:8080 npm run dev
+npm install
+npm run dev
 ```
 
-*Klijentska aplikacija dostupna je u pregledniku na:* `http://localhost:5173`
+### 5. Provjera rada
 
-#### 4. Provjera rada sustava
+1. Backend je živ: `curl http://localhost:8080/api/health` vraća `{"status":"ok"}`.
+2. Zaštita API-ja radi: `curl -i http://localhost:8080/api/me` bez prijave vraća status 401 i tijelo `{"poruka":"Korisnik nije prijavljen"}`.
+3. Otvorite `http://localhost:5173`, prijavite se Google računom i provjerite da se prikazuje stranica za vašu ulogu.
+4. Kao građanin podnesite probnu prijavu (slika, lokacija na karti, kategorija), provjerite da se na karti pojavljuje crvena pribadača i da prijava ostaje nakon osvježavanja stranice. To dokazuje da se podaci trajno spremaju u bazu.
+5. Slika prijave nalazi se u mapi `backend/uploads/` (u bazi je samo njezin URL).
+6. Odjavite se gumbom „Odjava“ i provjerite da se ponovno prikazuje stranica za prijavu.
 
-Otvorite adresu klijenta koju ispiše Vite, podnesite probnu prijavu s odabranom lokacijom, provjerite prikazuje li se potvrda s novim identifikatorom prijave i ponovno je dohvatite. Samo učitavanje početne stranice klijenta bez slanja i dohvata podataka ne dokazuje ispravnost rada poslužiteljskog dijela i baze podataka.
+**Ako korak ne uspije:** pogreške pokretanja i zahtjeva ispisuje terminal 1 (backend; uključen je i ispis SQL upita), a neuspjele pozive API-ja vidi se u kartici *Network* u alatima za razvojne programere preglednika. Ako se backend ne pokreće, provjerite je li `backend/.env` ispunjen i pokreće li se backend iz mape `backend/`; poruka o neuspjeloj vezi s bazom obično znači krivi `DB_HOST`, `DB_USER` ili `DB_PASSWORD`. Poruka „Prijava nije uspjela“ obično znači da adresa povratka nije dodana u Google Cloud konzoli ili da Google račun nema potvrđenu e-mail adresu.
 
-Ako se adresa poslužiteljskog dijela razlikuje od `http://localhost:8080`, koristite adresu koju aplikacija stvarno ispiše. Ako podnošenje ne uspije, pregledajte API zahtjev u pregledniku i zapis poslužiteljskog dijela; ako pokretanje ne uspije, provjerite postavke veze s bazom podataka i je li shema stvorena. Nemojte kopirati putanje ili naredbe iz ovog primjera ako se vaš repozitorij razlikuje.
+### 6. Pokretanje automatskih testova
 
-**Analiza primjera:** Postupak ima jasan redoslijed: stvoriti bazu podataka, uspostaviti shemu i pristup, konfigurirati veze, pokrenuti oba procesa i provjeriti spremljenu prijavu. Naredbe i očekivani rezultati dovoljno su konkretni da se može dijagnosticirati nepotpuno postavljanje. Oni nadopunjuju kratki put iz README-a do pokrenute aplikacije umjesto da tvrde kako samo učitana web-stranica dokazuje uspješnu instalaciju.
-</details>
+```bash
+cd backend
+./mvnw test
+```
+
+Automatizirani testovi ne trebaju pristup zajedničkoj Neon bazi ni Google računu. Repozitorijski testovi koriste testni H2 kontekst, a servisni i kontrolerski testovi izoliraju ovisnosti lažnim objektima (vidi poglavlje 5).
 
 ---
 
 ## 6.3 Javno postavljanje i administracija
 
-**Cilj:** Dokumentirati točne korake za ponovljivo postavljanje cjelovitog programskog sustava na produkcijsku infrastrukturu u oblaku, uključujući smještenu bazu podataka i veze među postavljenim dijelovima. Kada je jasnije, povežite konfiguraciju koja već postoji u Gitu umjesto njezina prepisivanja.
+**Cilj:** Dokumentirati točne korake za ponovljivo postavljanje cjelovitog programskog sustava na produkcijsku infrastrukturu u oblaku, uključujući smještenu bazu podataka i veze među postavljenim dijelovima.
 
 | **Postavljeni podsustav** | **Infrastruktura i izvor koda** | **Naredbe izgradnje i pokretanja** | **Konfiguracija i varijable okruženja** |
 | --- | --- | --- | --- |
-| **Klijentski dio** | [Usluga smještaja, grana i putanja mape] | [Naredba izgradnje i izlazni direktorij] | [Javne varijable vidljive pregledniku] |
-| **Poslužiteljski dio** | [Usluga smještaja, grana i putanja mape] | [Naredba izgradnje i naredba pokretanja] | [Port, veza s bazom podataka, tajni ključevi] |
-| **Baza podataka** | [Upravljana baza podataka i regija smještaja] | [Mehanizam izvođenja migracija sheme i trenutak uspostavljanja sheme] | [Zaštićeni pristupni podaci baze] |
+| **Klijent i poslužitelj (jedna web-usluga)** | Render, Web Service s Docker okruženjem; repozitorij `garbage-collectors-fer/garbage-collectors`, grana `master`, korijenski `Dockerfile` | Izgradnja: `Dockerfile` u tri koraka. (1) `node:22-alpine`: `npm ci` i `npm run build` u `frontend/`. (2) `eclipse-temurin:21-jdk`: izgrađeni klijent kopira se u `src/main/resources/static`, zatim `sh mvnw -q -DskipTests package`. (3) `eclipse-temurin:21-jre`: `java -jar app.jar` | `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`, `DB_HOST`, `DB_USER`, `DB_PASSWORD` (tajne), `FRONTEND_URL` (javna adresa usluge), `PORT` (dodjeljuje Render), `VITE_GOOGLE_MAPS_API_KEY` (Docker build argument za izgradnju klijenta, vidljiv pregledniku) |
+| **Baza podataka** | Neon (upravljani PostgreSQL), baza `neondb`; nije na Renderu | Shemu pri pokretanju poslužitelja izvodi Flyway (`db/migration/V1__init.sql` do `V4__test_racuni.sql`) | `DB_HOST` (bez `-pooler`), `DB_USER`, `DB_PASSWORD`; postavljaju se na web-usluzi, ne na klijentu |
 
-**CI i CD:** Kontinuirana integracija (engl. *continuous integration*, CI) automatizira izgradnju i provjere pri integriranju promjena. Kratica CD može označavati dva različita postupka. **Kontinuirana isporuka** (engl. *continuous delivery*) održava provjerenu inačicu spremnom za postavljanje, ali postavljanje u produkciju može zahtijevati ručnu odluku. **Kontinuirano postavljanje** (engl. *continuous deployment*) automatski postavlja uspješno provjerenu promjenu u produkciju. Navedite postupak koji projekt stvarno koristi; nemojte koristiti oznaku CI/CD samo zato što alat podržava automatizaciju.
-U tablici i opisu navedite **nazive i svrhu** varijabli, gdje ovlašteni održavatelj dobiva njihove vrijednosti i kojoj se usluzi svaka postavlja. Razlikujte konfiguraciju vidljivu pregledniku od tajnih podataka poslužiteljskog dijela.
+**Što se događa u konfiguraciji:**
+- `VITE_API_URL` se u Dockerfileu ne postavlja pa klijent poziva API na istoj adresi s koje je učitan, što je željeno ponašanje za jednu uslugu. Ostale `VITE_` varijable osim `VITE_GOOGLE_MAPS_API_KEY` Dockerfile ne prosljeđuje (npr. `VITE_GOOGLE_MAPS_MAP_ID` ostaje na zadanoj vrijednosti).
+- `FRONTEND_URL` mora biti javna adresa usluge. Njegova zadana vrijednost je `http://localhost:5173`, pa bi bez postavke Google prijava na Renderu nakon uspjeha vratila korisnika na lokalnu adresu.
+- Poslužitelj sluša na `PORT`, a postavka `server.forward-headers-strategy=framework` omogućuje ispravne `https` adrese iza Renderova proxyja.
+- CORS u `SecurityConfig` dopušta samo `http://localhost:5173`. To ne smeta kad klijent i API dolaze s iste javne adrese.
+- Spoj na bazu koristi `sslmode=require`, a veza se ne drži otvorenom (`minimum-idle=0`), jer Neon uspavljuje bazu kad nema prometa.
+
+**CI i CD:** `.github/workflows/ci.yml` trenutačno samo ispisuje poruku (`echo`) i ne izvodi izgradnju ni testove, pa **se ne može smatrati kontinuiranom integracijom**. `.github/workflows/cd.yml` pri pushu na `master` poziva Render *deploy hook* samo ako je u GitHub tajnama postavljen `RENDER_DEPLOY_HOOK_URL`. Ta tajna **nije postavljena**, pa se taj korak preskače, a postavljanje pokreće Renderov vlastiti *auto-deploy* na svaki push na `master`. Budući da ne postoje automatizirane provjere koje promjena mora proći, to je automatsko pokretanje postavljanja, a ne kontinuirano postavljanje u užem smislu.
 
 ### Postupak postavljanja
 
-1. **Infrastruktura baze podataka:** [Postupak kreiranja instance baze i primjene migracija.]
-2. **Postavljanje poslužiteljskog dijela:** [Povezivanje repozitorija, postavljanje tajnih varijabli i pokretanje.]
-3. **Izgradnja i objava klijentskog dijela:** [Postavljanje javnog URL-a poslužitelja i generiranje statičkih datoteka.]
-4. **Završno povezivanje:** [Postavljanje dozvoljenih ishodišta (CORS) i verifikacija javne domene.]
+1. **Baza podataka:** u Neonu je postojeći projekt s bazom `neondb`. Za produkciju se koristi grana `production`, a u `DB_HOST` adresa **bez** `-pooler`. Tablice i početne podatke stvara Flyway pri prvom pokretanju poslužitelja, pa ručna primjena sheme nije potrebna.
+2. **Web-usluga:** na Renderu odabrati *New → Web Service*, povezati GitHub repozitorij, odabrati granu `master` i Docker okruženje (Render koristi `Dockerfile` u korijenu). U postavkama web-usluge postaviti `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`, `DB_HOST`, `DB_USER`, `DB_PASSWORD` i javnu adresu `FRONTEND_URL`. Za Google Maps ključ provjeriti da je `VITE_GOOGLE_MAPS_API_KEY` dostupan kao Docker build argument tijekom izgradnje (u Dockerfileu je deklariran `ARG`); sam ključ nije tajna, ali ga treba ograničiti po HTTP referreru i API-ju u Google Cloud konzoli.
+3. **Javna adresa:** nakon prvog postavljanja zabilježiti adresu usluge (oblik `https://<naziv>.onrender.com`), postaviti je kao `FRONTEND_URL` i ponovno postaviti uslugu.
+4. **Završno povezivanje:** u Google Cloud konzoli, u OAuth klijentu, dodati adresu povratka `https://<javna-adresa>/api/auth/google/callback`. Za trenutačno navedenu javnu adresu to je `https://ecosentry-6rg1.onrender.com/api/auth/google/callback`. Zatim otvoriti javnu adresu, prijaviti se Google računom, podnijeti probnu prijavu i provjeriti da se pojavljuje na karti. README već navodi `https://ecosentry-6rg1.onrender.com`; nakon promjene domene ažurirati oba dokumenta.
+
+### Stanje produkcijskog postavljanja
+
+| Stavka | Vrijednost |
+| --- | --- |
+| Naziv usluge | `ecosentry` (Render, Web Service) |
+| Plan i regija | Free, Frankfurt |
+| Izvor izgradnje | `./Dockerfile`, grana `master` |
+| Javna adresa | https://ecosentry-6rg1.onrender.com/ |
+| Postavljene varijable okruženja | `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`, `FRONTEND_URL`, `DB_HOST`, `DB_USER`, `DB_PASSWORD`, `VITE_GOOGLE_MAPS_API_KEY` (vrijednosti se ne dokumentiraju) |
+| Google Maps ključ | Prosljeđuje se kao Docker build argument (`ARG` i `ENV` u `Dockerfileu` prije `npm run build`); Render varijable okruženja prosljeđuje Dockeru |
+| Način postavljanja | Automatski deploy (*auto-deploy*) na svaki push na `master` |
+| Zadnje uspješno postavljanje | 15. 11. 2026. u 20:54, commit `66cb6b5` |
+
+Plan Free znači da Render usluga nakon razdoblja bez prometa miruje, pa prvi zahtjev nakon toga traje dulje.
 
 ### Pristup i administracija
 
-- **Nadzor rada i zapisi pogrešaka:** [Objasnite gdje i kako ovlašteni članovi tima pristupaju zapisima poslužitelja (engl. *logs*) te kako pregledati pogreške aplikacije.]
-- **Upravljanje administratorskim ovlastima:** [Ako aplikacija ima administratorsku ili moderatorsku ulogu, navedite putanju do sučelja i proceduru dodjele uloge bez javnog otkrivanja pristupnih podataka. Ako nema administratorskog sučelja, to kratko navedite.]
-- **Postupak ažuriranja:** [Opišite kako izmjena iz glavne grane dolazi do postavljene aplikacije. Navedite izvodi li se postavljanje ručno, kontinuiranom isporukom ili kontinuiranim postavljanjem te koje provjere prethode postavljanju.]
-- **Sigurnosne kopije i oporavak:** [Dokumentirajte samo ako ga je tim stvarno konfigurirao i koristio.]
+- **Nadzor rada i zapisi pogrešaka:** zapisi poslužitelja i zapisi izgradnje vide se u Render nadzornoj ploči, u kartici *Logs* odabrane usluge. Pristup imaju članovi tima koji su dodani u Render projekt. Podaci u bazi mogu se pregledavati u Neonu.
+- **Upravljanje ovlastima:** aplikacija nema administratorsko sučelje. Svaki novi korisnik postaje građanin. Prvi redar upisan je u `V2__seed.sql`, a daljnji redari, udruga i testni računi u `V3__nalog_kategorije_uloge.sql` i `V4__test_racuni.sql`; ostale promjene uloge rade se SQL naredbom u bazi (vidi 6.2, odjeljak 3). Redar u aplikaciji još ne može sam dodavati redare ni odobravati udruge.
+- **Sesije:** nakon svakog novog postavljanja korisnici se moraju ponovno prijaviti.
+- **Pohrana slika:** slike prijava spremaju se na disk web-usluge (`./uploads`). Na Renderu taj disk nije trajan, pa **slike nestaju pri svakom novom postavljanju ili ponovnom pokretanju usluge**, dok zapisi u bazi ostaju. Kod sadrži bilješku da će se pohrana zamijeniti vanjskom uslugom za slike; do tada je to poznato ograničenje.
+- **Postupak ažuriranja:** promjena se spaja u granu `master` (po mogućnosti preko pull requesta). Push na `master` pokreće Renderov *auto-deploy* (`cd.yml` s deploy hookom se ne koristi jer tajna nije postavljena); Render ponovno izgrađuje Docker sliku, a Flyway pri pokretanju primjenjuje nove migracije. Postavljanje se može pokrenuti i ručno iz nadzorne ploče. Prije postavljanja ne izvode se automatizirane provjere.
+- **Sigurnosne kopije i oporavak:** nisu posebno konfigurirani. Podaci su u upravljanoj bazi na Neonu, a postupak oporavka tim nije uspostavio ni isprobao.
 
-Opisujte samo okruženja i automatizirane postupke koji stvarno postoje. Okruženje za pripremu, kontinuirana integracija (CI), kontinuirana isporuka ili kontinuirano postavljanje (CD), krajnja točka za provjeru stanja, sigurnosne kopije i druge operativne mogućnosti navode se samo ako ih tim stvarno koristi.
-<details>
-<summary><strong>Primjer konfiguriranja statičkog web-mjesta, poslužiteljskog dijela i baze podataka na Renderu</strong></summary>
-
-**Primjer — CrisisMap:**
-
-Jedno izvedivo postavljanje prethodno opisanog Node.js nastavnog primjera koristi sljedeće usluge Rendera. Lokalna PostgreSQL baza iz odjeljka 6.2 odvojena je od upravljane baze koja poslužuje javnu aplikaciju.
-
-| **Postavljeni podsustav** | **Izvor i konfiguracija izgradnje / pokretanja** | **Potrebne varijable i mrežne veze** |
-| --- | --- | --- |
-| **Statičko web-mjesto** (klijent) | Mapa `frontend/`; grana `main`; izgradnja `npm ci && npm run build`; direktorij objave `dist/`. | `VITE_API_BASE_URL` postavljen na javni URL poslužiteljskog dijela. To je konfiguracija vidljiva pregledniku, a ne tajna vrijednost. |
-| **Web-usluga** (poslužitelj) | Mapa `backend/`; Node.js okruženje; izgradnja `npm ci`; pokretanje `npm start`. | `DATABASE_URL` (**interni** URL Render baze), `PORT` (dodjeljuje platforma). Poslužitelj mora slušati `PORT` na `0.0.0.0`. Po potrebi konfigurirajte dopušteno ishodište klijenta (CORS). |
-| **Upravljani PostgreSQL** | Baza stvorena u istoj Render regiji kao i web-usluga; početnu shemu primijenite na **novu** bazu prije posluživanja zahtjeva za prijave. | Podatke veze dohvatite iz nadzorne ploče baze i čuvajte ih privatnima. Kasnije migracije primjenjujte zasebno umjesto ponovnog izvođenja početne skripte. |
-| **Pružatelj obavijesti** | Integraciju konfigurirajte u poslužiteljskom dijelu samo ako pripada odobrenom projektu i implementirana je. | Poslužiteljski pristupni podatak unesite kroz tajne postavke platforme; dokumentirajte njegov **naziv**, nikada vrijednost. |
-
-#### Koraci izvođenja na Renderu
-
-1. **Stvaranje baze podataka:** U nadzornoj ploči Rendera stvorite PostgreSQL bazu u regiji u kojoj će se izvoditi poslužiteljski dio. Interni URL baze čuvajte za poslužiteljski dio; nemojte ga unositi u dokumentaciju ni u postavke klijenta.
-2. **Inicijalizacija produkcijske sheme:** Ako baza dopušta vanjsku vezu, iz pouzdanog terminala u korijenu repozitorija povežite se uputom za PSQL iz nadzorne ploče. U otvorenoj `psql` sesiji pokrenite:
-
-   ```sql
-   \i backend/db/001_create_schema.sql
-   \dt
-   ```
-
-   *Napomena:* Naredbu za povezivanje koja sadrži pristupne podatke nikada ne kopirajte u repozitorij ni dokumentaciju. Ako su vanjske veze onemogućene, opišite stvarni ovlašteni mehanizam migracije svog tima. Početnu skriptu ne pokrećite ponovno pri svakom postavljanju.
-3. **Pokretanje poslužiteljske web-usluge:** Povežite repozitorij, odaberite Node.js okruženje i odgovarajuću granu, postavite korijenski direktorij na `backend/`, naredbu izgradnje na `npm ci` i naredbu pokretanja na `npm start`. U privatne postavke okruženja dodajte `DATABASE_URL` s **internim** URL-om baze. Poslužitelj konfigurirajte da sluša na `0.0.0.0` i portu iz varijable `PORT`. Nakon uspješnog postavljanja zabilježite javnu adresu usluge (npr. `https://crisismap-api.onrender.com`).
-4. **Izgradnja klijentskog web-mjesta:** Povežite repozitorij, odaberite `frontend/`, naredbu izgradnje `npm ci && npm run build` i mapu objave `dist/`. Prije izgradnje postavite `VITE_API_BASE_URL` na **javnu adresu poslužitelja**; ovdje nikada ne koristite privatni URL baze. Zabilježite generiranu javnu adresu web-mjesta.
-5. **Povezivanje i verifikacija produkcijskog rada:** Ako poslužitelj ograničava ishodišta preglednika, dopustite javnu adresu statičkog web-mjesta i ponovno postavite poslužiteljski dio. Otvorite javnu adresu klijenta, podnesite prijavu i ponovno je dohvatite kako biste potvrdili trajno spremanje. Zabilježite javni URL web-mjesta u `README.md`.
-6. **Održavanje:** Ako postavljanje ne uspije, pregledajte izlaz i zapise postavljanja usluge u Renderu. Za novu reviziju koristite konfigurirano automatsko postavljanje iz repozitorija ili ručnu radnju postavljanja iz nadzorne ploče. Pristupni podatak za obavijesti konfigurirajte samo u poslužiteljskom dijelu i samo ako je ta funkcionalnost stvarno implementirana. Automatsko pokretanje postavljanja nakon promjene u repozitoriju samo po sebi nemojte nazivati kontinuiranim postavljanjem (CD) ako projekt nema definiran automatizirani tijek provjera koji promjena mora uspješno proći prije postavljanja.
-
-Tim zamjenjuje ogledne nazive direktorija, naredbe, mehanizam sheme i postavke vrijednostima koje rade u vlastitom repozitoriju. Ako obavijesti nisu dostupne, integraciju dokumentirajte iskreno; uspješno podnošenje prijave ne dokazuje uspješnu dostavu obavijesti.
-
-Ako aplikacija uključuje moderatorsko sučelje, navedite njegovu putanju i objasnite kako se moderatorski račun dodjeljuje kroz aplikaciju ili odobreni postupak tima. Nemojte objaviti zadanu lozinku. Oporavak baze podataka opisujte samo ako je tim uspostavio uporabljiv postupak sigurnosnog kopiranja; nemojte implicirati da upravljani smještaj automatski jamči oporavak.
-
-**Analiza primjera:** API i obrada obavijesti ostaju u jednom postavljanju poslužiteljskog dijela, kao na dijagramu. Postupak razlikuje Renderovu internu vezu s bazom od javnog URL-a poslužitelja koji koristi klijent te uspostavlja shemu prije obrade prijava. Izgradnja klijenta dobiva samo konfiguraciju vidljivu pregledniku; tajni podaci baze i pružatelja ostaju u poslužiteljskom dijelu. Render je samo jedan nastavni primjer pa druga platforma zahtijeva opis vlastitog postupka.
-</details>
-
----
-
->**Završna provjera:** Upute za lokalno pokretanje omogućuju podizanje cjelokupnog sustava iz čiste kopije repozitorija bez neprenosivih lokalnih staza. Dijagram razmještaja prikazuje samo stvarno produkcijsko okruženje, njegove čvorove i protokole. Poveznica na javnu aplikaciju provjerena je, vodi na postavljenu verziju programa i jednaka je onoj u `README.md`. Administracijske upute opisuju samo mogućnosti koje tim stvarno pruža. Nijedna datoteka dokumentacije, konfiguracijski primjer niti zapis promjene ne sadrži stvarne pristupne podatke, privatne tokene ili lozinke.
