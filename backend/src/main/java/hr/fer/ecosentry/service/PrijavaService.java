@@ -13,7 +13,7 @@ import hr.fer.ecosentry.model.NacinSanacije;
 import hr.fer.ecosentry.model.StatusPrijave;
 import hr.fer.ecosentry.repository.PrijavaRepository;
 import org.springframework.stereotype.Service;
-
+import hr.fer.ecosentry.model.Uloga;
 
 import java.util.List;
 
@@ -31,20 +31,70 @@ public class PrijavaService  {
         this.slikaService = slikaService;
     }
 
-    public List<PrijavaDto> dohvatiVidljive(StatusPrijave status, Boolean provjerena, boolean jeUdruga) {
+    public List<PrijavaDto> dohvatiVidljive(String email, StatusPrijave status, Boolean provjerena) {
+        Korisnik gledatelj = trenutniKorisnik(email);
+        boolean jeUdruga = gledatelj.getUloga() == Uloga.UDRUGA;
+
         return prijavaRepository.findByStatusNotInOrderByDatumDesc(SKRIVENI_STATUSI)
                 .stream()
                 .filter(p -> !jeUdruga || p.getNacinSanacije() == NacinSanacije.UDRUGA)
                 .filter(p -> status == null || p.getStatus() == status)
                 .filter(p -> provjerena == null || p.isProvjerena() == provjerena)
-                .map(PrijavaDto::iz)
+                .map(p -> PrijavaDto.iz(p, smijeVidjetiPrijavitelja(p, gledatelj)))
+                .toList();
+    }
+
+    private Korisnik trenutniKorisnik(String email){
+        return korisnikRepository.findByEmail(email)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Korisnik nije prijavljen"));
+    }
+
+    private boolean smijeVidjetiPrijavitelja(Prijava p, Korisnik gledatelj) {
+        if(gledatelj.getUloga() == Uloga.REDAR) {
+            return true;
+        }
+        return p.getPrijavitelj() != null && p.getPrijavitelj().getId().equals(gledatelj.getId());
+    }
+
+    public PrijavaDto dohvati(Long id, String email) {
+        Korisnik gledatelj = trenutniKorisnik(email);
+
+        Prijava p = prijavaRepository.findById(id)
+                .filter(pr -> smijeVidjetiPrijavu(pr, gledatelj))      // nevidljiva = kao da ne postoji
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Prijava ne postoji"));
+
+        return PrijavaDto.iz(p, smijeVidjetiPrijavitelja(p, gledatelj));
+    }
+
+    public List<PrijavaDto> dohvatiMoje(String email) {
+        Korisnik gledatelj = trenutniKorisnik(email);
+
+        return prijavaRepository.findByPrijaviteljOrderByDatumDesc(gledatelj)
+                .stream()                                   // moze vidjeti odbacene i sluzbene sanacije
+                .map(p -> PrijavaDto.iz(p, true))     // sve su njegove, pa uvijek vidi prijavitelja
                 .toList();
     }
 
 
+    // tko smije otvoriti detalje jedne prijave
+    private boolean smijeVidjetiPrijavu(Prijava p, Korisnik gledatelj) {
+        if (gledatelj.getUloga() == Uloga.REDAR) {
+            return true;                                    // redar vidi sve, i odbačene
+        }
+        if (p.getPrijavitelj() != null && p.getPrijavitelj().getId().equals(gledatelj.getId())) {
+            return true;                                    // svoje prijave korisnik uvijek vidi
+        }
+        if (SKRIVENI_STATUSI.contains(p.getStatus())) {
+            return false;                                   // odbačene i službene ostali ne vide
+        }
+        if (gledatelj.getUloga() == Uloga.UDRUGA) {
+            return p.getNacinSanacije() == NacinSanacije.UDRUGA;
+        }
+        return true;
+    }
+
     public PrijavaDto stvori(String email, MultipartFile slika, double lat, double lng, KategorijaOtpada kategorija) {
-        Korisnik prijavitelj = korisnikRepository.findByEmail(email)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Korisnik nije prijavljen"));
+        Korisnik prijavitelj = trenutniKorisnik(email);
 
         if (prijavitelj.isBlokiran()) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Vaš račun je blokiran");
@@ -65,7 +115,7 @@ public class PrijavaService  {
         prijava.setPrijavitelj(prijavitelj);
         // status (PRIJAVLJENO), provjerena (false) i datum postavljaju se sami u entitetu
 
-        return PrijavaDto.iz(prijavaRepository.save(prijava));
+        return PrijavaDto.iz(prijavaRepository.save(prijava), true);
     }
 
 }

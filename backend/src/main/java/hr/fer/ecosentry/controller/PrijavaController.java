@@ -6,19 +6,13 @@ import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.core.oidc.user.OidcUser;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import hr.fer.ecosentry.dto.PrijavaDto;
 import hr.fer.ecosentry.model.StatusPrijave;
 import hr.fer.ecosentry.repository.PrijavaRepository;
 import hr.fer.ecosentry.service.PrijavaService;
-import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 @RestController
@@ -37,12 +31,9 @@ public class PrijavaController {
     public List<PrijavaDto> dohvatiSve(
             @RequestParam(required = false) StatusPrijave status,
             @RequestParam(required = false) Boolean provjerena,   // potrebna su tri stanja, T, F i null
-            Authentication authentication) {
+            @AuthenticationPrincipal OidcUser user) {
 
-        boolean jeUdruga = authentication.getAuthorities().stream()         // udruge mogu samo vidjeti prijave čija je sanacija za udruge
-                .anyMatch(a  -> a.getAuthority().equals("ROLE_UDRUGA"));
-
-        return prijavaService.dohvatiVidljive(status, provjerena, jeUdruga);
+        return prijavaService.dohvatiVidljive(user.getEmail(), status, provjerena);
     }
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
@@ -56,6 +47,17 @@ public class PrijavaController {
             @AuthenticationPrincipal OidcUser user) {
 
         return prijavaService.stvori(user.getEmail(), slika, lat, lng, kategorija);
+    }
+
+    @GetMapping("/{id}")
+    public PrijavaDto dohvatiJednu(@PathVariable Long id, @AuthenticationPrincipal OidcUser user) {
+        return prijavaService.dohvati(id, user.getEmail());
+    }
+
+    @GetMapping("/moje")
+    @PreAuthorize("hasRole('GRADANIN')")        // samo građanin ima svoje prijave
+    public List<PrijavaDto> dohvatiMoje(@AuthenticationPrincipal OidcUser user) {
+        return prijavaService.dohvatiMoje(user.getEmail());
     }
 
 }

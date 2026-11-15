@@ -24,7 +24,7 @@ public record PrijavaDto (
     public record PrijaviteljDto(Long id, String ime) {
     }
 
-    public static PrijavaDto iz(Prijava p) {    // iz entitya stvara record
+    public static PrijavaDto iz(Prijava p, boolean prikaziPrijavitelja) {    // iz entitya stvara record
         return new PrijavaDto(p.getId(),
                 p.getLat(),
                 p.getLng(),
@@ -36,7 +36,7 @@ public record PrijavaDto (
                 p.getSlikaUrl(),
                 p.getSlikaSanacijeUrl(),
                 p.getDatum(),
-                (p.getPrijavitelj() == null) ? null : new PrijaviteljDto(p.getPrijavitelj().getId(), p.getPrijavitelj().getIme()),
+                (!prikaziPrijavitelja || p.getPrijavitelj() == null) ? null : new PrijaviteljDto(p.getPrijavitelj().getId(), p.getPrijavitelj().getIme()),
                 null
         );
     }
