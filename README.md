@@ -36,8 +36,9 @@ Za potpuni opseg, zahtjeve, oblikovanje i dokaze ispitivanja pogledajte [docs](d
 **Ograničenja:**
 
 - Prvo otvaranje može trajati do dvije minute jer se besplatna Render instanca nakon neaktivnosti gasi.
-- Dok se ne spoji baza u oblaku, aplikacija na Renderu koristi privremenu bazu i lokalno spremljene slike, koje se brišu pri svakom novom postavljanju.
+- Fotografije prijava spremaju se na disk Render poslužitelja, pa nestaju pri svakom novom postavljanju i ponovnom pokretanju. Prijave ostaju u bazi, ali bez slike.
 - Adresa se još ne dohvaća iz koordinata, pa se uz prijavu prikazuju koordinate.
+- Nakon svakog novog postavljanja korisnici se moraju ponovno prijaviti.
 
 [Vodič za postavljanje i pokretanje](docs/6-Postavljanje-instalacija-i-konfiguracija.md) opisuje smještaj aplikacije koji tim koristi.
 
@@ -64,12 +65,12 @@ npm run dev
 
 **Konfiguracija:**
 
-- `backend/.env`: kopirajte `backend/.env.example` i upišite `GOOGLE_CLIENT_ID` i `GOOGLE_CLIENT_SECRET` za Google prijavu.
+- `backend/.env`: kopirajte `backend/.env.example` i upišite `GOOGLE_CLIENT_ID` i `GOOGLE_CLIENT_SECRET` za Google prijavu te `DB_HOST`, `DB_USER` i `DB_PASSWORD` za spajanje na bazu.
 - `frontend/.env`: kopirajte `frontend/.env.example` i upišite `VITE_GOOGLE_MAPS_API_KEY` za kartu. `VITE_API_URL` ostaje `http://localhost:8080`.
 
-Vrijednosti dobijete od člana tima zaduženog za Google Cloud projekt. Datoteke `.env` se ne commitaju.
+Ključeve za Google dobijete od člana tima zaduženog za Google Cloud projekt, a podatke za bazu od člana zaduženog za bazu. Datoteke `.env` se ne commitaju.
 
-Lokalno se koristi H2 baza u mapi `backend/data/`, koja se stvara sama. Za provjeru otvorite http://localhost:5173 i prijavite se Google računom: trebala bi se otvoriti stranica građanina s kartom i gumbom **+ Prijavi otpad**. Za detaljno postavljanje pogledajte [projektnu dokumentaciju](docs/Home.md).
+Backend se i lokalno spaja na PostgreSQL bazu na Neonu, a tablice i početne podatke pri pokretanju stvara Flyway. Za provjeru otvorite http://localhost:5173 i prijavite se Google računom: trebala bi se otvoriti stranica građanina s kartom i gumbom **+ Prijavi otpad**. Za detaljno postavljanje pogledajte [projektnu dokumentaciju](docs/Home.md).
 
 ## Tehnologije
 
@@ -77,7 +78,7 @@ Lokalno se koristi H2 baza u mapi `backend/data/`, koja se stvara sama. Za provj
 | --- | --- | --- |
 | React + Vite | Korisničko sučelje za građanina, eko-udrugu i redara. | Popis, karta i detalji prijave osvježavaju se bez ponovnog učitavanja stranice. Sučelje građanina prilagođeno je mobitelu. |
 | Spring Boot (Java 21) | Backend: prijava korisnika, provjera uloga i REST API na `/api/...`. | Uloge se provjeravaju na poslužitelju, a ne samo u sučelju. Rute su opisane u [docs/api.md](docs/api.md). |
-| Spring Data JPA + H2 / PostgreSQL | Spremanje korisnika i prijava. | Lokalno se koristi H2 baza bez instalacije, a za javnu inačicu planirana je PostgreSQL baza u oblaku. Tablice se stvaraju iz entiteta. |
+| PostgreSQL (Neon) + Spring Data JPA + Flyway | Spremanje korisnika, prijava i kategorija. | Baza je u oblaku pa je zajednička za cijeli tim i za Render. Shemu stvaraju Flyway migracije, a Hibernate je samo provjerava. Besplatna Neon baza se uspava kad nema prometa, pa prvi upit može potrajati. |
 | Google prijava (OAuth 2.0 / OpenID Connect) | Prijava korisnika Google računom. | Obavezno prema zadatku. Svi korisnici, uključujući redare, prijavljuju se Google računom, pa sustav ne sprema lozinke. |
 | Google Maps JavaScript API | Karta s pribadačama prijava u bojama prema statusu i odabir lokacije nove prijave. | Treba API ključ ograničen na adrese aplikacije. Bez ključa stranica radi, ali se karta ne prikazuje. |
 | Docker + Render | Frontend i backend grade se u jednu aplikaciju i postavljaju na javnu adresu. | Frontend i backend su na istoj adresi, pa kolačić prijave radi bez dodatne konfiguracije. Promjena na `master` automatski se postavlja. |
