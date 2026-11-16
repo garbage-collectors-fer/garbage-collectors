@@ -28,92 +28,74 @@ Za svaki UML dijagram čuvajte čitljivu sliku i PlantUML izvor, kako je opisano
 
 ## 4.2 Gradivni blokovi i UML dijagram komponenata
 
-Frontend je podijeljen na stranice, zajedničke komponente i servise. Stranice prikazuju sadržaj za pojedinu korisničku ulogu, komponente služe za dijelove sučelja koji se mogu ponovno koristiti, a servisi odvajaju rad s podacima od prikaza.
+Sustav EcoSentry čine web-klijent u Reactu, jedna poslužiteljska aplikacija u Spring Bootu i PostgreSQL baza na Neonu. Klijent i poslužitelj grade se i postavljaju zajedno (vidi 4.1), ali su logički odvojeni: klijent komunicira s poslužiteljem samo putem REST API-ja na `/api/...`. Pravokutnici unutar poslužiteljske aplikacije prikazuju module jedne aplikacije, a ne zasebno postavljene usluge. Isprekidano su prikazani dijelovi koji su planirani, ali još nisu implementirani.
 
-Novi prikaz eko-udruge uključen je u glavnu aplikaciju kao stranica `EkoUdruga.jsx` i koristi postojeću Google prijavu i odabir stranice prema ulozi korisnika. Prikaz još koristi probne podatke i nije povezan s backendom za upravljanje akcijama. Zaseban lokalni demo za pregled bez prijave nije dio repozitorija.
+![Dijagram komponenata sustava EcoSentry](./assets/diagrams/4-1-ecosentry-system-CMP.svg)
 
-**Cilj:** Prikazati logičku podjelu programa na komponente, njihova sučelja i vanjske integracije. Dijagram komponenata prikazuje logičku organizaciju, dok dijagram razmještaja prikazuje fizičko izvođenje. Ovaj prikaz ažurirajte kako sustav poprima konačan oblik.
+**Slika 4.1. Dijagram komponenata sustava EcoSentry**
 
-**Dijagram komponenata:** [Ugradite čitljiv UML dijagram komponenata.]  
-**PlantUML izvor:** [Poveznica na odgovarajuću `.puml` datoteku.]
+**PlantUML izvor:** [izvor](./puml/4-1-ecosentry-system-CMP.puml)
 
 | Komponenta | Odgovornost | Razlog za ovu granicu |
 | --- | --- | --- |
-|  |  |  |
+| Stranice po ulogama (`frontend/src/pages`) | Nakon prijave `App.jsx` prema ulozi korisnika prikazuje stranicu `Gradjanin`, `KomunalniRedar` ili `EkoUdruga`; neprijavljeni korisnik vidi stranicu `Prijava`. Popis akcija na stranici `EkoUdruga` još prikazuje probne podatke, dok su prijave dohvaćene s poslužitelja. | Svaka uloga ima vlastiti prikaz i radnje, pa se stranice mogu razvijati neovisno. |
+| Komponenta karte (`KartaPrijava.jsx`) | Prikazuje prijave kao pribadače obojane po statusu i omogućuje odabir lokacije nove prijave. | Kartu koriste sve tri uloge; Google Maps ključ i rad s kartom nalaze se na jednom mjestu. |
+| Klijentski servisi (`frontend/src/services`) | Šalju zahtjeve poslužitelju s kolačićem sesije i XSRF tokenom te pretvaraju pogreške u poruke za korisnika. | Stranice ne znaju adrese ni oblik HTTP zahtjeva; rad s podacima odvojen je od prikaza. |
+| Sigurnost i prijava (`SecurityConfig`, `CustomOidcUserService`) | Provodi Google prijavu, pronalazi ili stvara korisnika u bazi i dodjeljuje mu ulogu; štiti sve rute `/api/**` osim prijave i provjere ispravnosti. | Provjera identiteta i uloge odvija se na jednom mjestu, prije nego zahtjev stigne do kontrolera. |
+| REST API (`controller`) | Prima HTTP zahtjeve, provjerava ulogu (`@PreAuthorize`) i vraća JSON; `GreskeHandler` sve pogreške vraća u istom obliku `{"poruka": ...}`. | HTTP sloj odvojen je od pravila obrade prijava. |
+| Obrada prijava (`PrijavaService`) | Provjerava podatke nove prijave, određuje tko smije vidjeti koju prijavu i provodi dopuštene promjene statusa. | Pravila o prijavama imaju jedno mjesto odgovornosti i ne ovise o tome odakle zahtjev dolazi. |
+| Pohrana fotografija (`SlikaService`) | Provjerava vrstu datoteke, sprema fotografiju pod nasumičnim imenom i vraća njezin URL. | Prelazak s diska na Cloudinary mijenja samo ovu komponentu (ADR-03). |
+| Pristup podacima (`repository`) | Spring Data JPA repozitoriji za korisnike, prijave i kategorije. | Upiti prema bazi odvojeni su od poslovne logike. |
+| Akcije čišćenja i obavijesti (planirano) | Organizacija akcija, prijava volontera, upis u Google kalendar, prognoza za termin i obavijesti unutar aplikacije. | Tablice za te podatke već postoje u bazi (4.3.1), a kod se dodaje kao zaseban modul. |
 
-Započnite crtanjem granice oko predloženog sustava. Unutar nje prepoznajte dijelove s različitim odgovornostima; planiranu bazu podataka aplikacije smjestite unutar granice, a usluge trećih strana izvan nje. Važne veze označite podatkom ili uslugom koja njima prolazi. Logička komponenta može biti modul unutar jedne poslužiteljske aplikacije: zaseban pravokutnik ne znači zasebno postavljenu uslugu. Tijekom implementacije ažurirajte dijagram kada se promijene odgovornosti ili veze. U završnoj inačici čitatelj treba moći povezati njegove dijelove s kodom. Dijagram razmještaja odgovara na pitanje gdje se ti dijelovi stvarno izvode.
-
-<details>
-<summary><strong>Granica sustava, odgovornosti i vanjske ovisnosti</strong></summary>
-
-**Primjer — CrisisMap:** Predložena arhitektura podržava podnošenje prijava kriznih događaja, prikaz na karti i obavijesti o potvrđenim prijavama.
-
-![Dijagram komponenata sustava CrisisMap](./assets/diagrams/4-1-crisismap-system-CMP.svg)
-
-**Slika 4.1. Dijagram komponenata sustava CrisisMap**
-
-**PlantUML izvor:** [izvor](./puml/4-1-crisismap-system-CMP.puml)
-
-| Dio | Odgovornost | Razlog za ovu granicu |
-| --- | --- | --- |
-| Web-klijent | Prikazuje prijave i prikuplja podatke za novu prijavu. | Korisnička interakcija odvojena je od pravila prijave i trajne pohrane. |
-| API za prijave | Prihvaća zahtjeve za rad s prijavama i vraća odgovore. | Odgovornosti izložene putem HTTP-a odvojene su od obrade prijava. |
-| Usluga za prijave | Primjenjuje pravila prijave i pristupa pohranjenim prijavama. | Pravila provjere valjanosti i pohrane prijava imaju jasno mjesto odgovornosti. |
-| Proces za obavijesti | Određuje korisnike koji trebaju primiti obavijest i traži od vanjskog pružatelja da je pošalje. | Obrada obavijesti odvojena je od odgovaranja na korisnikov zahtjev za prijavu. |
-
-**Analiza primjera:** Vanjska granica odvaja predloženi sustav od pružatelja kartografskih usluga i pružatelja obavijesti. Unutarnja granica grupira API za prijave, uslugu za prijave i proces za obavijesti unutar jedne poslužiteljske aplikacije; njihovi zasebni simboli prikazuju predložene odgovornosti, a ne neovisno postavljene usluge. PostgreSQL pohranjuje podatke aplikacije, dok pružatelj kartografskih usluga osigurava kartografske pločice. Strelice sažimaju ovisnosti, a ne redoslijed transakcije; taj redoslijed prikazuje sekvencijski dijagram. Izostavite proces za obavijesti i Firebase Cloud Messaging ako obavijesti nisu dio odobrenog opsega. Pružatelja prijave u sustav uključite samo ako to zahtijeva odobreni zadatak. Kako implementacija napreduje, ispravite svaku predloženu granicu koja se pokaže netočnom; završni dijagram mora odgovarati onome što je tim izgradio. Jedan koherentan prikaz komponenata korisniji je od nekoliko gotovo jednakih inačica s proturječnim vezama.
-
-</details>
+Vanjske usluge nalaze se izvan granice sustava. Google prijavu poziva poslužitelj, a Google Maps JavaScript API izravno preglednik. Google Calendar, OpenWeatherMap i Cloudinary još nisu povezani. Fotografije se do integracije s Cloudinaryjem spremaju u mapu `uploads/` na disku poslužitelja. Gdje se ti dijelovi stvarno izvode prikazuje [dijagram razmještaja](./6-Postavljanje-instalacija-i-konfiguracija.md).
 
 ## 4.3 Model podataka i oblikovanje razreda
 
-**Cilj:** Objasniti važne informacije koje aplikacija pohranjuje i jedno reprezentativno područje oblikovanja na razini razreda. Model podataka i UML dijagram razreda odgovaraju na različita pitanja; jedno ne zamjenjuje drugo.
-
 ### 4.3.1 ER dijagram i model podataka
 
-**Cilj:** Prikazati važne pohranjene entitete, njihove identifikatore i veze te dovoljno atributa za razumijevanje podataka aplikacije. ER dijagram odvojen je od reprezentativnog UML dijagrama razreda u nastavku.
+Građanin podnese prijavu otpada s fotografijom, kategorijom i lokacijom. Komunalni redar je prihvati ili odbaci i odluči hoće li je čistiti eko-udruga ili komunalna tvrtka. Eko-udruga može u jednu akciju čišćenja uključiti više prijava, a građani se na akciju prijavljuju kao volonteri. Svaka promjena statusa prijave bilježi se u povijesti statusa, a korisnici o promjenama dobivaju obavijesti.
 
-**ER dijagram:** [Ugradite čitljiv dijagram projekta.]  
-**Izvor dijagrama:** [Poveznica na njegov izvor.]  
-**Implementacija:** [Navedite gdje je odgovarajući model podataka definiran u projektu.]
+![ER dijagram podataka sustava EcoSentry](./assets/diagrams/4-2-ecosentry-data-ERD.svg)
 
-<details>
-<summary><strong>Jedna prijava poplave i povezani podaci</strong></summary>
+**Slika 4.2. ER dijagram podataka sustava EcoSentry**
 
-**Primjer — CrisisMap:** Ana putem svojeg korisničkog računa podnosi prijavu poplave `R-104`. Odabire lokaciju na karti i označava razinu ozbiljnosti kao visoku. Građanin može podnijeti više prijava; svaka prijava pripada jednoj kategoriji kriznog događaja, primjerice *Poplava*. Aplikacija pohranjuje prijavu i njezine koordinate. Kartografske pločice dolaze od vanjskog pružatelja i nisu entiteti u modelu podataka aplikacije.
+**PlantUML izvor:** [izvor](./puml/4-2-ecosentry-data-ERD.puml)  
+**Implementacija:** shema se stvara Flyway migracijama u [`backend/src/main/resources/db/migration`](../backend/src/main/resources/db/migration) (`V1__init.sql` do `V4__test_racuni.sql`); JPA entiteti nalaze se u paketu [`hr.fer.ecosentry.model`](../backend/src/main/java/hr/fer/ecosentry/model).
 
-![ER dijagram podataka sustava CrisisMap](./assets/diagrams/4-2-crisismap-data-ERD.svg)
+Važne odluke modela podataka:
 
-**Slika 4.2. ER dijagram podataka sustava CrisisMap**
+- **Jedna tablica `korisnik` za sve uloge.** Uloga je stupac s vrijednostima `GRADANIN`, `UDRUGA` i `REDAR`. Naziv organizacije obavezan je samo za udruge, a razlog blokade samo za blokirane korisnike. Oba pravila provodi baza (`CHECK` ograničenja), ne samo poslužitelj.
+- **Bez lozinki.** Korisnik se prepoznaje po Google identifikatoru (`id_oauth`) i e-mailu. `id_oauth` je prazan dok se unaprijed dodani redar prvi put ne prijavi; tada ga poslužitelj poveže po e-mailu (ADR-01).
+- **Kategorije su zapisi u tablici**, a ne fiksne vrijednosti u kodu, pa redar može promijeniti kategoriju prijave, a popis se mijenja migracijom.
+- **Statusi i uloge spremaju se kao tekstualni kodovi** (npr. `AKCIJA_U_TIJEKU`) koji odgovaraju Java enumima; prikazne nazive s dijakriticima određuje klijent.
+- **Veze više-na-više** (akcija obuhvaća više prijava; korisnik volontira na više akcija) provedene su veznim tablicama `akcija_prijava` i `volonter_prijava`. Uz volontera se pamti i ID događaja u njegovom Google kalendaru.
+- **`status_log` čuva povijest promjena statusa** prijave: tko je i kada promijenio status iz kojeg u koji.
+- **Fotografije nisu u bazi**, nego samo njihovi URL-ovi (ADR-03).
 
-**PlantUML izvor:** [izvor](./puml/4-2-crisismap-data-ERD.puml)
-
-**Analiza primjera:** `R-104` ima jednog autora i jednu kategoriju; Ana i kategorija *Poplava* mogu biti povezane s više prijava. Dijagram prikazuje veze bez prepisivanja svih stupaca baze podataka ili pisanja drugog tabličnog opisa za svaki entitet. Ako aplikacija prihvaća i **anonimne** prijave, tu mogućnost prikažite u vezi s entitetom `Citizen`. Ako su kategorije fiksne vrijednosti, a ne pohranjeni zapisi, nemojte izmišljati tablicu kategorija. Završni ER dijagram usporedite s modelom trajne pohrane i objasnite samo razlike važne za razumijevanje projekta.
-
-</details>
+**Razlike između modela i trenutačne implementacije:** shema baze napravljena je za cijeli odobreni opseg, a poslužitelj zasad koristi samo tablice `korisnik`, `kategorija` i `prijava`. Tablice `akcija`, `akcija_prijava`, `volonter_prijava`, `obavijest`, `status_log` i `google_token` postoje u bazi, ali još nemaju JPA entitete ni kod koji ih koristi. Status `AKCIJA_U_TIJEKU` stoga se još ne postavlja.
 
 ### 4.3.2 Reprezentativni UML dijagram razreda
 
-**Cilj:** Prije implementacije reprezentativnog dijela sustava modelirati i prikazati razrede ili sučelja potrebna za dodjelu odgovornosti, operacija i veza. Oblikovanje ažurirajte kada se te odluke promijene.
+Prikazano je područje obrade prijave otpada: od REST kontrolera preko usluge do entiteta i repozitorija. To je središnji dio aplikacije i dio koji je u cijelosti implementiran.
 
-**Dijagram razreda:** [Ugradite čitljiv UML dijagram razreda za reprezentativni dio oblikovanja.]  
-**PlantUML izvor:** [Poveznica na odgovarajuću `.puml` datoteku.]  
-**Referenca na kod pri završnom pregledu:** [Poveznica na odgovarajuću implementaciju.]
+![Dijagram razreda za obradu prijave otpada](./assets/diagrams/4-3-ecosentry-domain-CD.svg)
 
-<details>
-<summary><strong>Oblikovanje odgovornosti prijave i dopuštenih promjena</strong></summary>
+**Slika 4.3. Dijagram razreda za obradu prijave otpada**
 
-**Primjer — CrisisMap:** Prijava sadrži pravila za promjenu vlastitog statusa. Razred tijeka rada koordinira podnošenje i pregled, dok sučelje repozitorija opisuje potrebne operacije trajne pohrane. Dijagram predlaže te odgovornosti prije implementacije.
+**PlantUML izvor:** [izvor](./puml/4-3-ecosentry-domain-CD.puml)  
+**Kod:** [`PrijavaController`](../backend/src/main/java/hr/fer/ecosentry/controller/PrijavaController.java), [`PrijavaService`](../backend/src/main/java/hr/fer/ecosentry/service/PrijavaService.java), [`Prijava`](../backend/src/main/java/hr/fer/ecosentry/model/Prijava.java)
 
-![Dijagram razreda za obradu prijava kriznih događaja](./assets/diagrams/4-3-crisismap-domain-CD.svg)
+Raspodjela odgovornosti:
 
-**Slika 4.3. Dijagram razreda za obradu prijava kriznih događaja**
+- **`PrijavaController`** samo prevodi HTTP zahtjeve u pozive usluge i provjerava ulogu: prijavu može podnijeti samo građanin, a mijenjati samo redar (`@PreAuthorize`).
+- **`PrijavaService`** sadrži pravila: koje prijave pojedina uloga vidi (odbačene i one na službenoj sanaciji vide samo redar i autor; udruga vidi samo prijave poslane udrugama), provjeru lokacije i kategorije pri podnošenju te dopuštene promjene u metodi `izmijeni`. Primjerice, prijavu se može poslati udrugama tek nakon što je redar prihvati, a odbačenoj prijavi ne može se mijenjati kategorija. Nedopuštena promjena vraća HTTP 409.
+- **`Prijava`, `Korisnik` i `Kategorija`** su JPA entiteti koji odgovaraju tablicama iz 4.3.1. `Korisnik` blokadu postavlja zajedno s razlogom (`blokiraj(razlog)`, `odblokiraj()`), a baza odbija spremanje blokiranog korisnika bez razloga.
+- **Repozitoriji** su sučelja; Spring Data JPA sam stvara njihove implementacije iz imena metoda.
+- **DTO zapisi** (`PrijavaDto`, `PrijavaIzmjenaDto`) određuju što se šalje klijentu. Entitet se nikad ne vraća izravno, pa usluga može sakriti autora prijave korisnicima koji ga ne smiju vidjeti.
+- Usluga sve ovisnosti prima kroz konstruktor (vidi 4.6).
 
-**PlantUML izvor:** [izvor](./puml/4-3-crisismap-domain-CD.puml)
-
-**Analiza primjera:** `DisasterReport` sadrži dopuštena pravila promjene stanja pa tijek rada ne može prešutno odobriti već odbijenu prijavu. `ReportWorkflow` koordinira operaciju bez preuzimanja pravila prijelaza stanja same prijave; `ReportRepository` definira potrebne operacije pohrane. Kompozicija `Location` i odabrani tipovi prikazuju veze korisne za oblikovanje. Dijagram namjerno izostavlja stupce baze podataka i nepovezane razrede: ER model objašnjava pohranjene podatke, dok ovaj dijagram dodjeljuje programske odgovornosti i operacije. Ti su razredi odluka oblikovanja, a ne obavezni slojevi za svaki tim. Završnu implementaciju usporedite s početnim oblikovanjem i ažurirajte dijagram tamo gdje su se odluke promijenile; generiranje dijagrama iz koda tek na kraju ne može zamijeniti ovo početno modeliranje.
-
-</details>
+Pravila prijelaza statusa nalaze se u `PrijavaService`, a ne u samom entitetu `Prijava`. Kad se dodaju akcije čišćenja i zatvaranje prijava, broj prijelaza će rasti, pa je jedna od mogućnosti premjestiti ta pravila u metode entiteta (npr. `prihvati()`, `odbaci()`).
 
 ## 4.4 Ponašanje tijekom izvođenja
 
@@ -194,7 +176,7 @@ Pri završnom pregledu svaki prikazani prijelaz i uvjet usporedite s ponašanjem
 | Polje | Zapis odluke |
 | --- | --- |
 | Kontekst i cilj | Aplikacija pohranjuje korisnike, prijave s lokacijama, kategorije, akcije i volontere. Baza mora biti dostupna svim članovima tima tijekom razvoja i javno postavljenoj aplikaciji, besplatno, najmanje do kraja siječnja. |
-| Kriteriji odluke | Podaci imaju veze i pravila (npr. prijava ima autora i kategoriju, prijava ne smije biti u dvije akcije) koja baza treba čuvati; besplatno korištenje; baza ne smije prestati raditi kad tim neko vrijeme ne radi na projektu; mali napor održavanja. |
+| Kriteriji odluke | Podaci imaju veze i pravila (npr. prijava ima autora i kategoriju, udruga mora imati naziv organizacije, blokirani korisnik mora imati razlog blokade) koja baza treba čuvati; besplatno korištenje; baza ne smije prestati raditi kad tim neko vrijeme ne radi na projektu; mali napor održavanja. |
 | Razmatrane alternative | **MySQL:** relacijska baza sličnih mogućnosti; PostgreSQL ima bogatije provjere (`CHECK`), tipove i podršku u besplatnim upravljanim uslugama. **Supabase:** upravljani PostgreSQL uz vlastitu prijavu, pohranu datoteka i automatski API, koje aplikacija ne bi koristila jer to radi Spring Boot; besplatan projekt se nakon dulje neaktivnosti pauzira i treba ga ručno ponovno pokrenuti. **Neon:** samo upravljani PostgreSQL; nakon kratke neaktivnosti se uspava i sam se budi pri sljedećem upitu. |
 | Odluka i obrazloženje | Odabran je PostgreSQL na Neonu. Relacijska shema čini veze između prijava, korisnika i akcija eksplicitnima, a Neon pokriva samo ono što aplikaciji treba i ne zahtijeva ručno ponovno pokretanje. Prihvaćeno je da prvi upit nakon pauze traje duže; zato bazen veza ne drži otvorene veze (`hikari.minimum-idle=0`). Shema se stvara Flyway migracijama. |
 | Status | Prihvaćeno. |
