@@ -70,7 +70,7 @@ Kratak sažetak: [README – Uporaba umjetne inteligencije](../README.md#ai-usag
 | 1. Opseg projekta, 2. Analiza zahtjeva | Izrada nacrta, preoblikovanje | Nacrt teksta i tablica zahtjeva | Tim je zadao temu i dogovorene odluke, odredio prioritete te uklonio i spojio zahtjeve nakon dogovora s asistentom | `docs/1-Projekt.md`, `docs/2-Analiza-zahtjeva.md` |
 | 3. Obrasci uporabe | Usklađivanje | Izmjene UC-001, UC-004 i UC-008 nakon promjene zahtjeva | Tim je odlučio da nema lozinki ni službenog naloga | `docs/3-Obrasci-uporabe.md` |
 | Prijedlog API-ja | Izrada nacrta | Popis endpointa i oblika podataka | Tim je uskladio rute s backendom | `docs/api.md` |
-
+| 4. Arhitektura i oblikovanje | Izrada nacrta | Nacrt teksta i PlantUML dijagrama prema kodu | Autor je odredio odluke i provjerio sadržaj prema kodu i bazi | `docs/4-Arhitektura-i-oblikovanje.md`, `docs/puml/` |
 
 ### Provjera generiranog sadržaja
 

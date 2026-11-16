@@ -1,0 +1,73 @@
+' ==============================================================================
+' 4-5-ecosentry-report-SM.puml
+'
+' Svrha:    Prikazuje životni ciklus prijave otpada: stanja iz stupca
+'           prijava.status (PRIJAVLJENO, ODBACENO, SLUZBENA_SANACIJA,
+'           AKCIJA_U_TIJEKU, OCISCENO) te podstanja unutar PRIJAVLJENO koja
+'           određuju stupci provjerena i nacin_sanacije. Isprekidani prijelazi
+'           su planirani i još nisu implementirani.
+' Autor:
+' AI:       Claude je izradio nacrt dijagrama prema PrijavaService.izmijeni(),
+'           shemi baze i zahtjevima F-015 do F-024; autor je provjerio da
+'           dijagram odgovara kodu i zahtjevima.
+' Praćenje: Pri implementaciji akcija čišćenja i zatvaranja prijava ukloniti
+'           oznaku «planirano» i uskladiti uvjete s kodom.
+'
+' Diagram level: Runtime behaviour (object lifecycle)
+' Diagram type:  UML State Machine Diagram
+' Version:       1.0
+' ==============================================================================
+
+@startuml
+title Životni ciklus prijave otpada
+
+skinparam shadowing false
+skinparam defaultFontName Arial
+skinparam ArrowColor #212529
+
+skinparam state {
+    BackgroundColor #E7F1FF
+    BorderColor #0D6EFD
+    FontColor #212529
+}
+
+[*] --> Prijavljeno : građanin podnese prijavu
+
+state "Prijavljeno" as Prijavljeno {
+  state "Neprovjerena" as Neprovjerena : provjerena = false
+  state "Prihvaćena" as Prihvacena : provjerena = true\nnacin_sanacije = NULL
+  state "Dostupna udrugama" as Udruge : nacin_sanacije = UDRUGA
+
+  [*] --> Neprovjerena
+  Neprovjerena --> Prihvacena : redar prihvati
+  Prihvacena --> Udruge : redar pošalje udrugama
+}
+
+state "Odbačeno" as Odbaceno : ne prikazuje se na karti
+state "Službena sanacija" as Sluzbena : nacin_sanacije = SLUZBENA\nne prikazuje se na karti
+state "Akcija u tijeku" as Akcija
+state "Očišćeno" as Ociscen
+
+Neprovjerena --> Odbaceno : redar odbaci
+Prihvacena --> Sluzbena : redar pošalje na\nslužbenu sanaciju
+
+Udruge -[dashed]down-> Akcija : «planirano»\nudruga uključi\nprijavu u akciju
+Akcija -[dashed]up-> Udruge : «planirano»\nudruga otkaže\nakciju
+Akcija -[dashed]-> Ociscen : «planirano»\nredar potvrdi\ndokaz o sanaciji
+Prihvacena -[dashed]-> Ociscen : «planirano»\nredar zatvori\nuz fotografiju
+Sluzbena -[dashed]-> Ociscen : «planirano»\nredar zatvori\nuz fotografiju
+
+note bottom of Akcija
+  «planirano» Ako redar odbije dokaz
+  o sanaciji, prijava ostaje u ovom stanju.
+end note
+
+Odbaceno --> [*]
+Ociscen --> [*]
+
+note right of Prijavljeno
+  Kategoriju prijave redar može promijeniti
+  u svakom stanju osim Odbačeno.
+  Svaka nedopuštena promjena vraća HTTP 409.
+end note
+@enduml
