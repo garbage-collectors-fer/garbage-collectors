@@ -134,7 +134,7 @@ Provjere na klijentu postoje radi brzog odgovora korisniku, ali se ne smatraju z
 
 **PlantUML izvor:** [izvor](./puml/4-5-ecosentry-report-SM.puml)
 
-Stanje Prijavljeno prikazano je kao složeno stanje s tri podstanja jer u bazi postoji samo jedan status `PRIJAVLJENO`, a ponašanje se ipak razlikuje: neprovjerenu prijavu redar može prihvatiti ili odbaciti, prihvaćenu poslati udrugama ili na službenu sanaciju, a udruge vide samo prijave poslane njima. Odbačene prijave i prijave na službenoj sanaciji ne prikazuju se na karti; vide ih samo redar i autor prijave.
+Stanje Prijavljeno prikazano je kao složeno stanje s tri podstanja jer u bazi postoji samo jedan status `PRIJAVLJENO`, a ponašanje se ipak razlikuje: neprovjerenu prijavu redar može prihvatiti ili odbaciti, prihvaćenu poslati udrugama ili na službenu sanaciju, a udruge vide samo prijave poslane njima. Odbačene prijave i prijave na službenoj sanaciji ne prikazuju se na karti; autor ih vidi među svojim prijavama, a redar može otvoriti njihove detalje.
 
 Prijelazi nacrtani punom crtom implementirani su u `PrijavaService.izmijeni` ([kod](../backend/src/main/java/hr/fer/ecosentry/service/PrijavaService.java)): svaki pokušaj prijelaza koji nije prikazan na dijagramu, primjerice slanje neprihvaćene prijave udrugama ili odbacivanje već riješene prijave, vraća HTTP 409. Isprekidani prijelazi (akcija čišćenja, otkazivanje akcije i zatvaranje prijave) slijede zahtjeve F-018, F-020, F-022 i F-024 i još nisu implementirani.
 
@@ -178,70 +178,37 @@ Prijelazi nacrtani punom crtom implementirani su u `PrijavaService.izmijeni` ([k
 
 ## 4.6 Zajednička pravila oblikovanja (engl. Cross-cutting concerns)
 
-**Cilj:** Prepoznati i opisati globalna pravila i mehanizme oblikovanja koji se primjenjujuju u više dijelova aplikacije, navesti gdje se planira primijeniti i ažurirati objašnjenje kako implementacija poprima konačan oblik. Uključite samo pravila koja su važna za ovaj projekt.
-
-**Implementirani mehanizmi:**
-
 | Aspekt | Mehanizam | Pravilo | Mjesto primjene |
 | --- | --- | --- | --- |
-| [Npr. Sigurnost] | [Npr. Autorizacija korisnika] | [Npr. Ovlasti se provjeravaju na poslužiteljskoj strani za svaki zaštićeni zahtjev; skrivanje elemenata korisničkog sučelja nije dovoljna zaštita.] | [Npr. Middleware za autorizaciju / zaštita API usmjernika.] |
-| [Npr. Validacija podataka] | [Npr. Provjera ulaznih podataka] | [Npr. Geoprostorni podaci, uključujući koordinate, provjeravaju se prije pohrane.] | [Npr. Sloj za obradu zahtjeva / odgovarajuća usluga.] |
-
-<details>
-<summary><strong>Primjer zajedničkih pravila i mehanizama</strong></summary>
-
-**Primjer — CrisisMap:**
-
-| Aspekt | Mehanizam | Pravilo | Mjesto primjene |
-| --- | --- | --- | --- |
-| Sigurnost | Autorizacija moderiranja prijava | Ovlasti moderatora provjeravaju se na poslužiteljskoj strani prije odobravanja ili odbijanja prijave; skrivanje gumba u korisničkom sučelju nije dovoljna zaštita. | Poslužiteljski dio funkcionalnosti za moderiranje prijava. |
-| Validacija podataka | Provjera lokacije prijave | Nedostajuće ili nevaljane koordinate odbijaju se prije pohrane prijave. | Obrada podnošenja prijave. |
-| Aspekt | Mehanizam | Pravilo | Mjesto primjene |
-| Upravljanje ovisnostima | Injektiranje ovisnosti | Objekt koji provodi poslovnu logiku ne stvara sam konkretnu implementaciju repozitorija, nego potrebnu ovisnost prima izvana. | `ReportWorkflow` prima implementaciju sučelja `ReportRepository` pri stvaranju objekta. |
-
-**Analiza primjera:** Prvi redak pokazuje sigurnosno pravilo koje se provodi neovisno o korisničkom sučelju, a drugi pravilo provjere podataka prije pohrane. U vlastitoj dokumentaciji navedite samo aspekte koji se stvarno primjenjuju u projektu te konkretno mjesto njihove primjene.
-
-Obrasci poput injektiranja ovisnosti (engl. Dependency Injection) ili repozitorija (engl. Repository) pripadaju ovdje samo kada ih kod stvarno koristi i kada objašnjavaju zajedničko pravilo oblikovanja. Tvrdnja „sustav koristi autentikaciju” sama po sebi ne govori čitatelju gdje se provjera provodi niti što štiti. Sigurnost, bilježenje događaja i obrada pogrešaka ne trebaju svaki zaseban pododjeljak po zadanom pravilu.
-
-</details>
+| Sigurnost | Autentikacija i autorizacija na poslužitelju | Sve rute `/api/**` osim `/api/auth/**` i `/api/health` zahtijevaju prijavu. Ulogu za svaku radnju provjerava poslužitelj; skrivanje gumba u sučelju nije zaštita. Uloga se pri prijavi čita iz baze i dodaje korisniku kao `ROLE_GRADANIN`, `ROLE_UDRUGA` ili `ROLE_REDAR`. | `SecurityConfig`, `CustomOidcUserService`, `@PreAuthorize` na metodama `PrijavaController` (npr. samo `REDAR` smije mijenjati prijavu) |
+| Sigurnost | Zaštita od CSRF-a | Poslužitelj šalje XSRF token u kolačiću, a klijent ga uz svaki zahtjev koji mijenja podatke vraća u zaglavlju `X-XSRF-TOKEN`. Zahtjev bez tokena se odbija. | `SecurityConfig` (`csrf.spa()`), `prijaveServis.js` i `autentikacijaServis.js` |
+| Sigurnost | Vidljivost podataka po ulozi | Odbačene prijave i prijave na službenoj sanaciji ne prikazuju se u zajedničkom popisu ni na karti; autor ih vidi među svojim prijavama, a redar može otvoriti njihove detalje. Udruga vidi samo prijave poslane udrugama; ime prijavitelja vidi samo redar i sam prijavitelj. Prijava koju korisnik ne smije vidjeti vraća 404, kao da ne postoji. Klijent nikad ne dobiva entitet, nego DTO. | `PrijavaService` (`smijeVidjetiPrijavu`, `smijeVidjetiPrijavitelja`), `PrijavaDto` |
+| Sigurnost | Tajne izvan repozitorija | Lozinka baze, Google client secret i ključevi čitaju se iz varijabli okruženja (lokalno iz `backend/.env`, na Renderu iz postavki usluge) i nikad se ne commitaju. | `application.properties` (`${DB_PASSWORD}`, `${GOOGLE_CLIENT_SECRET}`…), [6. Postavljanje](./6-Postavljanje-instalacija-i-konfiguracija.md) |
+| Validacija podataka | Dvostruka provjera ulaza | Klijent provjerava podatke radi brze povratne informacije, a poslužitelj ih uvijek provjerava ponovno: koordinate u rasponu, postojeća kategorija, fotografija JPG/PNG/WEBP do 10 MB. | `Gradjanin.jsx`; `PrijavaService.stvori`, `SlikaService.spremi`, `spring.servlet.multipart.max-file-size` |
+| Validacija podataka | Ograničenja u bazi | Pravila koja moraju vrijediti uvijek provodi i baza: dopuštene vrijednosti uloga i statusa, raspon koordinata, naziv organizacije za udrugu, razlog blokade, prijava u statusu nakon provjere mora biti provjerena. | `CHECK` ograničenja u `V1__init.sql` |
+| Obrada pogrešaka | Jedinstven oblik odgovora | Svaka pogreška vraća se kao JSON `{"poruka": "..."}` s odgovarajućim HTTP statusom (400 neispravan unos, 401 nije prijavljen, 403 nema pravo, 404 ne postoji, 409 nedopuštena promjena stanja). Klijent tu poruku prikazuje korisniku. | `GreskeHandler` (`@RestControllerAdvice`), `SecurityConfig` (401/403), `posaljiZahtjev` u `prijaveServis.js` |
+| Upravljanje ovisnostima | Injektiranje ovisnosti kroz konstruktor | Kontroleri i usluge ne stvaraju same svoje ovisnosti (repozitorije, druge usluge), nego ih Spring predaje kroz konstruktor. | `PrijavaController(PrijavaService)`, `PrijavaService(PrijavaRepository, KorisnikRepository, KategorijaRepository, SlikaService)` |
+| Upravljanje shemom baze | Migracije | Shemu mijenjaju samo Flyway migracije; Hibernate samo provjerava da se entiteti poklapaju s bazom (`ddl-auto=validate`) i ne smije sam mijenjati tablice. | `db/migration`, `application.properties` |
+| Otpornost na vanjske usluge | Rad bez karte | Ako se Google Maps ne učita ili ključ nije ispravan, korisnik dobiva poruku, a popis prijava i ostatak stranice i dalje rade (NF-05). | `KartaPrijava.jsx` |
 
 ## 4.7 Arhitekturni rizici i tehnički dug
 
-**Cilj:** Navesti stvarne tehničke ili domenske rizike i svjesno prihvaćene kompromise oblikovanja, njihove posljedice i način na koji ih tim obrađuje.
-
 **Tehnički rizici i dug**
-
-| Rizik ili kompromis | Posljedica | Odgovor na rizik  |
-| --- | --- | --- |
-| *Npr. Pohrana slika u lokalni file sustav* | *Pri ponovnom pokretanju kontejnera slike će biti izgubljene.* | *Prihvaćeni tehnički dug za demo verziju. U budućnosti planirana migracija na S3 (AWS).* |
-| *Npr. Nepostojanje paginacije na API-ju* | *Moguće usporenje klijenta pri dohvaćanju velike količine podataka iz baze.* | *Ograničen broj testnih unosa. Dodavanje paginacije ostavljeno za sljedeću iteraciju.* |
-|  |  |  |
-
-**Poslovni ili domenski rizici, ako su značajni**
-
-| Rizik | Posljedica | Odgovor na rizik |
-| --- | --- | --- |
-| **Jedna instanca aplikacije obrađuje prijave** | Kvar poslužitelja (hostinga) privremeno onemogućuje nove prijave. | Prihvaćeno u okviru ograničenja projekta za kolegij; tim ne tvrdi da postoji automatsko prebacivanje na pričuvni sustav (failover). |
-| **Nedostupnost vanjskke kartografske usluge** | Prikaz karte može prestati raditi iako su pohranjene prijave u bazi i dalje dostupne. | Implementirana je korisniku vidljiva poruka o pogrešci uz alternativu pregleda prijava u tekstualnom obliku. |
-|  |  |  |
-
-<details>
-<summary><strong>Primjer tehničkih i domenskih rizika</strong></summary>
-
-**Primjer — CrisisMap, tehnički rizici:**
 
 | Rizik ili kompromis | Posljedica | Odgovor na rizik |
 | --- | --- | --- |
-| Jedna instanca aplikacije obrađuje podnošenje prijava. | Kvar smještaja aplikacije privremeno onemogućuje nove prijave. | Rizik je prihvaćen za opseg projekta; ne uvodi se pričuvna instanca ni automatsko prebacivanje. |
-| Vanjske kartografske usluge nisu dostupne. | Prikaz karte može prestati raditi iako su pohranjene prijave i dalje dostupne. | Karta se ne može prikazati, ali pohranjene prijave ostaju dostupne. | Aplikacija prikazuje poruku o nedostupnosti karte i omogućuje pregled prijava u tekstualnom obliku. |
+| Fotografije se spremaju na disk poslužitelja (ADR-03). | Render briše disk pri svakom novom postavljanju i ponovnom pokretanju, pa prijave ostaju bez fotografija. | Prihvaćeni privremeni dug. Planiran je prelazak na Cloudinary; promjena je ograničena na `SlikaService` i `WebConfig`, a shema baze se ne mijenja. |
+| Besplatne instance Rendera i Neona gase se ili uspavljuju bez prometa. | Prvo otvaranje aplikacije nakon pauze može trajati do dvije minute, a prvi upit prema bazi duže nego inače. | Prihvaćeno za opseg kolegija i navedeno u README-u. Bazen veza ne drži otvorene veze (`hikari.minimum-idle=0`), pa se veza nakon buđenja baze ponovno uspostavi. |
+| Sesije prijavljenih korisnika čuvaju se u memoriji poslužitelja. | Nakon svakog novog postavljanja svi se korisnici moraju ponovno prijaviti. | Prihvaćeno; navedeno u README-u. |
+| Jedna instanca aplikacije poslužuje i klijent i API. | Kvar ili ponovno pokretanje usluge zaustavlja cijelu aplikaciju. | Prihvaćeno u okviru projekta; nema pričuvne instance ni automatskog prebacivanja. |
+| Popis prijava dohvaća se bez paginacije, a dio filtriranja (po ulozi, statusu) radi se u Javi nakon dohvata. | S velikim brojem prijava dohvat bi postao spor i opteretio klijent i poslužitelj. | Za broj prijava u projektu nije problem. Ako zatreba, filtriranje se premješta u upite repozitorija i dodaje paginacija. |
+| Povijest promjena statusa (`status_log`) postoji u bazi, ali se još ne popunjava. | Za postojeće prijave ne postoji trag tko je i kada promijenio status. | Upis u `status_log` dodat će se zajedno s ostalim promjenama statusa (akcije, zatvaranje). |
+| Baza ne sprječava da ista prijava bude u dvije akcije: primarni ključ `akcija_prijava` je par (akcija, prijava). | Kad se akcije implementiraju, prijava bi mogla biti dodana u dvije akcije. | Pri implementaciji akcija provjeriti status prijave u usluzi (samo prijava poslana udrugama i bez akcije) i razmotriti ograničenje `UNIQUE (id_prijava)` u novoj migraciji. |
+| Google Maps ključ nalazi se u izgrađenom klijentu. | Ključ može pročitati svatko tko otvori stranicu. | Ključ se u Google Cloud konzoli ograničava na adrese aplikacije i na Maps JavaScript API. |
 
-**Primjer — CrisisMap, domenski rizik:** Čitatelji mogu neprovjerenu prijavu građanina zamijeniti za službeno upozorenje. Tim može u sučelju jasno razlikovati status provjere prijave i uputiti korisnike na službene izvore.
+**Poslovni ili domenski rizici**
 
-**Analiza primjera:** Prvi tehnički rizik prihvaća realistično ograničenje projekta kolegija; domenski se rizik odnosi na način na koji čitatelj tumači prijavu. Zabilježite ograničenje i realan odgovor koji pripadaju vašem projektu. Neostvarena obavezna funkcionalnost nije tehnički dug nego nedovršen opseg.
-
-</details>
-
----
-
-
->**Završna provjera:** Usporedite dijagrame komponenata, podataka, razreda, sekvencijski dijagram i dijagram stanja s implementiranim kodom, ponašanjem aplikacije i stvarnim razmještajem. Ažurirajte zastarjele opise oblikovanja i objasnite svaku važnu razliku koja ostaje; poveznice na odgovarajući kod ili ispitivanja korisne su kada odgovaraju na konkretno pitanje.
+| Rizik | Posljedica | Odgovor na rizik |
+| --- | --- | --- |
+| Lažne, duplicirane ili neprimjerene prijave | Prijava je vidljiva na karti svim korisnicima i prije nego što je redar pregleda. | Redar može odbaciti prijavu, nakon čega ona nestaje s karte. Poslužitelj blokiranom korisniku ne dopušta nove prijave, ali radnja blokiranja (UC-004, 4b) u sučelju i API-ju još nije implementirana. Neprovjerene prijave za sada se na karti ne razlikuju od provjerenih. |
+| Ovisnost o Google računu | Korisnik bez Google računa ne može koristiti aplikaciju, a nedostupnost Google prijave sprječava prijavu svih korisnika. | Prihvaćeno prema zadatku i dogovoru s asistentom (ADR-01). |
