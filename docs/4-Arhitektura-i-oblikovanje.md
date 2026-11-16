@@ -99,59 +99,44 @@ Pravila prijelaza statusa nalaze se u `PrijavaService`, a ne u samom entitetu `P
 
 ## 4.4 Ponašanje tijekom izvođenja
 
-**Cilj:** Objasniti jednu važnu interakciju među dijelovima koji se izvode i životni ciklus jednog smislenog objekta. Odaberite primjere koji otkrivaju odluke ili neuspješne putove umjesto izrade dijagrama za svaku CRUD radnju.
-
 ### 4.4.1 Reprezentativni UML sekvencijski dijagram
 
-**Cilj:** Prikazati redoslijed poruka za jedan reprezentativni scenarij i odgovore na važnu alternativu.
+**Scenarij:** Podnošenje prijave otpada (UC-002)
 
-**Scenarij:** [Naziv interakcije; dodajte UC ID ako postoji.]  
-**sekvencijski dijagram:** [Ugradite čitljiv UML sekvencijski dijagram.]  
-**PlantUML izvor:** [Poveznica na odgovarajuću `.puml` datoteku.]
+Građanin otvara obrazac za novu prijavu, a klijent odmah traži lokaciju uređaja. Nakon odabira fotografije i kategorije prijava se šalje poslužitelju, koji provjerava sesiju i ulogu, podatke prijave i fotografiju te sprema prijavu sa statusom Prijavljeno. Odabran je ovaj scenarij jer je glavni ulaz podataka u sustav i prolazi kroz sve slojeve iz 4.2. Usto pokazuje gdje se koja provjera provodi.
 
-<details>
-<summary><strong>Odabir lokacije, provjera valjanosti i podnošenje prijave</strong></summary>
+![Sekvencijski dijagram podnošenja prijave otpada](./assets/diagrams/4-4-ecosentry-report-submission-SD.svg)
 
-**Primjer — CrisisMap:** Građanin podnosi prijavu kriznog događaja nakon što ručno odabere lokaciju ili zatraži položaj uređaja. Interakcija prikazuje i što se događa kada je pristup lokaciji odbijen, podaci prijave nisu valjani ili pohrana ne uspije.
+**Slika 4.4. Sekvencijski dijagram podnošenja prijave otpada**
 
-![Sekvencijski dijagram podnošenja prijave kriznog događaja](./assets/diagrams/4-4-crisismap-report-submission-SD.svg)
+**PlantUML izvor:** [izvor](./puml/4-4-ecosentry-report-submission-SD.puml)
 
-**Slika 4.4. Sekvencijski dijagram podnošenja prijave kriznog događaja**
+**Grane koje dijagram prikazuje** (usporedivo s alternativnim tokovima UC-002):
 
-**PlantUML izvor:** [izvor](./puml/4-4-crisismap-report-submission-SD.puml)
+| Grana | Gdje se provjerava | Što korisnik vidi | UC-002 |
+| --- | --- | --- | --- |
+| Pristup lokaciji odbijen | Klijent (API geolokacije preglednika) | Poruku i mogućnost odabira mjesta klikom na kartu | 2a |
+| Fotografija nije JPG/PNG ili je veća od 10 MB | Klijent, a vrstu datoteke ponovno i poslužitelj (`SlikaService`) | Poruku o neispravnoj fotografiji | 4a |
+| Nedostaje lokacija, kategorija ili fotografija | Klijent, prije slanja zahtjeva | Popis onoga što nedostaje; uneseni podaci ostaju | 6a |
+| Korisnik nije prijavljen ili nije građanin | Spring Security (`@PreAuthorize("hasRole('GRADANIN')")`) | HTTP 401 ili 403 | preduvjet |
+| Korisnik je blokiran | `PrijavaService.stvori` | HTTP 403 „Vaš račun je blokiran” | preduvjet |
+| Spremanje fotografije ili prijave ne uspije | `SlikaService`, baza | Poruku o pogrešci; potvrda se ne prikazuje | 7a |
 
-**Analiza primjera:** Dva načina odabira lokacije te alternative provjere i pohrane imaju različite posljedice za korisnika; usporedite ih s odgovarajućim obrascem uporabe i njegovim alternativnim tijekovima. API preglednika za lokaciju mogućnost je preglednika; web-klijent, API, usluga i pohrana odgovaraju prikazu komponenata. Odaberite grane koje pomažu objasniti scenarij vašeg projekta i završni dijagram uskladite s implementiranom interakcijom.
-
-</details>
+Provjere na klijentu postoje radi brzog odgovora korisniku, ali se ne smatraju zaštitom. Poslužitelj ponovno provjerava lokaciju, kategoriju i vrstu fotografije, jer se zahtjev može poslati i mimo sučelja (vidi 4.6). Fotografija se sprema tek kad su ostali podaci provjereni, kako na disku ne bi ostale datoteke od odbijenih prijava. Upis adrese umjesto odabira na karti (također dio 2a) još nije implementiran, pa nije prikazan.
 
 ### 4.4.2 Reprezentativni UML dijagram stanja
 
-**Cilj:** Prikazati važna stanja jednog domenskog objekta ili eksplicitno upravljanog načina rada sustava te događaje ili uvjete koji ih mijenjaju.
+**Vlasnik stanja i razlog odabira:** prijava otpada (`Prijava`). Stanje je zapisano u stupcu `prijava.status`, a unutar stanja Prijavljeno dodatno ga određuju stupci `provjerena` i `nacin_sanacije`. Prijelazi su važni jer određuju tko prijavu vidi na karti, smije li je udruga uključiti u akciju i što redar smije napraviti.
 
-**Vlasnik stanja i razlog odabira:** [Navedite objekt ili način rada sustava, kako se njegovo stanje prepoznaje i zašto su prijelazi važni.]  
-**Dijagram stanja:** [Ugradite čitljiv UML dijagram stanja.]  
-**PlantUML izvor:** [Poveznica na odgovarajuću `.puml` datoteku.]
+![Dijagram stanja prijave otpada](./assets/diagrams/4-5-ecosentry-report-SM.svg)
 
-<details>
-<summary><strong>Složeno stanje sustava: koordinacija događaja i dostupnost usluge</strong></summary>
+**Slika 4.5. Dijagram stanja prijave otpada**
 
-**Primjer — CrisisMap:** Ovaj primjer ne prikazuje životni ciklus jednog domenskog objekta, nego dva neovisna aspekta stanja cijelog sustava CrisisMap. Jedna regija opisuje način koordinacije kriznog događaja, a druga opaženu dostupnost usluge. Budući da se ta dva aspekta mogu mijenjati neovisno jedan o drugome, prikazani su kao ortogonalne regije istog složenog stanja sustava.
+**PlantUML izvor:** [izvor](./puml/4-5-ecosentry-report-SM.puml)
 
-![Dijagram stanja prijave kriznog događaja](./assets/diagrams/4-5-crisismap-system-SM.svg)
+Stanje Prijavljeno prikazano je kao složeno stanje s tri podstanja jer u bazi postoji samo jedan status `PRIJAVLJENO`, a ponašanje se ipak razlikuje: neprovjerenu prijavu redar može prihvatiti ili odbaciti, prihvaćenu poslati udrugama ili na službenu sanaciju, a udruge vide samo prijave poslane njima. Odbačene prijave i prijave na službenoj sanaciji ne prikazuju se na karti; vide ih samo redar i autor prijave.
 
-**Slika 4.5. Dijagram stanja sustava s ortogonalnim regijama**
-
-**PlantUML izvor:** [izvor](./puml/4-5-crisismap-system-SM.puml)
-
-**Analiza primjera:** Vlasnik stanja u ovom je primjeru sustav CrisisMap, a ne pojedinačna prijava kriznog događaja. Dvije ortogonalne regije opisuju stanja koja vrijede istodobno: način koordinacije kriznog događaja i dostupnost usluge. Promjena stanja u jednoj regiji ne mora promijeniti stanje u drugoj; primjerice, aktivni krizni događaj može postojati dok je usluga potpuno ili djelomično dostupna.
-
-Prijelazi imaju imenovane događaje ili uvjete, a grane nakon oporavka poslužiteljskog sustava uzimaju u obzir da pružatelj kartografskih usluga može i dalje biti nedostupan. Time primjer pokazuje situaciju u kojoj ortogonalne regije imaju stvarnu semantičku svrhu, a nisu samo način vizualnog grupiranja elemenata.
-
-Ovo je napredniji primjer dijagrama stanja. Koristite takav oblik samo ako sustav stvarno održava dva ili više međusobno neovisnih aspekata stanja koji se mogu mijenjati istodobno. Za projekt u kojem je važan životni ciklus jednog objekta, primjerice prijave, rezervacije ili narudžbe, jednostavniji dijagram stanja tog objekta obično je prikladniji. Složenost dijagrama nije kriterij vrednovanja.
-
-Pri završnom pregledu svaki prikazani prijelaz i uvjet usporedite s ponašanjem koje implementirana aplikacija stvarno podržava.
-
-</details>
+Prijelazi nacrtani punom crtom implementirani su u `PrijavaService.izmijeni` ([kod](../backend/src/main/java/hr/fer/ecosentry/service/PrijavaService.java)): svaki pokušaj prijelaza koji nije prikazan na dijagramu, primjerice slanje neprihvaćene prijave udrugama ili odbacivanje već riješene prijave, vraća HTTP 409. Isprekidani prijelazi (akcija čišćenja, otkazivanje akcije i zatvaranje prijave) slijede zahtjeve F-018, F-020, F-022 i F-024 i još nisu implementirani.
 
 ## 4.5 Zapisi arhitekturnih odluka
 
