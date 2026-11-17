@@ -26,8 +26,7 @@ public class SlikaService {
 
     private static final Map<String, String> DOPUSTENI_TIPOVI = Map.of(
             "image/jpeg", ".jpg",
-            "image/png", ".png",
-            "image/webp", ".webp"
+            "image/png", ".png"
     );
 
     private final Cloudinary cloudinary;
@@ -44,7 +43,7 @@ public class SlikaService {
 
         String ekstenzija = DOPUSTENI_TIPOVI.get(slika.getContentType());
         if (ekstenzija == null) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Slika mora biti JPG, PNG ili WEBP");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Slika mora biti JPG ili PNG");
         }
 
         try {
@@ -52,12 +51,12 @@ public class SlikaService {
                     "folder", "ecosentry/prijave",      // mapa u Cloudinary konzoli
                     "resource_type", "image",
                     "transformation", new Transformation<>()
-                            .width(1600).crop("limit")  // smanji ako je sira od 1600px, manje ne dira
+                            .width(1400).crop("limit")  // smanji ako je šira od 1400px
                             .quality("auto")
             ));
             return (String) rezultat.get("secure_url");    // https adresa slike, ide u bazu
         } catch (IOException | RuntimeException e) {
-            log.error("Upload slike na Cloudinary nije uspio", e);     // pravi razlog ide u log, korisnik vidi opcenitu poruku
+            log.error("Upload slike na Cloudinary nije uspio", e);     // testiranje
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Spremanje slike nije uspjelo");
         }
     }
