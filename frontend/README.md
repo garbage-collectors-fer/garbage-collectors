@@ -10,4 +10,6 @@ Na stranici eko-udruge dodani su pretraživanje odlagališta po adresi ili broju
 
 Dodano je sortiranje odlagališta po datumu prijave. Može se odabrati „Najnovije prvo” ili „Najstarije prvo”, a na početku se prikazuju najnovije prijave. Sortiranje radi zajedno s pretragom i filterom, a datum prijave vidi se i na popisu odlagališta.
 
+Fotografija odlagališta sada se klikom može otvoriti preko cijele stranice kako bi se lakše pregledala. Prikazuje se cijela, bez izrezivanja, a zatvara se gumbom „Zatvori”, tipkom Escape ili klikom izvan fotografije.
+
 Zaseban lokalni demo bez Google prijave nije dio repozitorija i nije dostupan samim preuzimanjem projekta.

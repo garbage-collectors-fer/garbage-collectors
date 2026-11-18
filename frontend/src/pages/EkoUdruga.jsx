@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import KartaPrijava from '../components/KartaPrijava.jsx';
 import { dohvatiPrijave } from '../services/prijaveServis.js';
 import { nazivKategorije, formatirajDatum } from '../services/oznake.js';
@@ -18,6 +18,8 @@ function Ikona({ naziv }) {
     slika: 'M3 3h18v18H3V3Zm0 13 6-6 5 5 3-3 4 4M16 7h.01',
     oznaka: 'M3 3h8l10 10-8 8L3 11V3Zm5 5h.01',
     trazi: 'M21 21l-5-5M18 10a8 8 0 1 1-16 0 8 8 0 0 1 16 0Z',
+    povecaj: 'M8 3H3v5m13-5h5v5M3 16v5h5m13-5v5h-5',
+    zatvori: 'm6 6 12 12M6 18 18 6',
   };
   return <svg className="udruga-ikona" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" focusable="false"><path d={putanje[naziv]} /></svg>;
 }
@@ -28,15 +30,20 @@ function normalizirajPretragu(tekst) {
 
 function FotografijaOdlagalista({ prijava }) {
   const [greskaSlike, setGreskaSlike] = useState(false);
+  const pregled = useRef(null);
+  const dostupna = prijava.slikaUrl && !greskaSlike;
+  const opis = `Fotografija otpada na odlagalištu, prijava #${prijava.id}`;
 
   return (
+    <>
     <figure className="udruga-fotografija">
-      {prijava.slikaUrl && !greskaSlike ? (
-        <img
-          src={prijava.slikaUrl}
-          alt={`Fotografija otpada na odlagalištu, prijava #${prijava.id}`}
-          onError={() => setGreskaSlike(true)}
-        />
+      {dostupna ? (
+        <button type="button" className="udruga-fotografija-otvori"
+          aria-label={`Otvori fotografiju prijave #${prijava.id} preko cijelog ekrana`}
+          aria-haspopup="dialog" onClick={() => pregled.current.showModal()}>
+          <img src={prijava.slikaUrl} alt={opis} onError={() => setGreskaSlike(true)} />
+          <span><Ikona naziv="povecaj" />Otvori fotografiju</span>
+        </button>
       ) : (
         <div className="udruga-fotografija-prazna">
           <Ikona naziv="slika" />
@@ -45,6 +52,20 @@ function FotografijaOdlagalista({ prijava }) {
       )}
       <figcaption>Fotografija iz prijave odlagališta</figcaption>
     </figure>
+    {dostupna && (
+      <dialog ref={pregled} className="udruga-fotografija-pregled" aria-label={opis}
+        onClick={(e) => { if (e.target === e.currentTarget) pregled.current.close(); }}>
+        <header>
+          <span>Fotografija prijave #{prijava.id}</span>
+          <button type="button" autoFocus onClick={() => pregled.current.close()}>
+            <Ikona naziv="zatvori" />Zatvori
+          </button>
+        </header>
+        <img src={prijava.slikaUrl} alt={opis} onError={() => setGreskaSlike(true)} />
+        <p>Za zatvaranje pritisni Escape ili klikni izvan fotografije.</p>
+      </dialog>
+    )}
+    </>
   );
 }
 

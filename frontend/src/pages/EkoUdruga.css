@@ -36,6 +36,17 @@
 .udruga-fotografija img { display: block; width: 100%; height: 280px; object-fit: contain; }
 .udruga-fotografija figcaption { padding: 10px 14px; border-top: 1px solid #dce8df; font-size: 13px; color: #647768; }
 .udruga-fotografija-prazna { display: flex; align-items: center; justify-content: center; gap: 10px; min-height: 150px; padding: 20px; color: #647768; }
+.udruga-fotografija-otvori { display: block; width: 100%; padding: 0; border: 0; background: transparent; color: #44633f; font: inherit; cursor: zoom-in; }
+.udruga-fotografija-otvori > span { display: flex; align-items: center; justify-content: center; gap: 8px; padding: 10px; font-size: 14px; }
+.udruga-stranica .udruga-fotografija-otvori:focus-visible { outline-offset: -4px; }
+.udruga-fotografija-pregled { box-sizing: border-box; position: fixed; inset: 0; width: 100%; max-width: none; height: 100dvh; max-height: none; margin: 0; padding: 16px; border: 0; background: #142019f5; color: #fff; }
+.udruga-fotografija-pregled[open] { display: flex; flex-direction: column; align-items: center; gap: 16px; }
+.udruga-fotografija-pregled::backdrop { background: #142019; }
+.udruga-fotografija-pregled > header { display: flex; flex-shrink: 0; align-items: center; justify-content: space-between; gap: 12px; width: 100%; font-size: 15px; }
+.udruga-fotografija-pregled button { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 10px 14px; border: 1px solid #b9cdbf; border-radius: 8px; background: #eef6f0; color: #304e38; font: inherit; cursor: pointer; }
+.udruga-fotografija-pregled > img { display: block; flex: 1; min-height: 0; max-width: 100%; object-fit: contain; }
+.udruga-fotografija-pregled > p { flex-shrink: 0; margin: 0; text-align: center; color: #d3e6d8; font-size: 13px; }
+body:has(.udruga-fotografija-pregled[open]) { overflow: hidden; }
 .udruga-karta { margin: 20px 0; border: 1px solid #dce8df; border-radius: 12px; overflow: hidden; background: #f4f8f5; }
 .udruga-karta .karta { height: 360px; border-radius: 0; }
 .udruga-karta > p { margin: 0; padding: 10px 14px; font-size: 13px; color: #647768; }
