@@ -80,6 +80,21 @@ Prioriteti su zadani po MoSCoW metodi: Must (mora biti), Should (trebalo bi biti
 | F-033 | Sustav podržava više gradova s odvojenim redarima. | Won't | Interpretacija zadatka | Sustav je za jedan grad. |
 | F-034 | Sustav generira službeni nalog i šalje ga komunalnoj tvrtki. | Won't | Interpretacija zadatka | Komunikacija s komunalnom tvrtkom odvija se izvan sustava. |
 
+### Prijava u sustav i korisnički računi
+
+| ID | Opis | Prioritet | Izvor | Kriteriji prihvaćanja |
+| --- | --- | --- | --- | --- |
+| F-001 | Korisnik se prijavljuje u sustav Google računom (OAuth 2.0). | Must | Zadatak | Nakon prijave korisnik ima pristup radnjama svoje uloge. |
+| F-002 | Redar može dodati novog redara upisom njegove Google e-mail adrese. | Must | Zadatak | Pri prvoj prijavi s tom adresom korisnik dobiva ulogu redara. Postojećem korisniku uloga se mijenja u redara. |
+| F-003 | Eko-udruga može poslati zahtjev za račun udruge, a redar ga odobrava ili odbija. | Must | Zadatak | Dok zahtjev nije odobren, račun nema prava udruge. Nakon odobrenja udruga može kreirati akcije. |
+| F-004 | Redar može blokirati korisnika uz upisan razlog. | Should | Zadatak | Blokirani korisnik ne može podnositi prijave ni prijavljivati se na akcije. Redar može ukloniti blokadu. |
+
+### Odjava iz sustava
+
+| ID | Opis | Prioritet | Izvor | Kriteriji prihvaćanja |
+| --- | --- | --- | --- | --- |
+| F-035 | Korisnik se odjavljuje iz sustava | Must | Zadatak | Odjava odvodi korisnika nazad na početnu stranicu i omogućuje ponovnu prijavu |
+
 ## 2.2 Nefunkcijski zahtjevi
 
 | ID | Opis | Prioritet | Izvor | Način provjere |
