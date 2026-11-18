@@ -12,4 +12,6 @@ Dodano je sortiranje odlagališta po datumu prijave. Može se odabrati „Najnov
 
 Fotografija odlagališta sada se klikom može otvoriti preko cijele stranice kako bi se lakše pregledala. Prikazuje se cijela, bez izrezivanja, a zatvara se gumbom „Zatvori”, tipkom Escape ili klikom izvan fotografije.
 
+Stranica eko-udruge prilagođena je mobitelima. Kartice i filtri na manjim ekranima prikazuju se jedan ispod drugoga, a gumbi su širi kako bi ih bilo lakše pritisnuti. Prilagođene su veličine fotografije i karte, a duže adrese prelamaju se u više redaka.
+
 Zaseban lokalni demo bez Google prijave nije dio repozitorija i nije dostupan samim preuzimanjem projekta.

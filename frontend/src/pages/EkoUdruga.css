@@ -86,14 +86,38 @@ body:has(.udruga-stranica) {
     linear-gradient(135deg, #f5f7ed, #faf7ef);
 }
 @media (max-width: 600px) {
-  .udruga-panel { padding: 20px; }
-  .udruga-stranica .redar-podaci { grid-template-columns: 1fr; gap: 2px; }
+  .udruga-stranica { font-size: 16px; overflow-wrap: anywhere; }
+  .udruga-stranica .redar-raspored { grid-template-columns: minmax(0, 1fr); gap: 18px; }
+  .udruga-naslovni-red { gap: 14px; margin-bottom: 18px; }
+  .udruga-panel { padding: 16px; border-radius: 12px; }
+  .udruga-stranica .redar-podaci { grid-template-columns: minmax(0, 1fr); gap: 6px; }
   .udruga-stranica .redar-podaci dd { margin-bottom: 10px; }
-  .udruga-panel h2 { font-size: 23px; }
+  .udruga-panel h2 { font-size: 22px; }
   .udruga-naslov-grupa { align-items: flex-start; gap: 10px; }
+  .udruga-naslov-grupa > div { min-width: 0; }
   .udruga-naslov-ikona { width: 40px; height: 40px; border-radius: 12px; }
   .udruga-podnaslov { font-size: 14px; }
   .udruga-stranica .redar-naslov { font-size: 27px; }
-  .udruga-stranica .redar-filteri button { padding: 9px 12px; font-size: 14px; }
-  .udruga-stranica .redar-podaci { gap: 6px; }
+  .udruga-stranica .redar-filteri { display: grid; grid-template-columns: minmax(0, 1fr); padding-bottom: 16px; }
+  .udruga-stranica .redar-filteri button { min-height: 44px; padding: 10px 12px; border-radius: 10px; font-size: 15px; text-align: left; }
+  .udruga-stranica .redar-broj { margin-left: auto; flex-shrink: 0; }
+  .udruga-pretraga { padding: 14px; margin-bottom: 18px; }
+  .udruga-pretraga-polja { display: grid; grid-template-columns: minmax(0, 1fr); gap: 12px; }
+  .udruga-pretraga input, .udruga-pretraga select { font-size: 16px; }
+  .udruga-stranica .redar-stavka { padding: 14px 12px; gap: 10px; }
+  .udruga-stranica .redar-stavka-detalj { white-space: normal; overflow-wrap: anywhere; }
+  .udruga-stranica .redar-gumb { width: 100%; min-height: 44px; }
+  .udruga-stranica .redar-radnje { display: grid; grid-template-columns: minmax(0, 1fr); }
+  .udruga-volonteri { padding: 14px; }
+  .udruga-volonteri > div { flex-wrap: wrap; }
+  .udruga-fotografija img { height: clamp(160px, 55vw, 260px); }
+  .udruga-fotografija-prazna { flex-direction: column; text-align: center; }
+  .udruga-stranica .udruga-karta .karta { height: 280px; }
+  .udruga-fotografija-pregled { padding: max(12px, env(safe-area-inset-top)) max(12px, env(safe-area-inset-right)) max(12px, env(safe-area-inset-bottom)) max(12px, env(safe-area-inset-left)); }
+  .udruga-fotografija-pregled[open] { gap: 12px; }
+  .udruga-fotografija-pregled > header { font-size: 14px; }
+  .udruga-fotografija-pregled button { flex-shrink: 0; }
+  body:has(.udruga-stranica) .zaglavlje-korisnik { width: 100%; min-width: 0; justify-content: space-between; }
+  body:has(.udruga-stranica) .zaglavlje-ime { min-width: 0; overflow-wrap: anywhere; }
+  body:has(.udruga-stranica) .zaglavlje-odjava { flex-shrink: 0; min-height: 44px; }
 }
