@@ -80,6 +80,12 @@ Prioriteti su zadani po MoSCoW metodi: Must (mora biti), Should (trebalo bi biti
 | F-033 | Sustav podržava više gradova s odvojenim redarima. | Won't | Interpretacija zadatka | Sustav je za jedan grad. |
 | F-034 | Sustav generira službeni nalog i šalje ga komunalnoj tvrtki. | Won't | Interpretacija zadatka | Komunikacija s komunalnom tvrtkom odvija se izvan sustava. |
 
+### Odjava iz sustava
+
+| ID | Opis | Prioritet | Izvor | Kriteriji prihvaćanja |
+| --- | --- | --- | --- | --- |
+| F-035 | Korisnik se odjavljuje iz sustava | Must | Zadatak | Odjava odvodi korisnika nazad na početnu stranicu i omogućuje ponovnu prijavu |
+
 ## 2.2 Nefunkcijski zahtjevi
 
 | ID | Opis | Prioritet | Izvor | Način provjere |

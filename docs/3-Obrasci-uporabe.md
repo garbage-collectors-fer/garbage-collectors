@@ -99,7 +99,7 @@
 | **Primarni akter** | Komunalni redar                                                                                                                                                                                                                                                                    |
 | **Povezani zahtjevi** | F-017                                                                                                                                                                                                                                                                              |
 | **Preduvjeti** | Prijava je prihvaćena (UC-004) i nije dodana u akciju čišćenja.                                                                                                                                                                                                                     |
-| **Glavni uspješni tok** | 1. Redar otvara prihvaćenu prijavu opasnog ili prevelikog otpada.<br>2. Redar odabire slanje na službenu sanaciju.<br>3. Sustav mijenja status prijave u Službena sanacija i obavještava prijavitelja.<br>4. Prijava se više ne prikazuje na karti, a redar komunalnu tvrtku obavještava izvan sustava. |
+| **Glavni uspješni tok** | 1. Redar otvara prihvaćenu prijavu opasnog ili prevelikog otpada.<br>2. Redar odabire slanje na službenu sanaciju.<br>3. Sustav mijenja status prijave u Službena sanacija i obavještava prijavitelja.<br>4. Prijava se više ne prikazuje na karti, funkcionalnost slanja prijave komunalnoj tvrtki je izvan okvira projekta u dogovoru s asistentom. |
 | **Alternativni tokovi / Iznimke** | **2a — Prijava još nije prihvaćena:** Sustav ne dopušta slanje i prikazuje poruku da prijavu prvo treba prihvatiti. |
 | **Posljedice (ishod)** | Prijava ima status Službena sanacija, ne prikazuje se na karti i udruge je više ne mogu dodati u akciju.                                                                                                                                                                 |
 
@@ -137,7 +137,17 @@
 | **Glavni uspješni tok** | 1. 	Redar otvara statistiku i odabire razdoblje.<br>2. Sustav prikazuje broj prijava po mjesecima i postotak riješenih prijava za to razdoblje. |
 | **Alternativni tokovi / Iznimke** | **2a — Nema podataka za razdoblje:** Sustav prikazuje poruku da u odabranom razdoblju nema prijava.                                             |
 | **Posljedice (ishod)** | Redar vidi statistiku. Podaci se ne mijenjaju.                                                                                                  
+### UC-012: Odjava iz sustava
 
+| Element specifikacije | Opis                                                                                                                                            |
+| :--- |:------------------------------------------------------------------------------------------------------------------------------------------------|
+| **Primarni akter** | Korisnik (Građanin, Eko-udruga, Komunalni redar)                                                                                                                                                |
+|**Sekundarni akter** | Google (OAuth 2.0)      
+| **Povezani zahtjevi** | F-035                                                                                                                                           |
+| **Preduvjeti** | Korisnik je uspješno prijavljen u sustav.                                                                                                                                           |
+| **Glavni uspješni tok** | 1. Korisnik odabire gumb Odjava. 2. Korisnikovi podatci se uklanjaju iz sustava. 3. Kosirnik je stavljen na početnu stranicu sustava. |
+| **Alternativni tokovi / Iznimke** | **2a — Korisnik još nije prijavljen u sustav:** Sustav ne prikazuje gumb i opciju odjave.                                             |
+| **Posljedice (ishod)** | Od korisnika se traži prijava u sustav.        
 
 ## 3.3 Provjera dosljednosti obrazaca uporabe
 
