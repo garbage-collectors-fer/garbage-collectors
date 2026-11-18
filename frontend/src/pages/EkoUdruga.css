@@ -8,6 +8,15 @@
 }
 .udruga-stranica .redar-naslov { margin-bottom: 6px; }
 .udruga-podnaslov { margin: 0; font-size: 16px; }
+.udruga-pretraga { padding: 18px; margin-bottom: 22px; border: 1px solid #dce8df; border-radius: 12px; background: #fff; }
+.udruga-pretraga-polja { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 14px; }
+.udruga-pretraga label { display: flex; flex: 1 1 190px; flex-direction: column; gap: 8px; min-width: 0; color: #44633f; font-size: 14px; }
+.udruga-pretraga .udruga-trazilica { flex: 2 1 260px; }
+.udruga-pretraga label > span { display: flex; align-items: center; gap: 8px; }
+.udruga-pretraga input, .udruga-pretraga select { box-sizing: border-box; width: 100%; min-height: 44px; padding: 10px 12px; border: 1px solid #b9cdbf; border-radius: 8px; background: #fff; color: #304e38; font: inherit; }
+.udruga-pretraga input:focus-visible, .udruga-pretraga select:focus-visible { outline: 3px solid #5a9367; outline-offset: 2px; }
+.udruga-pretraga > p { margin: 14px 0 0; color: #647768; font-size: 14px; }
+.udruga-pretraga button:disabled { opacity: .5; cursor: default; }
 .udruga-stavka-datum { margin-top: 8px; font-size: 14px; opacity: .75; }
 .udruga-stranica .redar-stavka-naslov { line-height: 1.4; }
 .udruga-panel { padding: 28px; border: 1px solid #dce8df; border-radius: 16px; background: #fff; min-width: 0; box-shadow: 0 4px 18px #304e3806; }

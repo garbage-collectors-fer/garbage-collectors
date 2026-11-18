@@ -17,8 +17,13 @@ function Ikona({ naziv }) {
     olovka: 'm15 4 5 5M4 20l5-1L21 7a2 2 0 0 0-5-5L4 14v6Z',
     slika: 'M3 3h18v18H3V3Zm0 13 6-6 5 5 3-3 4 4M16 7h.01',
     oznaka: 'M3 3h8l10 10-8 8L3 11V3Zm5 5h.01',
+    trazi: 'M21 21l-5-5M18 10a8 8 0 1 1-16 0 8 8 0 0 1 16 0Z',
   };
   return <svg className="udruga-ikona" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" focusable="false"><path d={putanje[naziv]} /></svg>;
+}
+
+function normalizirajPretragu(tekst) {
+  return tekst.toLocaleLowerCase('hr').normalize('NFD').replace(/[\u0300-\u036f]/g, '').replaceAll('đ', 'd');
 }
 
 function FotografijaOdlagalista({ prijava }) {
@@ -55,6 +60,8 @@ export default function EkoUdruga() {
   const [prijave, setPrijave] = useState([]);
   const [ucitavanje, setUcitavanje] = useState(true);
   const [greska, setGreska] = useState(null);
+  const [pretraga, setPretraga] = useState('');
+  const [kategorijaId, setKategorijaId] = useState('');
 
   useEffect(() => {
     dohvatiPrijave()
@@ -64,7 +71,15 @@ export default function EkoUdruga() {
   }, []);
 
   const dostupne = prijave.filter((p) => p.provjerena && p.status === 'PRIJAVLJENO' && p.nacinSanacije === 'UDRUGA');
-  const popis = prikaz === 'ODLAGALISTA' ? dostupne : akcije.filter((a) => a.zavrsena === (prikaz === 'ZAVRSENE'));
+  const kategorije = [...new Map(dostupne.filter((p) => p.kategorija).map((p) => [String(p.kategorija.id), p.kategorija])).values()]
+    .sort((a, b) => a.naziv.localeCompare(b.naziv, 'hr'));
+  const upit = normalizirajPretragu(pretraga.trim());
+  const filtrirane = dostupne.filter((p) => {
+    const odgovaraPretrazi = normalizirajPretragu(p.adresa || '').includes(upit)
+      || String(p.id).includes(upit.replace(/^#/, ''));
+    return odgovaraPretrazi && (!kategorijaId || String(p.kategorija?.id) === kategorijaId);
+  });
+  const popis = prikaz === 'ODLAGALISTA' ? filtrirane : akcije.filter((a) => a.zavrsena === (prikaz === 'ZAVRSENE'));
   const odabrano = popis.find((stavka) => stavka.id === odabraniId) || popis[0];
   const kartice = [
     { id: 'AKCIJE', naziv: 'Moje akcije', ikona: 'kalendar', broj: akcije.filter((a) => !a.zavrsena).length },
@@ -93,6 +108,29 @@ export default function EkoUdruga() {
         ))}
       </div>
 
+      {prikaz === 'ODLAGALISTA' && (
+        <section className="udruga-pretraga" aria-label="Pretraživanje odlagališta">
+          <div className="udruga-pretraga-polja">
+            <label className="udruga-trazilica">
+              <span><Ikona naziv="trazi" />Pretraži odlagališta</span>
+              <input type="search" placeholder="Adresa ili broj prijave" value={pretraga}
+                onChange={(e) => { setPretraga(e.target.value); setOdabraniId(null); }} />
+            </label>
+            <label>
+              <span>Kategorija otpada</span>
+              <select value={kategorijaId} disabled={ucitavanje || !!greska}
+                onChange={(e) => { setKategorijaId(e.target.value); setOdabraniId(null); }}>
+                <option value="">Sve kategorije</option>
+                {kategorije.map((k) => <option key={k.id} value={String(k.id)}>{k.naziv}</option>)}
+              </select>
+            </label>
+            <button type="button" className="redar-gumb" disabled={!pretraga && !kategorijaId}
+              onClick={() => { setPretraga(''); setKategorijaId(''); setOdabraniId(null); }}>Očisti filtre</button>
+          </div>
+          {!ucitavanje && !greska && <p role="status">Prikazano odlagališta: <strong>{filtrirane.length}</strong> od {dostupne.length}</p>}
+        </section>
+      )}
+
       <div className="redar-raspored">
         <section className="redar-popis" aria-label="Popis za eko-udrugu">
           {popis.map((stavka) => (
@@ -107,7 +145,11 @@ export default function EkoUdruga() {
           ))}
           {prikaz === 'ODLAGALISTA' && ucitavanje && <p role="status">Učitavanje odlagališta...</p>}
           {prikaz === 'ODLAGALISTA' && greska && <p role="alert">{greska}</p>}
-          {popis.length === 0 && !(prikaz === 'ODLAGALISTA' && (ucitavanje || greska)) && <p className="redar-prazno">Trenutačno nema stavki.</p>}
+          {popis.length === 0 && !(prikaz === 'ODLAGALISTA' && (ucitavanje || greska)) && (
+            <p className="redar-prazno">{prikaz === 'ODLAGALISTA'
+              ? dostupne.length > 0 ? 'Nema odlagališta koja odgovaraju pretrazi i odabranoj kategoriji. Promijeni uvjete ili očisti filtre.' : 'Trenutačno nema dostupnih odlagališta.'
+              : 'Trenutačno nema stavki.'}</p>
+          )}
         </section>
 
         {odabrano && (
@@ -129,7 +171,7 @@ export default function EkoUdruga() {
                 </dl>
                 <div className="udruga-karta" aria-label="Karta dostupnih odlagališta">
                   <KartaPrijava
-                    prijave={dostupne}
+                    prijave={filtrirane}
                     odabranaPrijavaId={odabrano.id}
                     onOdaberi={setOdabraniId}
                   />

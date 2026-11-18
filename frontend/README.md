@@ -6,4 +6,6 @@ Novi prikaz eko-udruge uključen je u glavnu aplikaciju i prikazuje se korisniku
 
 U detalje dostupnog odlagališta dodani su fotografija otpada te datum i vrijeme prijave. Ako fotografija ili datum nisu dostupni, prikazuje se kratka poruka.
 
+Na stranici eko-udruge dodani su pretraživanje odlagališta po adresi ili broju prijave i filtriranje po kategoriji otpada. Pretraga i filter mogu se koristiti zajedno. Prikazuje se broj pronađenih odlagališta, a gumb „Očisti filtre” vraća cijeli popis.
+
 Zaseban lokalni demo bez Google prijave nije dio repozitorija i nije dostupan samim preuzimanjem projekta.
