@@ -7,7 +7,12 @@ import java.nio.file.Path;
 import java.util.Map;
 import java.util.UUID;
 
+import com.cloudinary.Cloudinary;
+import com.cloudinary.Transformation;
+import com.cloudinary.utils.ObjectUtils;
 import jakarta.annotation.PostConstruct;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -17,23 +22,17 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 @Service
 public class SlikaService {
+    private static final Logger log = LoggerFactory.getLogger(SlikaService.class);
+
     private static final Map<String, String> DOPUSTENI_TIPOVI = Map.of(
             "image/jpeg", ".jpg",
-            "image/png", ".png",
-            "image/webp", ".webp"
+            "image/png", ".png"
     );
 
-    @Value("${app.upload-dir}")
-    private String uploadDir;
+    private final Cloudinary cloudinary;
 
-    private Path mapa;
-
-    @PostConstruct
-    void pripremiMapu() throws IOException {
-        mapa = Path.of(uploadDir).toAbsolutePath().normalize();
-        Files.createDirectories(mapa);      // stvara uploads/ ako ne postoji
-        // kasnije će biti cloudinary.uploader().upload(
-        // deleta se kasnije kada setupamo platformu za slike
+    public SlikaService(Cloudinary cloudinary) {
+        this.cloudinary = cloudinary;
     }
 
     // sprema sliku i vraća njezin puni URL
@@ -44,19 +43,21 @@ public class SlikaService {
 
         String ekstenzija = DOPUSTENI_TIPOVI.get(slika.getContentType());
         if (ekstenzija == null) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Slika mora biti JPG, PNG ili WEBP");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Slika mora biti JPG ili PNG");
         }
 
-        String ime = UUID.randomUUID() + ekstenzija;    // nasumično ime, originalno se ne koristi
-
-        try (InputStream ulaz = slika.getInputStream()) {
-            Files.copy(ulaz, mapa.resolve(ime));
-        } catch (IOException e) {
+        try {
+            Map<?, ?> rezultat = cloudinary.uploader().upload(slika.getBytes(), ObjectUtils.asMap(
+                    "folder", "ecosentry/prijave",      // mapa u Cloudinary konzoli
+                    "resource_type", "image",
+                    "transformation", new Transformation<>()
+                            .width(1400).crop("limit")  // smanji ako je šira od 1400px
+                            .quality("auto")
+            ));
+            return (String) rezultat.get("secure_url");    // https adresa slike, ide u bazu
+        } catch (IOException | RuntimeException e) {
+            log.error("Upload slike na Cloudinary nije uspio", e);     // testiranje
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Spremanje slike nije uspjelo");
         }
-        return ServletUriComponentsBuilder.fromCurrentContextPath()   // http://localhost:8080 ili Render adresa
-                .path("/uploads/")
-                .path(ime)
-                .toUriString();
     }
 }
