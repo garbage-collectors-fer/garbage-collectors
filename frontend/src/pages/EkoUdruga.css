@@ -77,6 +77,13 @@ body:has(.udruga-fotografija-pregled[open]) { overflow: hidden; }
 .udruga-stranica .redar-gumb { display: inline-flex; align-items: center; justify-content: center; gap: 9px; padding: 11px 18px; border-width: 1px; border-radius: 10px; font-size: 15px; }
 .udruga-stranica .redar-gumb-glavni { box-shadow: 0 2px 4px #304e3812; }
 .udruga-panel .udruga-napomena { padding-top: 16px; border-top: 1px solid #edf1ee; color: #728076; opacity: 1; font-size: 12px; }
+.udruga-stanje { display: flex; flex-direction: column; align-items: center; gap: 16px; padding: 36px 20px; border: 1px solid #dce8df; border-radius: 14px; background: #fff; text-align: center; }
+.udruga-stanje-ikona { display: grid; place-items: center; width: 52px; height: 52px; border-radius: 50%; background: #eef6f0; color: #44633f; }
+.udruga-stanje-ikona .udruga-ikona { width: 26px; height: 26px; }
+.udruga-stanje h2 { margin: 0 0 8px; color: #44633f; font-size: 22px; }
+.udruga-stanje p { max-width: 540px; margin: 0; color: #647768; font-size: 16px; }
+.udruga-stanje-greska { border-color: #e5c9a1; }
+.udruga-stanje-greska .udruga-stanje-ikona { background: #fff4df; color: #805b25; }
 body:has(.udruga-stranica) {
   min-height: 100vh;
   background-color: #f7f7ef;

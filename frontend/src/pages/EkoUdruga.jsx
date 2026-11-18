@@ -20,12 +20,26 @@ function Ikona({ naziv }) {
     trazi: 'M21 21l-5-5M18 10a8 8 0 1 1-16 0 8 8 0 0 1 16 0Z',
     povecaj: 'M8 3H3v5m13-5h5v5M3 16v5h5m13-5v5h-5',
     zatvori: 'm6 6 12 12M6 18 18 6',
+    upozorenje: 'M12 3 2 21h20L12 3Zm0 6v5m0 3v1',
   };
   return <svg className="udruga-ikona" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" focusable="false"><path d={putanje[naziv]} /></svg>;
 }
 
 function normalizirajPretragu(tekst) {
   return tekst.toLocaleLowerCase('hr').normalize('NFD').replace(/[\u0300-\u036f]/g, '').replaceAll('đ', 'd');
+}
+
+function StanjePopisa({ ikona, naslov, opis, greska = false, radnja, tekstRadnje }) {
+  return (
+    <section className={'udruga-stanje' + (greska ? ' udruga-stanje-greska' : '')}>
+      <span className="udruga-stanje-ikona"><Ikona naziv={ikona} /></span>
+      <div role={greska ? 'alert' : 'status'}>
+        <h2>{naslov}</h2>
+        <p>{opis}</p>
+      </div>
+      {radnja && <button type="button" className="redar-gumb" onClick={radnja}>{tekstRadnje}</button>}
+    </section>
+  );
 }
 
 function FotografijaOdlagalista({ prijava }) {
@@ -84,13 +98,33 @@ export default function EkoUdruga() {
   const [pretraga, setPretraga] = useState('');
   const [kategorijaId, setKategorijaId] = useState('');
   const [redoslijed, setRedoslijed] = useState('NAJNOVIJE');
+  const [pokusaj, setPokusaj] = useState(0);
 
   useEffect(() => {
+    let aktivan = true;
+    setUcitavanje(true);
+    setGreska(null);
     dohvatiPrijave()
-      .then((dohvaceno) => setPrijave(dohvaceno))
-      .catch(() => setGreska('Prijave se nisu uspjele učitati. Pokušaj osvježiti stranicu.'))
-      .finally(() => setUcitavanje(false));
-  }, []);
+      .then((dohvaceno) => {
+        if (!Array.isArray(dohvaceno)) throw new Error('Neispravan odgovor poslužitelja.');
+        if (aktivan) setPrijave(dohvaceno);
+      })
+      .catch(() => {
+        if (aktivan) setGreska('Provjeri internetsku vezu i pokušaj ponovno. Ako se greška ponavlja, pokušaj malo kasnije.');
+      })
+      .finally(() => { if (aktivan) setUcitavanje(false); });
+    return () => { aktivan = false; };
+  }, [pokusaj]);
+
+  function ponoviUcitavanje() {
+    setPokusaj((prethodni) => prethodni + 1);
+  }
+
+  function ocistiFiltre() {
+    setPretraga('');
+    setKategorijaId('');
+    setOdabraniId(null);
+  }
 
   const dostupne = prijave.filter((p) => p.provjerena && p.status === 'PRIJAVLJENO' && p.nacinSanacije === 'UDRUGA');
   const kategorije = [...new Map(dostupne.filter((p) => p.kategorija).map((p) => [String(p.kategorija.id), p.kategorija])).values()]
@@ -114,9 +148,24 @@ export default function EkoUdruga() {
   const odabrano = popis.find((stavka) => stavka.id === odabraniId) || popis[0];
   const kartice = [
     { id: 'AKCIJE', naziv: 'Moje akcije', ikona: 'kalendar', broj: akcije.filter((a) => !a.zavrsena).length },
-    { id: 'ODLAGALISTA', naziv: 'Dostupna odlagališta', ikona: 'lokacija', broj: dostupne.length },
+    { id: 'ODLAGALISTA', naziv: 'Dostupna odlagališta', ikona: 'lokacija', broj: ucitavanje || greska ? '—' : dostupne.length },
     { id: 'ZAVRSENE', naziv: 'Završene akcije', ikona: 'potvrda', broj: akcije.filter((a) => a.zavrsena).length },
   ];
+
+  let stanje = null;
+  if (prikaz === 'ODLAGALISTA') {
+    if (ucitavanje) {
+      stanje = { ikona: 'sat', naslov: 'Učitavanje odlagališta...', opis: 'Dohvaćamo dostupne prijave. Pričekaj trenutak.' };
+    } else if (greska) {
+      stanje = { ikona: 'upozorenje', naslov: 'Odlagališta se nisu uspjela učitati', opis: greska, greska: true, radnja: ponoviUcitavanje, tekstRadnje: 'Pokušaj ponovno' };
+    } else if (dostupne.length === 0) {
+      stanje = { ikona: 'lokacija', naslov: 'Trenutačno nema dostupnih odlagališta', opis: 'Ovdje će se prikazati provjerene prijave koje redar proslijedi eko-udrugama.', radnja: ponoviUcitavanje, tekstRadnje: 'Osvježi popis' };
+    } else if (filtrirane.length === 0) {
+      stanje = { ikona: 'trazi', naslov: 'Nema rezultata pretrage', opis: 'Nijedno odlagalište ne odgovara pretrazi i odabranoj kategoriji. Promijeni uvjete ili očisti filtre.', radnja: ocistiFiltre, tekstRadnje: 'Očisti filtre' };
+    }
+  } else if (popis.length === 0) {
+    stanje = { ikona: 'kalendar', naslov: prikaz === 'ZAVRSENE' ? 'Još nema završenih akcija' : 'Još nema planiranih akcija', opis: 'Akcije će se prikazati ovdje kada budu dostupne.' };
+  }
 
   return (
     <div className="redar-stranica udruga-stranica">
@@ -139,7 +188,7 @@ export default function EkoUdruga() {
         ))}
       </div>
 
-      {prikaz === 'ODLAGALISTA' && (
+      {prikaz === 'ODLAGALISTA' && !ucitavanje && !greska && dostupne.length > 0 && (
         <section className="udruga-pretraga" aria-label="Pretraživanje odlagališta">
           <div className="udruga-pretraga-polja">
             <label className="udruga-trazilica">
@@ -163,13 +212,13 @@ export default function EkoUdruga() {
               </select>
             </label>
             <button type="button" className="redar-gumb" disabled={!pretraga && !kategorijaId}
-              onClick={() => { setPretraga(''); setKategorijaId(''); setOdabraniId(null); }}>Očisti filtre</button>
+              onClick={ocistiFiltre}>Očisti filtre</button>
           </div>
           {!ucitavanje && !greska && <p role="status">Prikazano odlagališta: <strong>{filtrirane.length}</strong> od {dostupne.length}</p>}
         </section>
       )}
 
-      <div className="redar-raspored">
+      {stanje ? <StanjePopisa {...stanje} /> : <div className="redar-raspored">
         <section className="redar-popis" aria-label="Popis za eko-udrugu">
           {popis.map((stavka) => (
             <button key={stavka.id} type="button" aria-pressed={odabrano?.id === stavka.id} className={'redar-stavka' + (odabrano?.id === stavka.id ? ' redar-stavka-odabrana' : '')} onClick={() => setOdabraniId(stavka.id)}>
@@ -188,13 +237,6 @@ export default function EkoUdruga() {
               </span>
             </button>
           ))}
-          {prikaz === 'ODLAGALISTA' && ucitavanje && <p role="status">Učitavanje odlagališta...</p>}
-          {prikaz === 'ODLAGALISTA' && greska && <p role="alert">{greska}</p>}
-          {popis.length === 0 && !(prikaz === 'ODLAGALISTA' && (ucitavanje || greska)) && (
-            <p className="redar-prazno">{prikaz === 'ODLAGALISTA'
-              ? dostupne.length > 0 ? 'Nema odlagališta koja odgovaraju pretrazi i odabranoj kategoriji. Promijeni uvjete ili očisti filtre.' : 'Trenutačno nema dostupnih odlagališta.'
-              : 'Trenutačno nema stavki.'}</p>
-          )}
         </section>
 
         {odabrano && (
@@ -256,7 +298,7 @@ export default function EkoUdruga() {
             <p className="udruga-napomena">Prikaz koristi probne podatke. Gumbi za izmjene zasad su samo prikaz dizajna.</p>
           </section>
         )}
-      </div>
+      </div>}
     </div>
   );
 }

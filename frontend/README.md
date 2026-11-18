@@ -14,4 +14,6 @@ Fotografija odlagališta sada se klikom može otvoriti preko cijele stranice kak
 
 Stranica eko-udruge prilagođena je mobitelima. Kartice i filtri na manjim ekranima prikazuju se jedan ispod drugoga, a gumbi su širi kako bi ih bilo lakše pritisnuti. Prilagođene su veličine fotografije i karte, a duže adrese prelamaju se u više redaka.
 
+Na stranici eko-udruge dodane su jasnije poruke tijekom učitavanja odlagališta, kod greške i kada je popis prazan. Ako učitavanje ne uspije, gumb „Pokušaj ponovno” ponovno dohvaća podatke bez osvježavanja cijele stranice. Kada nema dostupnih odlagališta, može se odabrati „Osvježi popis”, a ako pretraga nema rezultata, prikazuje se poruka s gumbom „Očisti filtre”.
+
 Zaseban lokalni demo bez Google prijave nije dio repozitorija i nije dostupan samim preuzimanjem projekta.
