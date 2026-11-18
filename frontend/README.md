@@ -8,4 +8,6 @@ U detalje dostupnog odlagališta dodani su fotografija otpada te datum i vrijeme
 
 Na stranici eko-udruge dodani su pretraživanje odlagališta po adresi ili broju prijave i filtriranje po kategoriji otpada. Pretraga i filter mogu se koristiti zajedno. Prikazuje se broj pronađenih odlagališta, a gumb „Očisti filtre” vraća cijeli popis.
 
+Dodano je sortiranje odlagališta po datumu prijave. Može se odabrati „Najnovije prvo” ili „Najstarije prvo”, a na početku se prikazuju najnovije prijave. Sortiranje radi zajedno s pretragom i filterom, a datum prijave vidi se i na popisu odlagališta.
+
 Zaseban lokalni demo bez Google prijave nije dio repozitorija i nije dostupan samim preuzimanjem projekta.

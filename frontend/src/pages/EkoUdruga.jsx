@@ -62,6 +62,7 @@ export default function EkoUdruga() {
   const [greska, setGreska] = useState(null);
   const [pretraga, setPretraga] = useState('');
   const [kategorijaId, setKategorijaId] = useState('');
+  const [redoslijed, setRedoslijed] = useState('NAJNOVIJE');
 
   useEffect(() => {
     dohvatiPrijave()
@@ -79,7 +80,16 @@ export default function EkoUdruga() {
       || String(p.id).includes(upit.replace(/^#/, ''));
     return odgovaraPretrazi && (!kategorijaId || String(p.kategorija?.id) === kategorijaId);
   });
-  const popis = prikaz === 'ODLAGALISTA' ? filtrirane : akcije.filter((a) => a.zavrsena === (prikaz === 'ZAVRSENE'));
+  const sortirane = [...filtrirane].sort((a, b) => {
+    const datumA = a.datum ? new Date(a.datum).getTime() : NaN;
+    const datumB = b.datum ? new Date(b.datum).getTime() : NaN;
+    // Prijave bez ispravnog datuma uvijek idu na kraj popisa.
+    if (Number.isNaN(datumA) && Number.isNaN(datumB)) return 0;
+    if (Number.isNaN(datumA)) return 1;
+    if (Number.isNaN(datumB)) return -1;
+    return redoslijed === 'NAJSTARIJE' ? datumA - datumB : datumB - datumA;
+  });
+  const popis = prikaz === 'ODLAGALISTA' ? sortirane : akcije.filter((a) => a.zavrsena === (prikaz === 'ZAVRSENE'));
   const odabrano = popis.find((stavka) => stavka.id === odabraniId) || popis[0];
   const kartice = [
     { id: 'AKCIJE', naziv: 'Moje akcije', ikona: 'kalendar', broj: akcije.filter((a) => !a.zavrsena).length },
@@ -124,6 +134,13 @@ export default function EkoUdruga() {
                 {kategorije.map((k) => <option key={k.id} value={String(k.id)}>{k.naziv}</option>)}
               </select>
             </label>
+            <label>
+              <span>Sortiraj po datumu prijave</span>
+              <select value={redoslijed} onChange={(e) => { setOdabraniId(odabrano?.id ?? null); setRedoslijed(e.target.value); }}>
+                <option value="NAJNOVIJE">Najnovije prvo</option>
+                <option value="NAJSTARIJE">Najstarije prvo</option>
+              </select>
+            </label>
             <button type="button" className="redar-gumb" disabled={!pretraga && !kategorijaId}
               onClick={() => { setPretraga(''); setKategorijaId(''); setOdabraniId(null); }}>Očisti filtre</button>
           </div>
@@ -140,6 +157,13 @@ export default function EkoUdruga() {
                 <span className="redar-stavka-naslov">{prikaz === 'ODLAGALISTA' ? nazivKategorije(stavka.kategorija) : stavka.naziv}</span>
                 <span className="redar-stavka-detalj">{stavka.lokacija || stavka.adresa || `${stavka.lat.toFixed(4)}, ${stavka.lng.toFixed(4)}`}</span>
                 <span className="udruga-stavka-datum"><Ikona naziv={prikaz === 'ODLAGALISTA' ? 'potvrda' : 'kalendar'} />{prikaz === 'ODLAGALISTA' ? 'Dostupno za akciju' : stavka.datum}</span>
+                {prikaz === 'ODLAGALISTA' && (
+                  <span className="udruga-stavka-datum"><Ikona naziv="kalendar" />
+                    {stavka.datum && !Number.isNaN(new Date(stavka.datum).getTime())
+                      ? <time dateTime={stavka.datum}>Prijavljeno: {formatirajDatum(stavka.datum)}</time>
+                      : 'Datum nije dostupan.'}
+                  </span>
+                )}
               </span>
             </button>
           ))}
