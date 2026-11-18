@@ -16,7 +16,6 @@ Od aplikacije očekujemo da građanin može na jednom mjestu prijaviti otpad i p
 | Građanin kao volonter | Želi sudjelovati u čišćenju svoje okoline i lako saznati kada i gdje se održavaju akcije. |
 | Eko-udruga | Želi organizirati akcije čišćenja na mjestima gdje su potrebne i okupiti dovoljno volontera. |
 | Komunalni redar (administrator) | Želi dobivati točne i provjerene prijave kako bi brzo odlučio tko će očistiti lokaciju, i spriječiti zloupotrebu sustava. |
-| Komunalna tvrtka | Prima službene naloge za čišćenje otpada koji volonteri ne smiju ili ne mogu čistiti. |
 
 ## 1.3 Granice projekta
 
@@ -35,7 +34,6 @@ Od aplikacije očekujemo da građanin može na jednom mjestu prijaviti otpad i p
 **Izvan opsega ili odgođeno:**
 - Posebna mobilna aplikacija. Dostupna je samo web aplikacija.
 - Push i e-mail obavijesti. Obavijesti se vide samo unutar aplikacije.
-- Pravo slanje naloga komunalnoj tvrtki. Aplikacija napravi nalog i promijeni status prijave u "Službena sanacija", ali se ne spaja na sustave vanjskih tvrtki.
 - Automatsko prepoznavanje otpada na slici. Lažne prijave redar odbacuje ručno.
 
 **Vanjske ovisnosti:**
