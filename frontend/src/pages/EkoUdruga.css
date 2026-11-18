@@ -23,6 +23,10 @@
 .udruga-volonteri progress::-webkit-progress-value { background: #5CAB7D; border-radius: 999px; }
 .udruga-volonteri > span { font-size: 14px; }
 .udruga-panel .udruga-napomena { margin: 22px 0 0; font-size: 13px; opacity: .7; }
+.udruga-fotografija { margin: 0 0 22px; border: 1px solid #dce8df; border-radius: 12px; overflow: hidden; background: #f4f8f5; }
+.udruga-fotografija img { display: block; width: 100%; height: 280px; object-fit: contain; }
+.udruga-fotografija figcaption { padding: 10px 14px; border-top: 1px solid #dce8df; font-size: 13px; color: #647768; }
+.udruga-fotografija-prazna { display: flex; align-items: center; justify-content: center; gap: 10px; min-height: 150px; padding: 20px; color: #647768; }
 .udruga-karta { margin: 20px 0; border: 1px solid #dce8df; border-radius: 12px; overflow: hidden; background: #f4f8f5; }
 .udruga-karta .karta { height: 360px; border-radius: 0; }
 .udruga-karta > p { margin: 0; padding: 10px 14px; font-size: 13px; color: #647768; }

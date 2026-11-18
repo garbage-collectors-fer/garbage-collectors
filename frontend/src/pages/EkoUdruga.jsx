@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import KartaPrijava from '../components/KartaPrijava.jsx';
 import { dohvatiPrijave } from '../services/prijaveServis.js';
-import { nazivKategorije } from '../services/oznake.js';
+import { nazivKategorije, formatirajDatum } from '../services/oznake.js';
 import './KomunalniRedar.css';
 import './EkoUdruga.css';
 
@@ -19,6 +19,28 @@ function Ikona({ naziv }) {
     oznaka: 'M3 3h8l10 10-8 8L3 11V3Zm5 5h.01',
   };
   return <svg className="udruga-ikona" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" focusable="false"><path d={putanje[naziv]} /></svg>;
+}
+
+function FotografijaOdlagalista({ prijava }) {
+  const [greskaSlike, setGreskaSlike] = useState(false);
+
+  return (
+    <figure className="udruga-fotografija">
+      {prijava.slikaUrl && !greskaSlike ? (
+        <img
+          src={prijava.slikaUrl}
+          alt={`Fotografija otpada na odlagalištu, prijava #${prijava.id}`}
+          onError={() => setGreskaSlike(true)}
+        />
+      ) : (
+        <div className="udruga-fotografija-prazna">
+          <Ikona naziv="slika" />
+          <span>Fotografija nije dostupna.</span>
+        </div>
+      )}
+      <figcaption>Fotografija iz prijave odlagališta</figcaption>
+    </figure>
+  );
 }
 
 const akcije = [
@@ -95,8 +117,13 @@ export default function EkoUdruga() {
                 <span className="udruga-oznaka"><Ikona naziv="potvrda" />Provjerena prijava #{odabrano.id}</span>
                 <h2>{odabrano.adresa || `Odlagalište #${odabrano.id}`}</h2>
                 <p>Ovu je prijavu redar proslijedio eko-udrugama. Dostupna je za organiziranje akcije čišćenja.</p>
+                <FotografijaOdlagalista key={`${odabrano.id}-${odabrano.slikaUrl}`} prijava={odabrano} />
                 <dl className="redar-podaci">
                   <dt><Ikona naziv="oznaka" />Kategorija</dt><dd>{nazivKategorije(odabrano.kategorija)}</dd>
+                  <dt><Ikona naziv="kalendar" />Datum prijave</dt>
+                  <dd>{odabrano.datum && !Number.isNaN(new Date(odabrano.datum).getTime())
+                    ? <time dateTime={odabrano.datum}>{formatirajDatum(odabrano.datum)}</time>
+                    : 'Datum nije dostupan.'}</dd>
                   <dt><Ikona naziv="potvrda" />Status</dt><dd>Prijavljeno</dd>
                   <dt><Ikona naziv="lokacija" />Lokacija</dt><dd>{odabrano.lat.toFixed(4)}, {odabrano.lng.toFixed(4)}</dd>
                 </dl>
