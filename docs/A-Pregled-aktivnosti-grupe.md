@@ -76,6 +76,9 @@ Pripremljen je lokalni prototip stranice eko-udruge prema stilu stranice komunal
 | README repozitorija i naslovnica dokumentacije | Ivana Markovinović | 1.5 | PR #26, #29; `README.md`, `docs/Home.md` |
 | PDF dokumentacije za prvi ciklus | Ivana Markovinović | 1 | PR #35; `docs/deliverables/PROINZ26_G01.2_EcoSentry_v1.pdf` |
 
+| Rad na stranici gradjanina | Aki Pandžić | 4 | `Gradjanin.jsx`, `Gradjanin.css` |
+| Rad na dokumentaciji | Aki Pandžić | 1 | `docs/1-Projekt.md`, `docs/2-Analiza-zahtjeva.md`, `docs\3-Obrasci-uporabe.md` |
+
 Koristite aktivnosti specifične za projekt umjesto obaveznog retka za svako poglavlje dokumentacije ili svaki UML dijagram. Tim treba dosljedno bilježiti sate i izbjegavati dvostruko brojanje zajedničkog rada; reprezentativni rezultat objašnjava što je prijavljeni trud proizveo. Sati su samoprijavljena procjena uloženog rada, a ne mjera kvalitete niti zamjena za pregled koda i artefakata.
 
 <details>
