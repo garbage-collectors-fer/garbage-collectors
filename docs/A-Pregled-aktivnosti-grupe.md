@@ -84,7 +84,7 @@ Pripremljen je lokalni prototip stranice eko-udruge prema stilu stranice komunal
 | Izrada stranice eko-udruge, uključujući strukturu sučelja i prikaz dostupnih funkcionalnosti | Leo Žigman | 2 | `EkoUdruga.jsx`, `EkoUdruga.css` |
 | Implementacija prikaza akcija i dostupnih odlagališta | Leo Žigman | 2.5 | `EkoUdruga.jsx`, `EkoUdruga.css` |
 | Implementacija prikaza detalja odabrane stavke i pripadajućih elemenata sučelja | Leo Žigman | 2 | `EkoUdruga.jsx`, `EkoUdruga.css` |
-| Izrada paketa od deset SVG ikonica i pripadajuće React komponente | Leo Žigman | 2.5 | `assets/icons/`, React komponenta za ikonice |
+| Izrada paketa od deset SVG ikonica i pripadajuće React komponente | Leo Žigman | 3 | `assets/icons/`, React komponenta za ikonice |
 | Izrada kratkih uputa za korištenje i integraciju ikonica za ostale članove frontend tima | Leo Žigman | 1 | Dokumentacija/upute za korištenje ikonica ||
 
 Koristite aktivnosti specifične za projekt umjesto obaveznog retka za svako poglavlje dokumentacije ili svaki UML dijagram. Tim treba dosljedno bilježiti sate i izbjegavati dvostruko brojanje zajedničkog rada; reprezentativni rezultat objašnjava što je prijavljeni trud proizveo. Sati su samoprijavljena procjena uloženog rada, a ne mjera kvalitete niti zamjena za pregled koda i artefakata.
