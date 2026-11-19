@@ -108,10 +108,12 @@ Potrebna su dva terminala.
 
 **Terminal 1 – backend (Spring Boot, `http://localhost:8080`):**
 
-```bash
+```cmd
 cd backend
-./mvnw spring-boot:run        # Windows: mvnw.cmd spring-boot:run
+mvnw.cmd spring-boot:run
 ```
+
+U PowerShellu koristi se `.\mvnw.cmd spring-boot:run` (naredba se izvršava iz mape `backend/`), a na Linuxu/macOS-u `./mvnw spring-boot:run`.
 
 **Terminal 2 – frontend (Vite, `http://localhost:5173`):**
 
@@ -134,9 +136,22 @@ npm run dev
 
 ### 6. Pokretanje automatskih testova
 
+Windows CMD (iz mape `backend/`):
+
+```cmd
+mvnw.cmd clean test
+```
+
+PowerShell (iz mape `backend/`):
+
+```powershell
+.\mvnw.cmd clean test
+```
+
+Linux/macOS (iz mape `backend/`):
+
 ```bash
-cd backend
-./mvnw test
+./mvnw clean test
 ```
 
 Automatizirani testovi ne trebaju pristup zajedničkoj Neon bazi ni Google računu. Repozitorijski testovi koriste testni H2 kontekst, a servisni i kontrolerski testovi izoliraju ovisnosti lažnim objektima (vidi poglavlje 5).
