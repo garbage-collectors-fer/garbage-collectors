@@ -80,7 +80,12 @@ Pripremljen je lokalni prototip stranice eko-udruge prema stilu stranice komunal
 | Automatskih testovi, ispitivanje sustava i prikupljanje dokaza | Bruno Hrgovan | 3 | `backend/src/test/`, `tests/evidence/` |
 | Izrada dokumentacije za ispitivanje i postavljanje sustava (dokumenti 5 i 6) | Bruno Hrgovan | 1 | `docs/5-Ispitivanje.md`, `docs/6-Postavljanje-instalacija-i-konfiguracija.md` |
 | Izrada poglavlja 2.6 – Sljedivost zahtjeva | Bruno Hrgovan | 0.5 | `docs/2-Analiza-zahtjeva.md` |
-| Dopuna obrazaca uporabe, izrada pripadajućeg UML dijagrama i ažuriranje dokumentacije aktivnosti grupe | Bruno Hrgovan | 2 | `docs/3-Obrasci-uporabe.md`, `docs/puml/3-1-ecosentry-system-UC.puml`, `docs/A-Pregled-aktivnosti-grupe.md` ||
+| Dopuna obrazaca uporabe, izrada pripadajućeg UML dijagrama i ažuriranje dokumentacije aktivnosti grupe | Bruno Hrgovan | 2 | `docs/3-Obrasci-uporabe.md`, `docs/puml/3-1-ecosentry-system-UC.puml`, `docs/A-Pregled-aktivnosti-grupe.md` |
+| Izrada stranice eko-udruge, uključujući strukturu sučelja i prikaz dostupnih funkcionalnosti | Leo Žigman | 2 | `EkoUdruga.jsx`, `EkoUdruga.css` |
+| Implementacija prikaza akcija i dostupnih odlagališta | Leo Žigman | 2.5 | `EkoUdruga.jsx`, `EkoUdruga.css` |
+| Implementacija prikaza detalja odabrane stavke i pripadajućih elemenata sučelja | Leo Žigman | 2 | `EkoUdruga.jsx`, `EkoUdruga.css` |
+| Izrada paketa od deset SVG ikonica i pripadajuće React komponente | Leo Žigman | 3 | `assets/icons/`, React komponenta za ikonice |
+| Izrada kratkih uputa za korištenje i integraciju ikonica za ostale članove frontend tima | Leo Žigman | 1 | Dokumentacija/upute za korištenje ikonica ||
 
 Koristite aktivnosti specifične za projekt umjesto obaveznog retka za svako poglavlje dokumentacije ili svaki UML dijagram. Tim treba dosljedno bilježiti sate i izbjegavati dvostruko brojanje zajedničkog rada; reprezentativni rezultat objašnjava što je prijavljeni trud proizveo. Sati su samoprijavljena procjena uloženog rada, a ne mjera kvalitete niti zamjena za pregled koda i artefakata.
 
