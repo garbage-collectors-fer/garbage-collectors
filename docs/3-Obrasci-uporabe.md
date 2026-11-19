@@ -153,6 +153,6 @@
 
 | Provjera | Rezultat provjere                                                                                                           |
 | --- |-----------------------------------------------------------------------------------------------------------------------------|
-| Zahtjev | Svaki UC povezan je s barem jednim zahtjevom iz 2.1, a svi zahtjevi Must i Should (F-001 do F-031) pokriveni su barem jednim UC-om. Zahtjevi Won't (F-032 do F-034) nisu obuhvaćeni.                                                           |
+| Zahtjev | Svaki UC povezan je s barem jednim zahtjevom iz 2.1, a svi zahtjevi Must, Should i Could (F-001 do F-031) pokriveni su barem jednim UC-om. Zahtjevi Won't (F-032 do F-034) nisu obuhvaćeni.                                                           |
 | Akter |Primarni akteri su A-01 do A-03, a sekundarni A-04 do A-07 iz 2.3. Komunalna tvrtka (D-01) nije akter jer ne koristi aplikaciju.                                         |
-| Aplikacija |Obrasci uporabe opisuju planirano ponašanje sustava. Obrasci UC-001 do UC-009 pokrivaju zahtjeve s prioritetom Must (MVP iz poglavlja 2), a UC-010 i UC-011 većinom pokrivaju zahtjeve s prioritetom Should. |
+| Aplikacija |Obrasci uporabe opisuju planirano ponašanje sustava. Obrasci UC-001 do UC-009 pokrivaju zahtjeve s prioritetom Must (MVP iz poglavlja 2), a UC-010 i UC-011 pokrivaju zahtjeve nižeg prioriteta (Should i Could). |
