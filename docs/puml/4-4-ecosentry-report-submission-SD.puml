@@ -1,0 +1,127 @@
+' ==============================================================================
+' 4-4-ecosentry-report-submission-SD.puml
+'
+' Svrha:    Prikazuje podnošenje prijave otpada (UC-002): određivanje lokacije,
+'           provjere na klijentu, provjeru prijave i uloge na poslužitelju,
+'           pohranu fotografije i spremanje prijave, uz najvažnije
+'           neuspješne grane.
+' Autor:
+' AI:       Claude je izradio nacrt dijagrama prema kodu (Gradjanin.jsx,
+'           prijaveServis.js, SecurityConfig, PrijavaController, PrijavaService,
+'           SlikaService); autor je provjerio da dijagram odgovara kodu.
+' Praćenje: Pri promjeni provjera, HTTP statusa ili pohrane fotografija
+'           (npr. prelazak na Cloudinary) ažurirati model.
+'
+' Diagram level: Runtime behaviour (representative scenario)
+' Diagram type:  UML Sequence Diagram
+' Version:       1.0
+' ==============================================================================
+
+@startuml
+title Podnošenje prijave otpada (UC-002)
+
+skinparam maxMessageSize 160
+skinparam shadowing false
+skinparam defaultFontName Arial
+skinparam sequenceMessageAlign center
+skinparam ArrowColor #212529
+
+skinparam sequence {
+    ParticipantBackgroundColor #E7F1FF
+    ParticipantBorderColor #0D6EFD
+    ActorBackgroundColor #F8F9FA
+    ActorBorderColor #212529
+    LifeLineBorderColor #212529
+}
+
+autonumber
+
+' ==============================================================================
+' Sudionici
+' ==============================================================================
+actor "Građanin" as User
+participant "Web-klijent\n(Gradjanin.jsx,\nprijaveServis)" as Web <<UI>>
+participant "Geolokacija\npreglednika" as Geo <<External>>
+participant "Spring Security\n(sesija, CSRF, uloga)" as Sec <<Security>>
+participant "PrijavaController" as Ctrl <<API>>
+participant "PrijavaService" as Svc <<Application>>
+participant "SlikaService" as Img <<Application>>
+database "PostgreSQL\n(Neon)" as DB <<Persistence>>
+
+' ==============================================================================
+' Faza 1: određivanje lokacije
+' ==============================================================================
+User -> Web++ : otvori obrazac „Nova prijava”
+Web -> Geo++ : getCurrentPosition()
+
+alt pristup lokaciji dopušten
+  Geo --> Web : koordinate
+  Web --> User : pribadača na trenutnoj lokaciji
+else pristup odbijen ili nije podržan
+  Geo --> Web-- : pogreška
+  Web --> User : „Lokacija nije dopuštena. Odaberi mjesto na karti.”
+  User -> Web : klik na kartu
+end
+
+' ==============================================================================
+' Faza 2: fotografija, kategorija i provjere na klijentu
+' ==============================================================================
+User -> Web : odaberi fotografiju i kategoriju
+
+alt fotografija nije JPG/PNG ili je veća od 10 MB
+  Web --> User : poruka o neispravnoj fotografiji
+end
+
+User -> Web : „Pošalji”
+
+alt nedostaje lokacija, kategorija ili fotografija
+  Web --> User : popis onoga što nedostaje\n(uneseni podaci ostaju)
+else svi podaci uneseni
+
+  ' ============================================================================
+  ' Faza 3: poslužitelj
+  ' ============================================================================
+  Web -> Sec++ : POST /api/prijave (multipart: slika, lat, lng, kategorija)\nkolačić sesije + X-XSRF-TOKEN
+
+  alt nema sesije ili XSRF tokena
+    Sec --> Web : 401 / 403
+  else korisnik nema ulogu GRADANIN
+    Sec --> Web : 403 „Nemate pravo na tu radnju”
+  else korisnik prijavljen kao građanin
+    Sec -> Ctrl++ : stvori(slika, lat, lng, kategorijaId, user)
+    Ctrl -> Svc++ : stvori(email, slika, lat, lng, kategorijaId)
+    Svc -> DB : pronađi korisnika po e-mailu
+    DB --> Svc : Korisnik
+
+    alt korisnik je blokiran
+      Svc --> Ctrl : ResponseStatusException 403
+      Ctrl --> Web : 403 „Vaš račun je blokiran”
+    else lokacija izvan raspona ili kategorija ne postoji
+      Svc --> Ctrl : ResponseStatusException 400
+      Ctrl --> Web : 400 s porukom
+    else podaci ispravni
+      Svc -> Img++ : spremi(slika)
+      alt vrsta datoteke nije dopuštena ili spremanje ne uspije
+        Img --> Svc : ResponseStatusException 400 / 500
+        Svc --> Ctrl : iznimka
+        Ctrl --> Web : 400 / 500 s porukom
+      else fotografija spremljena
+        Img --> Svc-- : URL fotografije
+        Svc -> DB : INSERT prijava\n(status PRIJAVLJENO, provjerena = false)
+        DB --> Svc : nova prijava s ID-em
+        Svc --> Ctrl-- : PrijavaDto
+        Ctrl --> Sec-- : 201 Created
+        Sec --> Web-- : 201 + PrijavaDto
+      end
+    end
+  end
+
+  alt odgovor 201
+    Web --> User : nova crvena pribadača i prijava u „Moje prijave”
+  else odgovor s pogreškom
+    Web --> User : poruka iz odgovora, gumb „Pošalji” ponovno dostupan
+  end
+end
+
+deactivate Web
+@enduml

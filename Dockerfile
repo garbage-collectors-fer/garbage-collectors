@@ -14,7 +14,7 @@ FROM eclipse-temurin:21-jdk AS backend
 WORKDIR /app
 COPY backend/ ./
 COPY --from=frontend /app/dist src/main/resources/static
-RUN sh mvnw -q -DskipTests package
+RUN sh mvnw -q -Dmaven.test.skip=true package
 
 FROM eclipse-temurin:21-jre
 WORKDIR /app

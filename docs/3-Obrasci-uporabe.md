@@ -181,6 +181,15 @@
 | **Alternativni tokovi / Iznimke** | **2a — Razlog nije unesen:** Sustav ne dopušta blokiranje i traži unos razloga.<br>**5a — Korisnik nije blokiran:** Opcija uklanjanja blokade nije dostupna. |
 | **Posljedice (ishod)** | Korisnik je blokiran uz evidentiran razlog ili mu je blokada uklonjena. |
 
+| Element specifikacije | Opis                                                                                                                                            |
+| :--- |:------------------------------------------------------------------------------------------------------------------------------------------------|
+| **Primarni akter** | Korisnik (Građanin, Eko-udruga, Komunalni redar)                                                                                                                                                |
+|**Sekundarni akter** | Google (OAuth 2.0)      
+| **Povezani zahtjevi** | F-035                                                                                                                                           |
+| **Preduvjeti** | Korisnik je uspješno prijavljen u sustav.                                                                                                                                           |
+| **Glavni uspješni tok** | 1. Korisnik odabire gumb Odjava. 2. Korisnikovi podatci se uklanjaju iz sustava. 3. Kosirnik je stavljen na početnu stranicu sustava. |
+| **Alternativni tokovi / Iznimke** | **2a — Korisnik još nije prijavljen u sustav:** Sustav ne prikazuje gumb i opciju odjave.                                             |
+| **Posljedice (ishod)** | Od korisnika se traži prijava u sustav.        
 
 ## 3.3 Provjera dosljednosti obrazaca uporabe
 

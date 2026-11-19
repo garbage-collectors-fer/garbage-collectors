@@ -1,0 +1,107 @@
+' ==============================================================================
+' 4-1-ecosentry-system-CMP.puml
+'
+' Svrha:    Prikazuje logičke komponente sustava EcoSentry, njihove ovisnosti
+'           i vanjske usluge. Planirane komponente (akcije čišćenja, kalendar,
+'           prognoza, Cloudinary) prikazane su isprekidano. Fizičko izvođenje
+'           prikazuje dijagram razmještaja 6-1.
+' Autor:
+' AI:       Claude je pomogao pri izradi nacrta dijagrama prema kodu u repozitoriju; autor
+'           je sve provjerio da dijagram odgovara implementaciji.
+' Praćenje: Pri dodavanju akcija čišćenja, obavijesti ili Cloudinaryja
+'           ukloniti oznaku «planirano» i uskladiti veze s kodom.
+'
+' Diagram level: High-level logical architecture
+' Diagram type:  UML Component Diagram
+' Version:       1.0
+' ==============================================================================
+
+@startuml
+title Sustav EcoSentry – komponente
+left to right direction
+
+skinparam shadowing false
+skinparam defaultFontName Arial
+skinparam componentStyle rectangle
+skinparam ArrowColor #212529
+
+skinparam component {
+    BackgroundColor #E7F1FF
+    BorderColor #0D6EFD
+}
+
+skinparam component<<planirano>> {
+    BackgroundColor #FFFFFF
+    BorderColor #6C757D
+    BorderStyle dashed
+    FontColor #6C757D
+}
+
+skinparam database {
+    BackgroundColor #FFF3CD
+    BorderColor #212529
+}
+
+skinparam folder {
+    BackgroundColor #FFF3CD
+    BorderColor #212529
+}
+
+' ==============================================================================
+' Granica sustava i unutarnje komponente
+' ==============================================================================
+
+rectangle "Sustav EcoSentry" {
+
+  rectangle "Web-klijent (React)" {
+    component "Stranice po ulogama\n(Gradjanin, KomunalniRedar,\nEkoUdruga, Prijava)" as Pages
+    component "Komponenta karte\n(KartaPrijava)" as MapCmp
+    component "Klijentski servisi\n(autentikacijaServis,\nprijaveServis)" as ClientSvc
+  }
+
+  rectangle "Poslužiteljska aplikacija (Spring Boot)" {
+    component "Sigurnost i prijava\n(SecurityConfig,\nCustomOidcUserService)" as Auth
+    component "REST API\n(PrijavaController, KorisnikController,\nKategorijaController, GreskeHandler)" as API
+    component "Obrada prijava\n(PrijavaService)" as Reports
+    component "Pohrana fotografija\n(SlikaService)" as Photos
+    component "Pristup podacima\n(JPA repozitoriji)" as Repo
+    component "Akcije čišćenja\ni obavijesti" <<planirano>> as Actions
+  }
+
+  database "PostgreSQL\n(Neon)" as DB
+  folder "Mapa uploads/\n(privremeno)" as Uploads
+}
+
+' ==============================================================================
+' Vanjske usluge
+' ==============================================================================
+
+component "Google prijava\n(OAuth 2.0 / OIDC)" as Google
+component "Google Maps\nJavaScript API" as Maps
+component "Google Calendar API" <<planirano>> as Calendar
+component "OpenWeatherMap API" <<planirano>> as Weather
+component "Cloudinary" <<planirano>> as Cloudinary
+
+' ==============================================================================
+' Ovisnosti
+' ==============================================================================
+
+Pages --> ClientSvc : radnje korisnika
+Pages --> MapCmp : prijave za prikaz
+MapCmp --> Maps : karta i pribadače
+ClientSvc --> API : REST / JSON,\nkolačić sesije + XSRF token
+
+Auth --> Google : prijava, provjera identiteta
+Auth --> Repo : korisnik i uloga po e-mailu
+API --> Reports : rad s prijavama
+API --> Repo : kategorije, trenutni korisnik
+Reports --> Photos : fotografija prijave
+Reports --> Repo : pohrana i dohvat prijava
+Photos --> Uploads : datoteke slika
+Photos ..> Cloudinary : ciljna pohrana
+Repo --> DB : JDBC
+
+Actions ..> Repo
+Actions ..> Calendar : događaji akcija
+Actions ..> Weather : prognoza za termin
+@enduml

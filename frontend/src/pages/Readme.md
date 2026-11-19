@@ -3,4 +3,16 @@ U ovoj mapi nalaze se stranica za prijavu i stranice za građanina, eko-udrugu i
 
 Stranica `EkoUdruga.jsx` sada sadrži novi prikaz s karticama „Moje akcije”, „Dostupna odlagališta” i „Završene akcije”. Odabirom stavke prikazuju se njezini detalji, a kod akcija i broj volontera. Dodane su SVG ikonice i uređene boje, pozadina i raspored sadržaja u datoteci `EkoUdruga.css`. Stranica se otvara kroz postojeću prijavu za ulogu udruge.
 
-Prikaz koristi probne podatke. Rade prebacivanje kartica i odabir stavki. Gumbi za stvaranje, uređivanje i odgodu akcija te ostale radnje zasad služe samo za prikaz izgleda.
+Dostupna odlagališta dohvaćaju se s backenda, a akcije još koriste probne podatke. Rade prebacivanje kartica i odabir stavki. Gumbi za stvaranje, uređivanje i odgodu akcija te ostale radnje zasad služe samo za prikaz izgleda.
+
+U detaljima dostupnog odlagališta sada se prikazuje fotografija iz prijave te datum i vrijeme prijave u hrvatskom formatu. Fotografija se prikazuje cijela, bez izrezivanja, a pri odabiru drugog odlagališta prikazuju se njegovi podaci. Ako fotografija nedostaje ili se ne može učitati, prikazuje se poruka „Fotografija nije dostupna.”. Za datum koji nedostaje ili nije ispravan prikazuje se „Datum nije dostupan.”.
+
+U kartici „Dostupna odlagališta” dodani su polje za pretragu po adresi ili broju prijave i izbornik kategorije otpada. Pretraga ne razlikuje velika i mala slova i može se koristiti zajedno s odabirom kategorije. Popis, detalji i oznake na karti prate odabrane uvjete. Ispod filtera piše koliko je odlagališta prikazano od ukupnog broja dostupnih. Ako nema rezultata, prikazuje se kratka poruka, a gumb „Očisti filtre” briše pretragu i vraća sve kategorije.
+
+Uz pretragu i filter dodan je izbornik „Sortiraj po datumu prijave” s opcijama „Najnovije prvo” i „Najstarije prvo”. Na početku su najnovije prijave prve, a sortiranje se primjenjuje i na rezultate pretrage i filtriranja. Datum prijave sada se vidi i uz svako odlagalište na popisu. Prijave bez ispravnog datuma uvijek su na kraju, a promjena redoslijeda zadržava odabrano odlagalište.
+
+Klikom na fotografiju ili natpis „Otvori fotografiju” otvara se veliki prikaz preko cijele stranice. Fotografija se prilagođava ekranu i prikazuje bez izrezivanja, uz broj prijave i gumb „Zatvori”. Prikaz se može zatvoriti i tipkom Escape ili klikom izvan fotografije. Dok je fotografija otvorena, stranica u pozadini se ne može pomicati, a nakon zatvaranja ostaju prikazani detalji istog odlagališta.
+
+U datoteci `EkoUdruga.css` dorađen je prikaz za mobitele do širine 600 px. Kartice, polja za pretragu i filtre te gumbi za radnje prikazuju se jedan ispod drugoga. Smanjeni su razmaci i veličine naslova, a duže adrese na popisu prikazuju se u više redaka. Fotografija i karta prilagođene su manjem ekranu, kao i veliki prikaz fotografije i zaglavlje s imenom korisnika i odjavom. Prikaz je provjeren na širinama 320, 390, 768 i 1280 px bez vodoravnog prelijevanja sadržaja.
+
+U `EkoUdruga.jsx` dodan je prikaz poruka s ikonicama za učitavanje, grešku i prazan popis. Dok se podaci dohvaćaju, piše „Učitavanje odlagališta...”, a kod greške prikazuju se kratka uputa i gumb „Pokušaj ponovno”. Ako nema dostupnih odlagališta, objašnjeno je da će se ovdje pojaviti provjerene prijave koje redar proslijedi udrugama, uz gumb „Osvježi popis”. Pretraga bez rezultata ima zasebnu poruku i gumb „Očisti filtre” koji vraća cijeli popis. Poruke su uređene u `EkoUdruga.css`, bez animacija, i prilagođene su mobitelima.
