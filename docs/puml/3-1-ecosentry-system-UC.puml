@@ -56,6 +56,10 @@ rectangle "Sustav EcoSentry" {
     usecase "UC-004\nVerifikacija prijave" as UC004
     usecase "UC-008\nSlanje na službenu\nsanaciju" as UC008
     usecase "UC-011\nPregled statistike" as UC011
+    usecase "UC-012\nOdjava iz sustava" as UC012
+    usecase "UC-013\nDodavanje komunalnog redara" as UC013
+    usecase "UC-014\nOdobravanje zahtjeva\neko-udruge" as UC014
+    usecase "UC-015\nBlokiranje i odblokiranje\nkorisnika" as UC015
 
 }
 
@@ -71,6 +75,10 @@ Redar -- UC008
 Gradan -- UC009
 Udruga -- UC010
 Redar -- UC011
+User -- UC012
+Redar -- UC013
+Redar -- UC014
+Redar -- UC015
 
 UC008 .[norank].> UC004 : <<extend>>\n[otpad opasan\nili prevelik]
 
