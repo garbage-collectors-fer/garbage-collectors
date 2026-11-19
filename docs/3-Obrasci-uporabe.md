@@ -99,7 +99,7 @@
 | **Primarni akter** | Komunalni redar                                                                                                                                                                                                                                                                    |
 | **Povezani zahtjevi** | F-017                                                                                                                                                                                                                                                                              |
 | **Preduvjeti** | Prijava je prihvaćena (UC-004) i nije dodana u akciju čišćenja.                                                                                                                                                                                                                     |
-| **Glavni uspješni tok** | 1. Redar otvara prihvaćenu prijavu opasnog ili prevelikog otpada.<br>2. Redar odabire slanje na službenu sanaciju.<br>3. Sustav mijenja status prijave u Službena sanacija i obavještava prijavitelja.<br>4. Prijava se više ne prikazuje na karti, a redar komunalnu tvrtku obavještava izvan sustava. |
+| **Glavni uspješni tok** | 1. Redar otvara prihvaćenu prijavu opasnog ili prevelikog otpada.<br>2. Redar odabire slanje na službenu sanaciju.<br>3. Sustav mijenja status prijave u Službena sanacija i obavještava prijavitelja.<br>4. Prijava se više ne prikazuje na karti, funkcionalnost slanja prijave komunalnoj tvrtki je izvan okvira projekta u dogovoru s asistentom. |
 | **Alternativni tokovi / Iznimke** | **2a — Prijava još nije prihvaćena:** Sustav ne dopušta slanje i prikazuje poruku da prijavu prvo treba prihvatiti. |
 | **Posljedice (ishod)** | Prijava ima status Službena sanacija, ne prikazuje se na karti i udruge je više ne mogu dodati u akciju.                                                                                                                                                                 |
 
@@ -137,12 +137,55 @@
 | **Glavni uspješni tok** | 1. 	Redar otvara statistiku i odabire razdoblje.<br>2. Sustav prikazuje broj prijava po mjesecima i postotak riješenih prijava za to razdoblje. |
 | **Alternativni tokovi / Iznimke** | **2a — Nema podataka za razdoblje:** Sustav prikazuje poruku da u odabranom razdoblju nema prijava.                                             |
 | **Posljedice (ishod)** | Redar vidi statistiku. Podaci se ne mijenjaju.                                                                                                  
+### UC-012: Odjava iz sustava
+
+| Element specifikacije | Opis |
+| :--- | :--- |
+| **Primarni akter** | Korisnik (Građanin, Eko-udruga, Komunalni redar) |
+| **Povezani zahtjevi** | F-035 |
+| **Preduvjeti** | Korisnik je uspješno prijavljen u sustav. |
+| **Glavni uspješni tok** | 1. Korisnik odabire gumb „Odjava”.<br>2. Sustav završava korisnikovu prijavljenu sesiju i uklanja podatke autentikacije iz preglednika.<br>3. Sustav preusmjerava korisnika na početnu stranicu za prijavu. |
+| **Alternativni tokovi / Iznimke** | **1a — Korisnik nije prijavljen:** Opcija odjave nije prikazana. |
+| **Posljedice (ishod)** | Korisnik više nema pristup zaštićenim dijelovima aplikacije dok se ponovno ne prijavi. |
+
+### UC-013: Dodavanje komunalnog redara
+
+| Element specifikacije | Opis |
+| :--- | :--- |
+| **Primarni akter** | Komunalni redar |
+| **Povezani zahtjevi** | F-002 |
+| **Preduvjeti** | Redar je prijavljen u sustav. |
+| **Glavni uspješni tok** | 1. Redar otvara upravljanje korisnicima.<br>2. Redar unosi Google e-mail adresu osobe koju želi dodati kao redara.<br>3. Sustav provjerava adresu i sprema je kao adresu kojoj pripada uloga redara.<br>4. Pri prvoj prijavi Google računom s tom adresom sustav dodjeljuje korisniku ulogu komunalnog redara. |
+| **Alternativni tokovi / Iznimke** | **2a — Adresa je već povezana s postojećim korisnikom:** Sustav postojećem korisniku mijenja ulogu u komunalnog redara.<br>**3a — Adresa nije valjana:** Sustav ne sprema promjenu i prikazuje poruku o neispravnoj adresi. |
+| **Posljedice (ishod)** | Unesena e-mail adresa ovlaštena je za prijavu s ulogom komunalnog redara. |
+
+### UC-014: Odobravanje zahtjeva eko-udruge
+
+| Element specifikacije | Opis |
+| :--- | :--- |
+| **Primarni akter** | Komunalni redar |
+| **Povezani zahtjevi** | F-003 |
+| **Preduvjeti** | Predstavnik eko-udruge prijavljen je u sustav i poslao je zahtjev za račun eko-udruge. |
+| **Glavni uspješni tok** | 1. Redar otvara popis zahtjeva za račune eko-udruga.<br>2. Sustav prikazuje podatke o podnositelju i zahtjevu.<br>3. Redar pregledava zahtjev i odabire „Odobri”.<br>4. Sustav odobrava zahtjev i dodjeljuje korisniku ulogu eko-udruge.<br>5. Korisnik nakon osvježavanja ili ponovne prijave dobiva pristup funkcionalnostima eko-udruge. |
+| **Alternativni tokovi / Iznimke** | **3a — Redar odbija zahtjev:** Redar odabire „Odbij”; zahtjev se označava odbijenim, a korisnik ne dobiva prava eko-udruge.<br>**2a — Nema zahtjeva na čekanju:** Sustav prikazuje praznu listu. |
+| **Posljedice (ishod)** | Zahtjev je odobren ili odbijen; samo odobreni korisnik dobiva ulogu i prava eko-udruge. |
+
+### UC-015: Blokiranje i odblokiranje korisnika
+
+| Element specifikacije | Opis |
+| :--- | :--- |
+| **Primarni akter** | Komunalni redar |
+| **Povezani zahtjevi** | F-004 |
+| **Preduvjeti** | Redar je prijavljen u sustav, a ciljani korisnik postoji. |
+| **Glavni uspješni tok** | 1. Redar otvara popis korisnika i odabire korisnika.<br>2. Redar odabire opciju blokiranja i upisuje razlog blokade.<br>3. Sustav sprema razlog i označava korisnika blokiranim.<br>4. Sustav odbija blokiranom korisniku podnošenje prijava i prijavljivanje na akcije.<br>5. Kada razlog blokade prestane, redar može odabrati opciju uklanjanja blokade.<br>6. Sustav uklanja blokadu i korisnik ponovno može koristiti dopuštene funkcionalnosti. |
+| **Alternativni tokovi / Iznimke** | **2a — Razlog nije unesen:** Sustav ne dopušta blokiranje i traži unos razloga.<br>**5a — Korisnik nije blokiran:** Opcija uklanjanja blokade nije dostupna. |
+| **Posljedice (ishod)** | Korisnik je blokiran uz evidentiran razlog ili mu je blokada uklonjena. |
 
 
 ## 3.3 Provjera dosljednosti obrazaca uporabe
 
 | Provjera | Rezultat provjere                                                                                                           |
 | --- |-----------------------------------------------------------------------------------------------------------------------------|
-| Zahtjev | Svaki UC povezan je s barem jednim zahtjevom iz 2.1, a svi zahtjevi Must i Should (F-001 do F-031) pokriveni su barem jednim UC-om. Zahtjevi Won't (F-032 do F-034) nisu obuhvaćeni.                                                           |
+| Zahtjev | Svaki UC povezan je s barem jednim zahtjevom iz 2.1, a svi zahtjevi Must, Should i Could (F-001 do F-031) te zahtjev za odjavu (F-035) pokriveni su barem jednim UC-om. Zahtjevi Won't (F-032 do F-034) nisu obuhvaćeni.                                                           |
 | Akter |Primarni akteri su A-01 do A-03, a sekundarni A-04 do A-07 iz 2.3. Komunalna tvrtka (D-01) nije akter jer ne koristi aplikaciju.                                         |
-| Aplikacija |Obrasci uporabe opisuju planirano ponašanje sustava. Obrasci UC-001 do UC-009 pokrivaju zahtjeve s prioritetom Must (MVP iz poglavlja 2), a UC-010 i UC-011 većinom pokrivaju zahtjeve s prioritetom Should. |
+| Aplikacija |Obrasci uporabe opisuju planirano ponašanje sustava. UC-001 do UC-009 pokrivaju glavne korisničke tokove, UC-010 i UC-011 dodatne funkcionalnosti, UC-012 odjavu, a UC-013 do UC-015 administrativne funkcionalnosti upravljanja korisnicima. |
