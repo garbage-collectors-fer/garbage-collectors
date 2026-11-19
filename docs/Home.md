@@ -61,7 +61,7 @@ Kratak sažetak: [README – Uporaba umjetne inteligencije](../README.md#ai-usag
 
 | Alat | Inačica ili model | Koristio/la | Glavna svrha |
 | --- | --- | --- | --- |
-| Claude | Claude Opus | Članovi tima | Organizacija i strukturiranje projekta, izrada nacrta dokumentacije, prijedlog API-ja |
+| Claude | Claude Opus | Tim | Organizacija i strukturiranje projekta, izrada nacrta dokumentacije, prijedlog API-ja |
 
 ### Opseg doprinosa umjetne inteligencije
 

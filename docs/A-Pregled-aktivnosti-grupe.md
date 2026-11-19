@@ -65,7 +65,16 @@ Pripremljen je lokalni prototip stranice eko-udruge prema stilu stranice komunal
 
 | Aktivnost ili rezultat | Član | Prijavljeni sati | Reprezentativni rezultat ili poveznica |
 | --- | --- | --- | --- |
-|  |  |  |  |
+| Opseg projekta i analiza zahtjeva (dok. 1 i 2), kasnije usklađivanje zahtjeva s odlukama tima i ispravci | Ivana Markovinović | 2.5 | PR #23, #24; `docs/1-Projekt.md`, `docs/2-Analiza-zahtjeva.md` |
+| Prijedlog REST API-ja između klijenta i poslužitelja | Ivana Markovinović | 0.5 | `docs/api.md` |
+| Stranica komunalnog redara (popis prijava, uređivanje prijava, odluka o sanaciji) | Ivana Markovinović | 4 | PR #11; `KomunalniRedar.jsx` |
+| Zajednička komponenta karte | Ivana Markovinović | 2 | PR #11, #19; `KartaPrijava.jsx` |
+| Prijava Google računom na klijentu, prikaz stranice prema ulozi | Ivana Markovinović | 2 | PR #13; `Prijava.jsx`, `App.jsx`, `autentikacijaServis.js` |
+| Spajanje klijenta na poslužitelj | Ivana Markovinović | 2 | PR #18, #20, #27; `prijaveServis.js` |
+| Stranica građanina: nova prijava s lokacijom, kategorijom i fotografijom, moje prijave, prilagodba za mobitel | Ivana Markovinović | 4 | PR #19, #22; `Gradjanin.jsx`, `Gradjanin.css` |
+| Usklađivanje obrazaca uporabe s novim zahtjevima | Ivana Markovinović | 0.5 | PR #24; `docs/3-Obrasci-uporabe.md` |
+| README repozitorija i naslovnica dokumentacije | Ivana Markovinović | 1.5 | PR #26, #29; `README.md`, `docs/Home.md` |
+| PDF dokumentacije za prvi ciklus | Ivana Markovinović | 1 | PR #35; `docs/deliverables/PROINZ26_G01.2_EcoSentry_v1.pdf` |
 
 Koristite aktivnosti specifične za projekt umjesto obaveznog retka za svako poglavlje dokumentacije ili svaki UML dijagram. Tim treba dosljedno bilježiti sate i izbjegavati dvostruko brojanje zajedničkog rada; reprezentativni rezultat objašnjava što je prijavljeni trud proizveo. Sati su samoprijavljena procjena uloženog rada, a ne mjera kvalitete niti zamjena za pregled koda i artefakata.
 
