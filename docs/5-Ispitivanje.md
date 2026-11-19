@@ -8,7 +8,25 @@ Povezivanje zahtjev → obrazac uporabe → ispitivanje održava se u [tablici s
 
 **Cilj:** Odabrati provjere koje obuhvaćaju glavne korisničke ciljeve, važne uvjete neuspjeha i projektno specifične nefunkcijske zahtjeve.
 
-**Pristup ispitivanju:** Poslužiteljski dio (Java 21, Spring Boot) ispituje se automatiziranim testovima JUnit 5, uz Mockito za izoliranje ovisnosti. Testovi obuhvaćaju servisna pravila prijava i slika (`PrijavaServiceTest`, `SlikaServiceTest`), delegiranje HTTP kontrolera (`PrijavaControllerTest`), deklarirane uvjete autorizacije na metodama kontrolera (`AutorizacijaTest`) te upite repozitorija za kategorije, korisnike i prijave (`KategorijaRepositoryTest`, `KorisnikRepositoryTest`, `PrijavaRepositoryTest`). Servisni i kontrolerski testovi koriste lažne objekte; repozitorijski testovi koriste testni JPA kontekst i H2, bez zajedničke Neon baze. Testovi se pokreću naredbom `./mvnw test` iz mape `backend/`.
+**Pokretanje testova na Windowsu (CMD), iz mape `backend/`:**
+
+```cmd
+mvnw.cmd clean test
+```
+
+U PowerShellu, iz iste mape:
+
+```powershell
+.\mvnw.cmd clean test
+```
+
+Na Linuxu/macOS-u:
+
+```bash
+./mvnw clean test
+```
+
+**Pristup ispitivanju:** Poslužiteljski dio (Java 21, Spring Boot) ispituje se automatiziranim testovima JUnit 5, uz Mockito za izoliranje ovisnosti. Testovi obuhvaćaju servisna pravila prijava i slika (`PrijavaServiceTest`, `SlikaServiceTest`), delegiranje HTTP kontrolera (`PrijavaControllerTest`), deklarirane uvjete autorizacije na metodama kontrolera (`AutorizacijaTest`) te upite repozitorija za kategorije, korisnike i prijave (`KategorijaRepositoryTest`, `KorisnikRepositoryTest`, `PrijavaRepositoryTest`). Servisni i kontrolerski testovi koriste lažne objekte; repozitorijski testovi koriste testni JPA kontekst i H2, bez zajedničke Neon baze. Testovi se pokreću iz mape `backend/`. Na Linuxu/macOS-u koristi se `./mvnw clean test`, a u Windows CMD-u `mvnw.cmd clean test` (u PowerShellu `.\mvnw.cmd clean test`; vidi zasebnu naredbu ispod).
 
 Stvarni HTTP odgovori Spring Securityja (401 bez prijave i 403 za nedopuštenu ulogu), Google OAuth prijava, prikaz stranica po ulogama, GPS/karta, učitavanje slike kroz preglednik te spremanje u zajedničku Neon bazu zahtijevaju provjeru pokrenute aplikacije. U repozitoriju postoje testovi anotacija `@PreAuthorize` i testovi delegiranja kontrolera, ali oni **nisu** MockMvc/integracijski testovi koji dokazuju stvarne HTTP statuse ili cjelovit tijek autentikacije. Te provjere, kao i javno okruženje, zato se vode odvojeno kao ručni sustavski testovi. Dokazi ručnih izvođenja (snimke zaslona, ispisi naredbi) čuvaju se u `tests/evidence/`. Prije ručnog ispitivanja koristiti testne račune i probne podatke; ne brisati niti mijenjati tuđe zapise u zajedničkoj bazi. Ako funkcionalnost nije implementirana ili nije dostupna u testnom okruženju, slučaj označiti kao **Blokiran/Nije implementirano**, a ne kao prošao.
 
@@ -26,7 +44,7 @@ U stupcu „Koraci ispitivanja“ naveden je naziv testne metode; ako nije naved
 
 | ID ispitnog slučaja | Scenarij ispitivanja | Ulazni podaci | Očekivani rezultat | Stvarni rezultat | Ishod | Koraci ispitivanja |
 | --- | --- | --- | --- | --- | --- | --- |
-| CT-01 | Valjana prijava otpada (F-005, UC-002) | Građanin; slika; lat 45.8150, lng 15.9819; postojeća kategorija | Prijava ima status `PRIJAVLJENO`, `provjerena` = false, URL slike i prijavitelja; sprema se jednom. | Prošlo prema izvještaju izvođenja koji je dostavio autor. | Prošao | Test `PrijavaServiceTest.stvori_valjanaPrijava_spremaSePrijavaSaStatusomPrijavljeno`; `./mvnw test`. |
+| CT-01 | Valjana prijava otpada (F-005, UC-002) | Građanin; slika; lat 45.8150, lng 15.9819; postojeća kategorija | Prijava ima status `PRIJAVLJENO`, `provjerena` = false, URL slike i prijavitelja; sprema se jednom. | Prošlo prema izvještaju izvođenja koji je dostavio autor. | Prošao | Test `PrijavaServiceTest.stvori_valjanaPrijava_spremaSePrijavaSaStatusomPrijavljeno`; `./mvnw clean test`. |
 | CT-02 | Lokacija izvan granica (F-005) | lat 90.5 ili -90.5; lng 180.5 ili -180.5 | Status 400; slika i prijava se ne spremaju. | Prošlo prema izvještaju izvođenja koji je dostavio autor. | Prošao | Test `stvori_lokacijaIzvanGranica_vracaBadRequestINistaSeNeSprema` (četiri para vrijednosti). |
 | CT-03 | Prijava bez kategorije (F-005) | kategorija nije zadana | Status 400; prijava se ne sprema. | Prošlo prema izvještaju izvođenja koji je dostavio autor. | Prošao | Test `stvori_bezKategorije_vracaBadRequest`. |
 | CT-04 | Nepostojeća kategorija (F-005) | kategorija s ID-om 99 koji ne postoji | Status 400; slika se ne sprema (nema zaostalih datoteka). | Prošlo prema izvještaju izvođenja koji je dostavio autor. | Prošao | Test `stvori_nepostojecaKategorija_vracaBadRequestINeSpremaSliku`. |
@@ -62,7 +80,7 @@ Ovi testovi postoje u ZIP-om dostavljenom repozitoriju. Važno: `AutorizacijaTes
 
 | ID ispitnog slučaja | Scenarij ispitivanja | Ulazni podaci | Očekivani rezultat | Stvarni rezultat | Ishod | Koraci ispitivanja |
 | --- | --- | --- | --- | --- | --- | --- |
-| CT-25 | Autorizacija stvaranja prijave | Metoda `stvori` u `PrijavaController` | Metoda ima `@PostMapping` i `@PreAuthorize("hasRole('GRADANIN')")`. | Prošlo prema izvještaju izvođenja koji je dostavio autor. | Prošao | `AutorizacijaTest.stvaranjePrijaveZahtijevaUloguGradjanina`; `./mvnw test`. |
+| CT-25 | Autorizacija stvaranja prijave | Metoda `stvori` u `PrijavaController` | Metoda ima `@PostMapping` i `@PreAuthorize("hasRole('GRADANIN')")`. | Prošlo prema izvještaju izvođenja koji je dostavio autor. | Prošao | `AutorizacijaTest.stvaranjePrijaveZahtijevaUloguGradjanina`; `./mvnw clean test`. |
 | CT-26 | Autorizacija pregleda vlastitih prijava | Metoda `dohvatiMoje` | Metoda ima `@GetMapping` i zahtijeva ulogu `GRADANIN`. | Prošlo prema izvještaju izvođenja koji je dostavio autor. | Prošao | `AutorizacijaTest.dohvacanjeMojihPrijavaZahtijevaUloguGradjanina`. |
 | CT-27 | Autorizacija izmjene prijave | Metoda `izmijeni` | Metoda ima `@PatchMapping` i zahtijeva ulogu `REDAR`. | Prošlo prema izvještaju izvođenja koji je dostavio autor. | Prošao | `AutorizacijaTest.izmjenaPrijaveZahtijevaUloguRedara`. |
 | CT-28 | Čitanje pojedinačne prijave | Metoda `dohvatiJednu` | Metoda nema dodatni `@PreAuthorize` uvjet. | Prošlo prema izvještaju izvođenja koji je dostavio autor. | Prošao | `AutorizacijaTest.citanjePojedinacnePrijaveNemaDodatniRoleUvjet`. |
@@ -104,9 +122,9 @@ Ovi testovi postoje u ZIP-om dostavljenom repozitoriju. Važno: `AutorizacijaTes
 | Datum izvođenja | 15. 11. 2026. |
 | Revizija aplikacije (`git rev-parse --short HEAD`) | 66cb6b5 |
 | Izvođač | Bruno Hrgovan |
-| Okruženje automatiziranih testova | lokalno, `./mvnw test` (JUnit 5, Mockito, H2 za repozitorijske testove) |
+| Okruženje automatiziranih testova | lokalno, `./mvnw clean test` (JUnit 5, Mockito, H2 za repozitorijske testove) |
 | Okruženje ručnih slučajeva | ST-01 do ST-10 lokalno (backend na `localhost:8080`, frontend na `localhost:5173`); ST-11 na javnoj adresi `https://ecosentry-6rg1.onrender.com` |
-| Sažetak naredbe `./mvnw test` | `Tests run: 42, Failures: 0, Errors: 0, Skipped: 0` |
+| Sažetak naredbe `./mvnw clean test` | `Tests run: 42, Failures: 0, Errors: 0, Skipped: 0` |
 | Dokazi | ispis izvođenja testova i snimke zaslona u [`tests/evidence/`](../tests/evidence/) |
 
 U repozitoriju je 7 testnih razreda: servisni (`PrijavaServiceTest`, `SlikaServiceTest`), kontrolerski (`PrijavaControllerTest`), autorizacijski (`AutorizacijaTest`) i repozitorijski (`KategorijaRepositoryTest`, `KorisnikRepositoryTest`, `PrijavaRepositoryTest`). Ukupno je 39 JUnit testnih metoda (38 običnih i jedna parametrizirana); parametrizirani test provjerava četiri para koordinata, pa se očekuje 42 pojedinačna izvođenja. Stvarni broj uspješnih izvođenja prepisuje se iz ispisa pokretanja.
