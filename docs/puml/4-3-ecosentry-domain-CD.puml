@@ -1,0 +1,163 @@
+' ==============================================================================
+' 4-3-ecosentry-domain-CD.puml
+'
+' Svrha:    Prikazuje reprezentativni dio oblikovanja poslužitelja: obradu
+'           prijave otpada od REST kontrolera preko usluge do entiteta i
+'           repozitorija. Prikazane su odgovornosti, ključne operacije i veze,
+'           a ne svi atributi ni getteri/setteri.
+' Autor:
+' AI:       Claude je pomogao pri izradi nacrta dijagrama prema kodu u paketu
+'           hr.fer.ecosentry; autor je provjerio da dijagram odgovara kodu.
+' Praćenje: Pri promjeni pravila prijelaza statusa ili potpisa metoda u
+'           PrijavaService / PrijavaController ažurirati model.
+'
+' Diagram level: Design (representative slice)
+' Diagram type:  UML Class Diagram
+' Version:       1.0
+' ==============================================================================
+
+@startuml
+title Obrada prijave otpada – dijagram razreda
+
+skinparam shadowing false
+skinparam defaultFontName Arial
+skinparam ArrowColor #212529
+skinparam classAttributeIconSize 0
+
+skinparam class {
+    BackgroundColor #E7F1FF
+    BorderColor #0D6EFD
+}
+
+hide empty members
+
+' ==============================================================================
+' Web sloj
+' ==============================================================================
+
+package "controller" {
+  class PrijavaController <<RestController>> {
+    + dohvatiSve(status, provjerena, user) : List<PrijavaDto>
+    + stvori(slika, lat, lng, kategorijaId, user) : PrijavaDto
+    + dohvatiJednu(id, user) : PrijavaDto
+    + dohvatiMoje(user) : List<PrijavaDto>
+    + izmijeni(id, izmjena : PrijavaIzmjenaDto) : PrijavaDto
+  }
+}
+
+package "dto" {
+  class PrijavaDto <<record>> {
+    + {static} iz(p : Prijava, prikaziPrijavitelja : boolean) : PrijavaDto
+  }
+  class PrijavaIzmjenaDto <<record>> {
+    provjerena : Boolean
+    status : StatusPrijave
+    nacinSanacije : NacinSanacije
+    kategorija : Long
+  }
+}
+
+' ==============================================================================
+' Poslovna logika
+' ==============================================================================
+
+package "service" {
+  class PrijavaService <<Service>> {
+    - {static} SKRIVENI_STATUSI : List<StatusPrijave>
+    + dohvatiVidljive(email, status, provjerena) : List<PrijavaDto>
+    + dohvati(id, email) : PrijavaDto
+    + dohvatiMoje(email) : List<PrijavaDto>
+    + stvori(email, slika, lat, lng, kategorijaId) : PrijavaDto
+    + izmijeni(id, izmjena : PrijavaIzmjenaDto) : PrijavaDto
+    - smijeVidjetiPrijavu(p : Prijava, gledatelj : Korisnik) : boolean
+    - smijeVidjetiPrijavitelja(p : Prijava, gledatelj : Korisnik) : boolean
+  }
+  class SlikaService <<Service>> {
+    + spremi(slika : MultipartFile) : String
+  }
+}
+
+' ==============================================================================
+' Domenski model
+' ==============================================================================
+
+package "model" {
+  class Prijava <<Entity>> {
+    - lat, lng : BigDecimal
+    - status : StatusPrijave
+    - provjerena : boolean
+    - nacinSanacije : NacinSanacije
+    - slikaUrl : String
+    - datum : Instant
+  }
+  class Korisnik <<Entity>> {
+    - email : String
+    - uloga : Uloga
+    - statusRacuna : StatusRacuna
+    + isBlokiran() : boolean
+    + blokiraj(razlog : String)
+    + odblokiraj()
+  }
+  class Kategorija <<Entity>> {
+    - naziv : String
+  }
+  enum StatusPrijave {
+    PRIJAVLJENO
+    ODBACENO
+    AKCIJA_U_TIJEKU
+    SLUZBENA_SANACIJA
+    OCISCENO
+  }
+  enum NacinSanacije {
+    UDRUGA
+    SLUZBENA
+  }
+  enum Uloga {
+    GRADANIN
+    UDRUGA
+    REDAR
+  }
+}
+
+' ==============================================================================
+' Pristup podacima
+' ==============================================================================
+
+package "repository" {
+  interface PrijavaRepository <<JpaRepository>> {
+    + findByStatusNotInOrderByDatumDesc(statusi) : List<Prijava>
+    + findByPrijaviteljOrderByDatumDesc(k : Korisnik) : List<Prijava>
+  }
+  interface KorisnikRepository <<JpaRepository>> {
+    + findByEmail(email) : Optional<Korisnik>
+  }
+  interface KategorijaRepository <<JpaRepository>> {
+    + findAllByOrderByNazivAsc() : List<Kategorija>
+  }
+}
+
+' ==============================================================================
+' Veze
+' ==============================================================================
+
+PrijavaController --> PrijavaService
+PrijavaController ..> PrijavaDto : vraća
+PrijavaController ..> PrijavaIzmjenaDto : prima
+
+PrijavaService --> PrijavaRepository
+PrijavaService --> KorisnikRepository
+PrijavaService --> KategorijaRepository
+PrijavaService --> SlikaService
+PrijavaService ..> Prijava : stvara i mijenja
+PrijavaService ..> PrijavaDto : stvara
+
+Prijava "0..*" --> "1" Korisnik : prijavitelj
+Prijava "0..*" --> "1" Kategorija : kategorija
+Prijava --> StatusPrijave
+Prijava --> NacinSanacije
+Korisnik --> Uloga
+
+PrijavaRepository ..> Prijava
+KorisnikRepository ..> Korisnik
+KategorijaRepository ..> Kategorija
+@enduml

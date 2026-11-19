@@ -1,0 +1,162 @@
+' ==============================================================================
+' 4-2-ecosentry-data-ERD.puml
+'
+' Svrha:    Prikazuje trajne entitete sustava EcoSentry prema shemi baze
+'           (Flyway migracije V1–V4): korisnike, prijave, kategorije, akcije
+'           čišćenja, volontere, povijest statusa, obavijesti i Google tokene.
+'           Prikazani su ključevi i reprezentativni atributi, ne svi stupci.
+' Autor:
+' AI:       Claude je pomogao pri izradi nacrta dijagrama prema migracijama u repozitoriju;
+'           autor je provjerio da dijagram odgovara shemi baze.
+' Praćenje: Izvor je backend/src/main/resources/db/migration. Pri
+'           svakoj novoj migraciji koja mijenja tablice ili veze ažurirati model.
+'
+' Diagram level: Logical data model
+' Diagram type:  Entity-Relationship Diagram (ERD), crow's foot
+' Version:       1.0
+' ==============================================================================
+
+@startuml
+title Sustav EcoSentry – logički podatkovni model
+
+skinparam shadowing false
+skinparam defaultFontName Arial
+skinparam ArrowColor #212529
+skinparam linetype ortho
+
+skinparam class {
+    BackgroundColor #E7F1FF
+    BorderColor #0D6EFD
+    FontColor #212529
+}
+
+hide circle
+
+' ==============================================================================
+' Korisnici
+' ==============================================================================
+
+entity "korisnik" as Korisnik {
+    * id_korisnik : BIGINT <<PK>>
+    --
+    * email : VARCHAR <<UNIQUE>>
+    id_oauth : VARCHAR
+    * ime : VARCHAR
+    * prezime : VARCHAR
+    * uloga : GRADANIN | UDRUGA | REDAR
+    * status_racuna : AKTIVAN | BLOKIRAN | NA_CEKANJU
+    organizacija_naziv : VARCHAR
+    razlog_blokade : TEXT
+    * datum_registracije : TIMESTAMPTZ
+}
+
+entity "google_token" as Token {
+    * id_korisnik : BIGINT <<PK, FK>>
+    --
+    * refresh_token_enc : TEXT
+    scope : TEXT
+}
+
+' ==============================================================================
+' Prijave
+' ==============================================================================
+
+entity "kategorija" as Kategorija {
+    * id_kategorija : BIGINT <<PK>>
+    --
+    * kategorija_naziv : VARCHAR <<UNIQUE>>
+}
+
+entity "prijava" as Prijava {
+    * id_prijava : BIGINT <<PK>>
+    --
+    * id_korisnik : BIGINT <<FK>>
+    * id_kategorija : BIGINT <<FK>>
+    * latituda : NUMERIC(9,6)
+    * longituda : NUMERIC(9,6)
+    adresa : VARCHAR
+    * url_fotografija : VARCHAR
+    * status : PRIJAVLJENO | AKCIJA_U_TIJEKU |\n  OCISCENO | SLUZBENA_SANACIJA | ODBACENO
+    * provjerena : BOOLEAN
+    nacin_sanacije : UDRUGA | SLUZBENA
+    url_foto_sanacija : VARCHAR
+    * datum_kreiranja : TIMESTAMPTZ
+}
+
+entity "status_log" as Log {
+    * id_surogat_log : BIGINT <<PK>>
+    --
+    * id_prijava : BIGINT <<FK>>
+    * id_korisnik_promjena : BIGINT <<FK>>
+    status_stari : VARCHAR
+    * status_novi : VARCHAR
+    * datum_vrijeme : TIMESTAMPTZ
+}
+
+' ==============================================================================
+' Akcije čišćenja i volonteri
+' ==============================================================================
+
+entity "akcija" as Akcija {
+    * id_akcija : BIGINT <<PK>>
+    --
+    * id_udruga : BIGINT <<FK>>
+    * akcija_naziv : VARCHAR
+    * datum_vrijeme : TIMESTAMPTZ
+    * latituda, longituda : NUMERIC(9,6)
+    * maxbr_volonteri : INT
+    * status_akcija : PLANIRANO | ZATVARANJE_ZATRAZENO |\n  ZAVRSENO | OTKAZANO
+    id_google_event : VARCHAR
+    url_foto_dokaz : VARCHAR
+}
+
+entity "akcija_prijava" as AkcijaPrijava {
+    * id_akcija : BIGINT <<PK, FK>>
+    * id_prijava : BIGINT <<PK, FK>>
+}
+
+entity "volonter_prijava" as Volonter {
+    * id_korisnik : BIGINT <<PK, FK>>
+    * id_akcija : BIGINT <<PK, FK>>
+    --
+    * datum_prijave : TIMESTAMPTZ
+    id_google_event : VARCHAR
+}
+
+' ==============================================================================
+' Obavijesti
+' ==============================================================================
+
+entity "obavijest" as Obavijest {
+    * id_obavijest : BIGINT <<PK>>
+    --
+    * id_korisnik : BIGINT <<FK>>
+    id_prijava : BIGINT <<FK>>
+    id_akcija : BIGINT <<FK>>
+    * tip : VARCHAR
+    * poruka : TEXT
+    * procitana : BOOLEAN
+}
+
+' ==============================================================================
+' Veze
+' ==============================================================================
+
+Korisnik ||--o{ Prijava : podnosi
+Kategorija ||--o{ Prijava : kategorizira
+Korisnik ||--o| Token : ima
+
+Prijava ||--o{ Log : bilježi promjene
+Korisnik ||--o{ Log : mijenja status
+
+Korisnik ||--o{ Akcija : organizira (UDRUGA)
+Akcija ||--o{ AkcijaPrijava : obuhvaća
+Prijava ||--o{ AkcijaPrijava : čisti se u
+
+Korisnik ||--o{ Volonter : volontira
+Akcija ||--o{ Volonter : ima volontere
+
+Korisnik ||--o{ Obavijest : prima
+Prijava |o--o{ Obavijest : odnosi se na
+Akcija |o--o{ Obavijest : odnosi se na
+@enduml

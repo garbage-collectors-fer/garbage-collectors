@@ -1,0 +1,136 @@
+[INFO] Scanning for projects...
+[INFO]
+[INFO] --------------------------< hr.fer:ecosentry >--------------------------
+[INFO] Building ecosentry 0.0.1-SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO]
+[INFO] --- clean:3.5.0:clean (default-clean) @ ecosentry ---
+[INFO] Deleting C:\Users\Bruno\Desktop\test\garbage-collectors-master\garbage-collectors-master\backend\target
+[INFO]
+[INFO] --- resources:3.5.0:resources (default-resources) @ ecosentry ---
+[INFO] Copying 1 resource from src\main\resources to target\classes
+[INFO] Copying 4 resources from src\main\resources to target\classes
+[INFO]
+[INFO] --- compiler:3.15.0:compile (default-compile) @ ecosentry ---
+[INFO] Recompiling the module because of changed source code.
+[INFO] Compiling 23 source files with javac [debug parameters release 21] to target\classes
+[INFO]
+[INFO] --- resources:3.5.0:testResources (default-testResources) @ ecosentry ---
+[INFO] skip non existing resourceDirectory C:\Users\Bruno\Desktop\test\garbage-collectors-master\garbage-collectors-master\backend\src\test\resources
+[INFO]
+[INFO] --- compiler:3.15.0:testCompile (default-testCompile) @ ecosentry ---
+[INFO] Recompiling the module because of changed dependency.
+[INFO] Compiling 7 source files with javac [debug parameters release 21] to target\test-classes
+[INFO]
+[INFO] --- surefire:3.5.6:test (default-test) @ ecosentry ---
+[INFO] Using auto detected provider org.apache.maven.surefire.junitplatform.JUnitPlatformProvider
+[INFO]
+[INFO] -------------------------------------------------------
+[INFO]  T E S T S
+[INFO] -------------------------------------------------------
+[INFO] Running hr.fer.ecosentry.config.AutorizacijaTest
+[INFO] Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.060 s -- in hr.fer.ecosentry.config.AutorizacijaTest
+[INFO] Running hr.fer.ecosentry.controller.PrijavaControllerTest
+Mockito is currently self-attaching to enable the inline-mock-maker. This will no longer work in future releases of the JDK. Please add Mockito as an agent to your build as described in Mockito's documentation: https://javadoc.io/doc/org.mockito/mockito-core/latest/org.mockito/org/mockito/Mockito.html#0.3
+WARNING: A Java agent has been loaded dynamically (C:\Users\Bruno\.m2\repository\net\bytebuddy\byte-buddy-agent\1.18.15\byte-buddy-agent-1.18.15.jar)
+WARNING: If a serviceability tool is in use, please run with -XX:+EnableDynamicAgentLoading to hide this warning
+WARNING: If a serviceability tool is not in use, please run with -Djdk.instrument.traceUsage for more information
+WARNING: Dynamic loading of agents will be disallowed by default in a future release
+OpenJDK 64-Bit Server VM warning: Sharing is only supported for boot loader classes because bootstrap classpath has been appended
+[INFO] Tests run: 5, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.796 s -- in hr.fer.ecosentry.controller.PrijavaControllerTest
+[INFO] Running hr.fer.ecosentry.repository.KategorijaRepositoryTest
+22:54:43.803 [main] INFO org.springframework.test.context.support.AnnotationConfigContextLoaderUtils -- Could not detect default configuration classes for test class [hr.fer.ecosentry.repository.KategorijaRepositoryTest]: KategorijaRepositoryTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+22:54:43.927 [main] INFO org.springframework.boot.test.context.SpringBootTestContextBootstrapper -- Found @SpringBootConfiguration hr.fer.ecosentry.EcosentryApplication for test class hr.fer.ecosentry.repository.KategorijaRepositoryTest
+22:54:43.930 [main] INFO org.springframework.test.context.support.AnnotationConfigContextLoaderUtils -- Could not detect default configuration classes for test class [hr.fer.ecosentry.repository.KategorijaRepositoryTest]: KategorijaRepositoryTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+22:54:43.946 [main] INFO org.springframework.boot.test.context.SpringBootTestContextBootstrapper -- Found @SpringBootConfiguration hr.fer.ecosentry.EcosentryApplication for test class hr.fer.ecosentry.repository.KategorijaRepositoryTest
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v4.1.2)
+
+2026-11-15T22:54:44.292+01:00  INFO 35232 --- [ecosentry] [           main] h.f.e.r.KategorijaRepositoryTest         : Starting KategorijaRepositoryTest using Java 21.0.13 with PID 35232 (started by Bruno in C:\Users\Bruno\Desktop\test\garbage-collectors-master\garbage-collectors-master\backend)
+2026-11-15T22:54:44.293+01:00  INFO 35232 --- [ecosentry] [           main] h.f.e.r.KategorijaRepositoryTest         : No active profile set, falling back to 1 default profile: "default"
+2026-11-15T22:54:44.554+01:00  INFO 35232 --- [ecosentry] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-11-15T22:54:44.605+01:00  INFO 35232 --- [ecosentry] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 37 ms. Found 3 JPA repository interfaces.
+2026-11-15T22:54:44.645+01:00  INFO 35232 --- [ecosentry] [           main] beddedDataSourceBeanFactoryPostProcessor : Replacing 'dataSource' DataSource bean with embedded version
+2026-11-15T22:54:44.726+01:00  INFO 35232 --- [ecosentry] [           main] o.s.j.d.e.EmbeddedDatabaseFactory        : Starting embedded database: url='jdbc:h2:mem:5172e212-b43a-4754-9865-dbf4364fbc92;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=false', username='sa'
+2026-11-15T22:54:44.972+01:00  INFO 35232 --- [ecosentry] [           main] org.hibernate.orm.jpa                    : HHH008540: Processing PersistenceUnitInfo [name: default]
+2026-11-15T22:54:45.035+01:00  INFO 35232 --- [ecosentry] [           main] org.hibernate.orm.core                   : HHH000001: Hibernate ORM core version 7.4.13.Final
+2026-11-15T22:54:45.287+01:00  INFO 35232 --- [ecosentry] [           main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-11-15T22:54:45.362+01:00  INFO 35232 --- [ecosentry] [           main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+        Database JDBC URL [jdbc:h2:mem:5172e212-b43a-4754-9865-dbf4364fbc92]
+        Database driver: H2 JDBC Driver
+        Database dialect: H2Dialect
+        Database version: 2.4.240
+        Default catalog/schema: 5172E212-B43A-4754-9865-DBF4364FBC92/PUBLIC
+        Autocommit mode: undefined/unknown
+        Isolation level: READ_COMMITTED [default READ_COMMITTED]
+        JDBC fetch size: 100
+        Pool: DataSourceConnectionProvider
+        Minimum pool size: undefined/unknown
+        Maximum pool size: undefined/unknown
+2026-11-15T22:54:45.987+01:00  INFO 35232 --- [ecosentry] [           main] org.hibernate.orm.core                   : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+Hibernate: drop table if exists kategorija cascade
+Hibernate: drop table if exists korisnik cascade
+Hibernate: drop table if exists prijava cascade
+Hibernate: create table kategorija (id_kategorija bigint generated by default as identity, kategorija_naziv varchar(255) not null unique, primary key (id_kategorija))
+Hibernate: create table korisnik (datum_registracije timestamp(6) with time zone not null, id_korisnik bigint generated by default as identity, email varchar(255) not null unique, id_oauth varchar(255), ime varchar(255) not null, oauth_provider varchar(255) not null, organizacija_naziv varchar(255), prezime varchar(255) not null, razlog_blokade varchar(255), status_racuna enum ('AKTIVAN','BLOKIRAN','NA_CEKANJU') not null, uloga enum ('GRADANIN','REDAR','UDRUGA') not null, primary key (id_korisnik))
+Hibernate: create table prijava (latituda numeric(9,6) not null, longituda numeric(9,6) not null, provjerena boolean not null, datum_kreiranja timestamp(6) with time zone not null, id_kategorija bigint not null, id_korisnik bigint not null, id_prijava bigint generated by default as identity, adresa varchar(255), kvart varchar(255), opis varchar(255), url_foto_sanacija varchar(255), url_fotografija varchar(255) not null, volumen_estm varchar(255), nacin_sanacije enum ('SLUZBENA','UDRUGA'), status enum ('AKCIJA_U_TIJEKU','OCISCENO','ODBACENO','PRIJAVLJENO','SLUZBENA_SANACIJA') not null, primary key (id_prijava))
+Hibernate: alter table if exists prijava add constraint FKnc73l2w7ldl16envt89tis5hb foreign key (id_kategorija) references kategorija
+Hibernate: alter table if exists prijava add constraint FKkohf3iahqypirfrta92bqaads foreign key (id_korisnik) references korisnik
+2026-11-15T22:54:46.034+01:00  INFO 35232 --- [ecosentry] [           main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-11-15T22:54:46.111+01:00  INFO 35232 --- [ecosentry] [           main] o.s.d.j.r.query.QueryEnhancerFactories   : Hibernate is in classpath; If applicable, HQL parser will be used.
+2026-11-15T22:54:46.304+01:00  INFO 35232 --- [ecosentry] [           main] h.f.e.r.KategorijaRepositoryTest         : Started KategorijaRepositoryTest in 2.308 seconds (process running for 4.089)
+Hibernate: insert into kategorija (kategorija_naziv,id_kategorija) values (?,default)
+Hibernate: insert into kategorija (kategorija_naziv,id_kategorija) values (?,default)
+Hibernate: insert into kategorija (kategorija_naziv,id_kategorija) values (?,default)
+Hibernate: select k1_0.id_kategorija,k1_0.kategorija_naziv from kategorija k1_0 order by k1_0.kategorija_naziv
+Hibernate: insert into kategorija (kategorija_naziv,id_kategorija) values (?,default)
+Hibernate: select k1_0.id_kategorija,k1_0.kategorija_naziv from kategorija k1_0 where k1_0.kategorija_naziv=?
+Hibernate: select k1_0.id_kategorija,k1_0.kategorija_naziv from kategorija k1_0 where k1_0.kategorija_naziv=?
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 3.060 s -- in hr.fer.ecosentry.repository.KategorijaRepositoryTest
+[INFO] Running hr.fer.ecosentry.repository.KorisnikRepositoryTest
+2026-11-15T22:54:46.699+01:00  INFO 35232 --- [ecosentry] [           main] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [hr.fer.ecosentry.repository.KorisnikRepositoryTest]: KorisnikRepositoryTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-15T22:54:46.711+01:00  INFO 35232 --- [ecosentry] [           main] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration hr.fer.ecosentry.EcosentryApplication for test class hr.fer.ecosentry.repository.KorisnikRepositoryTest
+2026-11-15T22:54:46.712+01:00  INFO 35232 --- [ecosentry] [           main] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [hr.fer.ecosentry.repository.KorisnikRepositoryTest]: KorisnikRepositoryTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-15T22:54:46.732+01:00  INFO 35232 --- [ecosentry] [           main] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration hr.fer.ecosentry.EcosentryApplication for test class hr.fer.ecosentry.repository.KorisnikRepositoryTest
+Hibernate: select k1_0.id_korisnik,k1_0.datum_registracije,k1_0.email,k1_0.id_oauth,k1_0.ime,k1_0.organizacija_naziv,k1_0.oauth_provider,k1_0.prezime,k1_0.razlog_blokade,k1_0.status_racuna,k1_0.uloga from korisnik k1_0 where k1_0.email=?
+Hibernate: insert into korisnik (datum_registracije,email,id_oauth,ime,organizacija_naziv,oauth_provider,prezime,razlog_blokade,status_racuna,uloga,id_korisnik) values (?,?,?,?,?,?,?,?,?,?,default)
+Hibernate: select k1_0.id_korisnik,k1_0.datum_registracije,k1_0.email,k1_0.id_oauth,k1_0.ime,k1_0.organizacija_naziv,k1_0.oauth_provider,k1_0.prezime,k1_0.razlog_blokade,k1_0.status_racuna,k1_0.uloga from korisnik k1_0 where k1_0.email=?
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.071 s -- in hr.fer.ecosentry.repository.KorisnikRepositoryTest
+[INFO] Running hr.fer.ecosentry.repository.PrijavaRepositoryTest
+2026-11-15T22:54:46.770+01:00  INFO 35232 --- [ecosentry] [           main] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [hr.fer.ecosentry.repository.PrijavaRepositoryTest]: PrijavaRepositoryTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-15T22:54:46.781+01:00  INFO 35232 --- [ecosentry] [           main] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration hr.fer.ecosentry.EcosentryApplication for test class hr.fer.ecosentry.repository.PrijavaRepositoryTest
+2026-11-15T22:54:46.782+01:00  INFO 35232 --- [ecosentry] [           main] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [hr.fer.ecosentry.repository.PrijavaRepositoryTest]: PrijavaRepositoryTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-15T22:54:46.791+01:00  INFO 35232 --- [ecosentry] [           main] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration hr.fer.ecosentry.EcosentryApplication for test class hr.fer.ecosentry.repository.PrijavaRepositoryTest
+Hibernate: insert into korisnik (datum_registracije,email,id_oauth,ime,organizacija_naziv,oauth_provider,prezime,razlog_blokade,status_racuna,uloga,id_korisnik) values (?,?,?,?,?,?,?,?,?,?,default)
+Hibernate: insert into kategorija (kategorija_naziv,id_kategorija) values (?,default)
+Hibernate: insert into prijava (adresa,datum_kreiranja,id_kategorija,kvart,latituda,longituda,nacin_sanacije,opis,id_korisnik,provjerena,url_foto_sanacija,url_fotografija,status,volumen_estm,id_prijava) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,default)
+Hibernate: select p1_0.id_prijava,p1_0.adresa,p1_0.datum_kreiranja,p1_0.id_kategorija,p1_0.kvart,p1_0.latituda,p1_0.longituda,p1_0.nacin_sanacije,p1_0.opis,p1_0.id_korisnik,p1_0.provjerena,p1_0.url_foto_sanacija,p1_0.url_fotografija,p1_0.status,p1_0.volumen_estm from prijava p1_0 where p1_0.id_korisnik=? order by p1_0.datum_kreiranja desc
+Hibernate: insert into korisnik (datum_registracije,email,id_oauth,ime,organizacija_naziv,oauth_provider,prezime,razlog_blokade,status_racuna,uloga,id_korisnik) values (?,?,?,?,?,?,?,?,?,?,default)
+Hibernate: insert into kategorija (kategorija_naziv,id_kategorija) values (?,default)
+Hibernate: insert into prijava (adresa,datum_kreiranja,id_kategorija,kvart,latituda,longituda,nacin_sanacije,opis,id_korisnik,provjerena,url_foto_sanacija,url_fotografija,status,volumen_estm,id_prijava) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,default)
+Hibernate: insert into prijava (adresa,datum_kreiranja,id_kategorija,kvart,latituda,longituda,nacin_sanacije,opis,id_korisnik,provjerena,url_foto_sanacija,url_fotografija,status,volumen_estm,id_prijava) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,default)
+Hibernate: select p1_0.id_prijava,p1_0.adresa,p1_0.datum_kreiranja,p1_0.id_kategorija,p1_0.kvart,p1_0.latituda,p1_0.longituda,p1_0.nacin_sanacije,p1_0.opis,p1_0.id_korisnik,p1_0.provjerena,p1_0.url_foto_sanacija,p1_0.url_fotografija,p1_0.status,p1_0.volumen_estm from prijava p1_0 where p1_0.status not in (?,?) order by p1_0.datum_kreiranja desc
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.074 s -- in hr.fer.ecosentry.repository.PrijavaRepositoryTest
+[INFO] Running hr.fer.ecosentry.service.PrijavaServiceTest
+[INFO] Tests run: 24, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.254 s -- in hr.fer.ecosentry.service.PrijavaServiceTest
+[INFO] Running hr.fer.ecosentry.service.SlikaServiceTest
+[INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.030 s -- in hr.fer.ecosentry.service.SlikaServiceTest
+[INFO]
+[INFO] Results:
+[INFO]
+[INFO] Tests run: 42, Failures: 0, Errors: 0, Skipped: 0
+[INFO]
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  8.210 s
+[INFO] Finished at: 2026-11-15T22:54:47+01:00
+[INFO] ------------------------------------------------------------------------

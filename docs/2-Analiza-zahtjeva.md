@@ -2,7 +2,7 @@
 
 Prioriteti su zadani po MoSCoW metodi: Must (mora biti), Should (trebalo bi biti), Could (može biti ako stignemo) i Won't (ne radimo).
 
-**MVP** čine svi zahtjevi s prioritetom Must: F-001 do F-003, F-005 do F-011, F-014, F-015, F-017, F-018, F-020, F-024, F-025, F-027, F-028, F-030 i F-031. MVP omogućuje osnovni tok aplikacije: građanin prijavi otpad, redar provjeri prijavu, udruga od nje napravi akciju čišćenja, volonteri se prijave na akciju uz upis u kalendar i prognozu, a nakon čišćenja prijava se zatvara.
+**MVP** čine svi zahtjevi s prioritetom Must: F-001, F-005, F-006, F-008, F-010, F-011, F-015, F-017, F-020, F-024, F-025, F-027, F-028, F-030 i F-035. MVP omogućuje osnovni tok aplikacije: građanin prijavi otpad, redar provjeri prijavu i pošalje je udrugama, udruga od nje napravi akciju čišćenja, volonteri se prijave na akciju uz upis u kalendar i prognozu, a nakon akcije udruga šalje zahtjev za zatvaranje prijave. Zahtjevi nižeg prioriteta (Should i Could) također su planirani, ali o njima ne ovisi osnovni tok aplikacije.
 
 ## 2.1 Funkcijski zahtjevi
 
@@ -11,8 +11,8 @@ Prioriteti su zadani po MoSCoW metodi: Must (mora biti), Should (trebalo bi biti
 | ID | Opis | Prioritet | Izvor | Kriteriji prihvaćanja |
 | --- | --- | --- | --- | --- |
 | F-001 | Korisnik se prijavljuje u sustav Google računom (OAuth 2.0). | Must | Zadatak | Nakon prijave korisnik ima pristup radnjama svoje uloge. |
-| F-002 | Redar može dodati novog redara upisom njegove Google e-mail adrese. | Must | Zadatak | Pri prvoj prijavi s tom adresom korisnik dobiva ulogu redara. Postojećem korisniku uloga se mijenja u redara. |
-| F-003 | Eko-udruga može poslati zahtjev za račun udruge, a redar ga odobrava ili odbija. | Must | Zadatak | Dok zahtjev nije odobren, račun nema prava udruge. Nakon odobrenja udruga može kreirati akcije. |
+| F-002 | Redar može dodati novog redara upisom njegove Google e-mail adrese. | Should | Zadatak | Pri prvoj prijavi s tom adresom korisnik dobiva ulogu redara. Postojećem korisniku uloga se mijenja u redara. |
+| F-003 | Eko-udruga može poslati zahtjev za račun udruge, a redar ga odobrava ili odbija. | Should | Zadatak | Dok zahtjev nije odobren, račun nema prava udruge. Nakon odobrenja udruga može kreirati akcije. |
 | F-004 | Redar može blokirati korisnika uz upisan razlog. | Should | Zadatak | Blokirani korisnik ne može podnositi prijave ni prijavljivati se na akcije. Redar može ukloniti blokadu. |
 
 ### Prijava otpada
@@ -21,9 +21,9 @@ Prioriteti su zadani po MoSCoW metodi: Must (mora biti), Should (trebalo bi biti
 | --- | --- | --- | --- | --- |
 | F-005 | Građanin može podnijeti prijavu otpada s lokacijom, fotografijom i kategorijom (plastika, građevinski, glomazni, ostalo). | Must | Zadatak | Prijava bez lokacije, fotografije ili kategorije se ne sprema i korisnik vidi što nedostaje. Spremljena prijava dobiva ID i status Prijavljeno. |
 | F-006 | Lokacija prijave automatski se uzima iz GPS-a, a korisnik je može odabrati i na karti. | Must | Zadatak | Ako korisnik dopusti lokaciju, pribadača se postavi na njegovu poziciju. Ako ne dopusti, lokaciju odabire na karti. |
-| F-007 | Fotografija se može dodati kamerom ili iz galerije. | Must | Zadatak | Na mobitelu se nude obje opcije. Slika je vidljiva u detaljima prijave. |
+| F-007 | Fotografija se može dodati kamerom ili iz galerije. | Should | Zadatak | Na mobitelu se nude obje opcije. Slika je vidljiva u detaljima prijave. |
 | F-008 | Građanin vidi popis svojih prijava s trenutnim statusom. | Must | Zadatak | Popis sadrži sve prijave korisnika sa statusom kakav je u sustavu. |
-| F-009 | Građanin dobiva obavijest u aplikaciji kad se promijeni status njegove prijave. | Must | Zadatak | Obavijest se pojavi pri sljedećem otvaranju aplikacije. |
+| F-009 | Građanin dobiva obavijest u aplikaciji kad se promijeni status njegove prijave. | Should | Zadatak | Obavijest se pojavi pri sljedećem otvaranju aplikacije. |
 
 ### Karta
 
@@ -32,8 +32,8 @@ Prioriteti su zadani po MoSCoW metodi: Must (mora biti), Should (trebalo bi biti
 | F-010 | Prijave se prikazuju na Google karti kao pribadače obojane po statusu (crveno - Prijavljeno, žuto - Akcija u tijeku, zeleno - Očišćeno). | Must | Zadatak | Nova prijava vidljiva je odmah nakon podnošenja, kao crvena. Odbačene prijave i prijave poslane na službenu sanaciju se ne prikazuju. |
 | F-011 | Klikom na pribadaču prikazuju se detalji prijave. | Must | Zadatak | Prikazuju se fotografija, kategorija, adresa, status i datum. |
 | F-012 | Sustav iz koordinata prijave dohvaća adresu. | Should | Zadatak | Uz prijavu se prikazuje adresa. |
-| F-013 | Lokacija prijave može se unijeti upisom adrese. | Should | Zadatak | Upisana adresa postavlja pribadaču na odgovarajuće mjesto na karti. |
-| F-014 | Sustav prikazuje mjesto okupljanja akcije i rutu dolaska od trenutne lokacije korisnika. | Must | Zadatak | Volonter vidi mjesto okupljanja i ucrtanu rutu do njega. |
+| F-013 | Lokacija prijave može se unijeti upisom adrese. | Could | Zadatak | Upisana adresa postavlja pribadaču na odgovarajuće mjesto na karti. |
+| F-014 | Sustav prikazuje mjesto okupljanja akcije i rutu dolaska od trenutne lokacije korisnika. | Should | Zadatak | Volonter vidi mjesto okupljanja i ucrtanu rutu do njega. |
 
 ### Komunalni redar
 
@@ -42,8 +42,8 @@ Prioriteti su zadani po MoSCoW metodi: Must (mora biti), Should (trebalo bi biti
 | F-015 | Redar vidi nove prijave i može ih prihvatiti ili odbaciti. | Must | Zadatak | Odbačena prijava nestaje s karte i prijavitelj dobiva obavijest. |
 | F-016 | Redar može promijeniti kategoriju otpada u prijavi. | Should | Zadatak | Nova kategorija vidljiva je svima u detaljima prijave. |
 | F-017 | Redar prihvaćenu prijavu šalje eko-udrugama ili na službenu sanaciju. | Must | Zadatak | Udruge vide i u akciju mogu dodati samo prijave poslane njima. Prijava poslana na službenu sanaciju dobiva status Službena sanacija i ne prikazuje se na karti. |
-| F-018 | Redar može zatvoriti prijavu uz fotografiju očišćene lokacije. | Must | Zadatak | Status prijave postaje Očišćeno i prijavitelj dobiva obavijest. |
-| F-019 | Redar vidi statistiku prijava, poput broja prijava po mjesecima i postotka riješenih. | Should | Zadatak | Brojke odgovaraju podacima u bazi za odabrano razdoblje. |
+| F-018 | Redar može zatvoriti prijavu uz fotografiju očišćene lokacije. | Should | Zadatak | Status prijave postaje Očišćeno i prijavitelj dobiva obavijest. |
+| F-019 | Redar vidi statistiku prijava, poput broja prijava po mjesecima i postotka riješenih. | Could | Zadatak | Brojke odgovaraju podacima u bazi za odabrano razdoblje. |
 
 ### Eko-udruga i akcije čišćenja
 
@@ -60,7 +60,7 @@ Prioriteti su zadani po MoSCoW metodi: Must (mora biti), Should (trebalo bi biti
 | ID | Opis | Prioritet | Izvor | Kriteriji prihvaćanja |
 | --- | --- | --- | --- | --- |
 | F-025 | Građanin vidi nadolazeće akcije čišćenja s popunjenošću i može se prijaviti kao volonter. | Must | Zadatak | Nakon prijave broj volontera se poveća za jedan. Na popunjenu akciju prijava nije moguća. |
-| F-026 | Volonter se može odjaviti s akcije. | Should | Zadatak | Broj volontera se smanji, a događaj se uklanja iz njegovog kalendara. |
+| F-026 | Volonter se može odjaviti s akcije. | Could | Zadatak | Broj volontera se smanji, a događaj se uklanja iz njegovog kalendara. |
 
 ### Vanjske integracije
 
@@ -70,7 +70,7 @@ Prioriteti su zadani po MoSCoW metodi: Must (mora biti), Should (trebalo bi biti
 | F-028 | Kad se građanin prijavi kao volonter, sustav kreira događaj u njegovom Google kalendaru. | Must | Zadatak | Događaj sadrži termin, poveznicu na lokaciju, kratke upute i podsjetnik 2 sata prije početka. |
 | F-029 | Kad se termin akcije promijeni, sustav ažurira događaje u Google kalendarima udruge i volontera. | Should | Zadatak | Događaj u kalendaru pokazuje novi termin. |
 | F-030 | Sustav dohvaća vremensku prognozu s OpenWeatherMap za lokaciju i datum akcije i prikazuje je udruzi i volonterima. | Must | Zadatak | Uz akciju se prikazuje prognoza za taj dan. Ako prognoza još nije dostupna, prikazuje se poruka o tome. |
-| F-031 | Ako je za termin akcije najavljeno nevrijeme, sustav prikazuje crveno upozorenje i nudi udruzi promjenu termina. | Must | Zadatak | Udruga iz upozorenja može odabrati novi termin, a volonteri dobivaju obavijest o promjeni. |
+| F-031 | Ako je za termin akcije najavljeno nevrijeme, sustav prikazuje crveno upozorenje i nudi udruzi promjenu termina. | Should | Zadatak | Udruga iz upozorenja može odabrati novi termin, a volonteri dobivaju obavijest o promjeni. |
 
 ### Izvan opsega ove verzije
 
@@ -79,6 +79,12 @@ Prioriteti su zadani po MoSCoW metodi: Must (mora biti), Should (trebalo bi biti
 | F-032 | Sustav šalje obavijesti izvan aplikacije (push ili e-mail). | Won't | Interpretacija zadatka | Obavijesti se prikazuju samo unutar aplikacije. |
 | F-033 | Sustav podržava više gradova s odvojenim redarima. | Won't | Interpretacija zadatka | Sustav je za jedan grad. |
 | F-034 | Sustav generira službeni nalog i šalje ga komunalnoj tvrtki. | Won't | Interpretacija zadatka | Komunikacija s komunalnom tvrtkom odvija se izvan sustava. |
+
+### Odjava iz sustava
+
+| ID | Opis | Prioritet | Izvor | Kriteriji prihvaćanja |
+| --- | --- | --- | --- | --- |
+| F-035 | Korisnik se odjavljuje iz sustava | Must | Zadatak | Odjava odvodi korisnika nazad na početnu stranicu i omogućuje ponovnu prijavu |
 
 ## 2.2 Nefunkcijski zahtjevi
 
@@ -89,11 +95,13 @@ Prioriteti su zadani po MoSCoW metodi: Must (mora biti), Should (trebalo bi biti
 | NF-03 | Aplikacija radi preko HTTPS-a. | Must | Tehničko ograničenje (geolokacija i kamera u pregledniku rade samo preko HTTPS-a) | Provjeriti da se aplikacija otvara preko HTTPS-a. |
 | NF-04 | Sustav prihvaća samo slikovne datoteke (JPG, PNG) do 10 MB. | Should | Prijedlog tima | Pokušati učitati PDF i sliku veću od 10 MB i provjeriti da sustav to odbija s porukom. |
 | NF-05 | Ako vanjski servis (npr. prognoza) ne odgovara, ostatak aplikacije radi normalno i korisnik vidi poruku da podatak trenutno nije dostupan. | Should | Prijedlog tima | Postaviti neispravan API ključ za prognozu i provjeriti da prijave i akcije i dalje rade. |
-| NF-06 | Aplikacija radi u zadnjim verzijama preglednika Chrome, Firefox i Edge te u Safariju na iPhoneu. | Should | Prijedlog tima | Proći kroz glavne radnje u svakom pregledniku. |
+| NF-06 | Aplikacija radi u zadnjim verzijama preglednika Chrome, Firefox i Edge te u Safariju na iPhoneu. | Could | Prijedlog tima | Proći kroz glavne radnje u svakom pregledniku. |
 
 ## 2.3 Dionici i akteri
 
-| ID uloge ili aktera | Odnos prema sustavu | Relevantni zahtjevi |
+**Akteri** izravno komuniciraju sa sustavom: korisnici (A-01 do A-03) i vanjski sustavi (A-04 do A-07).
+
+| ID aktera | Odnos prema sustavu | Relevantni zahtjevi |
 | --- | --- | --- |
 | A-01 Građanin | Korisnik. Prijavljuje otpad, prati svoje prijave i prijavljuje se na akcije kao volonter. | F-001, F-005 do F-014, F-025, F-026, F-028, F-030 |
 | A-02 Eko-udruga | Korisnik. Organizira akcije čišćenja i potvrđuje sanaciju. | F-001, F-003, F-010 do F-014, F-020 do F-024, F-027, F-029 do F-031 |
@@ -102,7 +110,13 @@ Prioriteti su zadani po MoSCoW metodi: Must (mora biti), Should (trebalo bi biti
 | A-05 Google Maps | Vanjski sustav. Prikaz karte, geokodiranje i ruta do mjesta okupljanja. | F-010, F-012, F-013, F-014 |
 | A-06 Google Calendar | Vanjski sustav. Upis i ažuriranje događaja za akcije čišćenja. | F-027, F-028, F-029 |
 | A-07 OpenWeatherMap | Vanjski sustav. Vremenska prognoza za lokaciju i datum akcije. | F-030, F-031 |
-| D-01 Komunalna tvrtka | Dionik. Ne koristi aplikaciju, ali preuzima sanaciju prijava koje redar pošalje na službenu sanaciju. | F-017 |
+
+**Dionici** ne koriste aplikaciju, ali imaju interes u njezinu ishodu (isti kao u [1.2](1-Projekt.md)).
+
+| ID dionika | Interes | Relevantni zahtjevi |
+| --- | --- | --- |
+| D-01 Komunalna tvrtka | Preuzima sanaciju prijava koje redar pošalje na službenu sanaciju. Sustav joj ništa ne šalje, redar je obavještava izvan sustava (AS-05). | F-017 |
+| D-02 Grad (jedinica lokalne samouprave) | Odgovoran je za komunalni red i financira sanaciju, pa ima interes za brže otkrivanje i uklanjanje divljih odlagališta i za pregled stanja prijava. | F-017, F-019 |
 
 ## 2.4 Ograničenja i pretpostavke
 
@@ -126,6 +140,8 @@ Prioriteti su zadani po MoSCoW metodi: Must (mora biti), Should (trebalo bi biti
 | 15. 11. 2026. | F-010, F-017, F-020 | Redar prihvaćenu prijavu šalje udrugama ili na službenu sanaciju, a udruge vide samo prijave poslane njima. | Odluka tima |
 | 15. 11. 2026. | F-002, C-03, C-04, AS-01 | Svi korisnici prijavljuju se isključivo Google računom. Novog redara dodaje postojeći redar upisom njegove e-mail adrese. | Odluka tima, potvrđeno s asistentom |
 | 15. 11. 2026. | svi | Zahtjevi su prenumerirani nakon uklanjanja i spajanja zahtjeva. | Odluka tima |
+| 19. 11. 2026. | F-002, F-003, F-007, F-009, F-013, F-014, F-018, F-019, F-026, F-031, NF-06 | Prioriteti su uravnoteženi: dio zahtjeva premješten je iz Must u Should, a dio iz Should u Could. Niži prioritet ne znači da se zahtjev neće realizirati, nego da o njemu ne ovisi osnovni tok aplikacije. | Napomena asistenta nakon pregleda dokumentacije |
+| 19. 11. 2026. | 2.3, D-02 | Akteri i dionici prikazani su u zasebnim tablicama, a dodan je dionik Grad (D-02). | Napomena asistenta nakon pregleda dokumentacije |
 
 ## 2.6 Sljedivost zahtjeva
 
