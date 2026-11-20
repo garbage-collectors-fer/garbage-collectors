@@ -67,7 +67,7 @@ cp frontend/.env.example frontend/.env
 | `frontend/.env` | `VITE_API_URL` | adresa backenda, lokalno `http://localhost:8080` | ne |
 | `frontend/.env` | `VITE_GOOGLE_MAPS_MAP_ID` | neobavezno; ID karte, zadano `DEMO_MAP_ID` | ne |
 
-Vrijednosti za Google prijavu dobivaju se od člana tima zaduženog za Google OAuth (Nikola), podaci za bazu od člana zaduženog za bazu (Pavao), a Cloudinary ključevi od člana zaduženog za Cloudinary račun (Tibor). Backend `.env` datoteku čita iz **radnog direktorija** (`backend/.env`) ili, ako se pokreće iz korijena repozitorija, iz `backend/.env` relativno na korijen. Preporučeno je pokretati backend iz mape `backend/`. `.env` datoteke i arhive projekta koje ih sadrže ne šalju se u Git, e-poštom ni razgovorima. Sažet vodič za lokalno pokretanje nalazi se i u datoteci `LOCAL-START-HR.md` u korijenu repozitorija.
+Vrijednosti za Google prijavu dobivaju se od člana tima zaduženog za Google OAuth (Nikola), podaci za bazu od člana zaduženog za bazu (Pavao), a Cloudinary ključevi od člana zaduženog za Cloudinary račun (Tibor). Backend `.env` datoteku čita iz **radnog direktorija** (`backend/.env`) ili, ako se pokreće iz korijena repozitorija, iz `backend/.env` relativno na korijen. Preporučeno je pokretati backend iz mape `backend/`. `.env` datoteke i arhive projekta koje ih sadrže ne šalju se u Git, e-poštom ni razgovorima.
 
 U Google Cloud konzoli, u postavkama OAuth klijenta, mora biti dodana adresa povratka (*authorized redirect URI*):
 
