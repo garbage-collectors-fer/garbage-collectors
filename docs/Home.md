@@ -36,7 +36,7 @@ Ažurirani popis članova i njihovih glavnih uloga ili doprinosa nalazi se u [RE
 | Kontrolna točka | Demonstracija | Video |
 | --- | --- | --- |
 | Iteracija 1 | https://ecosentry-6rg1.onrender.com | — |
-| Završni pregled | [Poveznica na završnu inačicu projekta] | — |
+| Završni pregled | https://ecosentry-6rg1.onrender.com | — |
 
 Dokumentacija se kontinuirano ažurira kako se aplikacija razvija.
 
