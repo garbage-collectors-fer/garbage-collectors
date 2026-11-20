@@ -21,9 +21,9 @@ EcoSentry se sastoji od React klijenta (`frontend/`, Vite), Java poslužitelja (
 
 **Analiza razmještaja:**
 * **Korisnički uređaj:** web-preglednik preuzima izgrađeni React klijent i izvršava ga. Kartu učitava izravno s Google Maps JavaScript API-ja.
-* **Web-usluga na Renderu:** jedan proces (`java -jar app.jar`) poslužuje statičke datoteke klijenta, REST API pod putanjom `/api` i slike prijava pod putanjom `/uploads`. Klijent i API zato dolaze s iste adrese pa za javno postavljanje nije potreban CORS.
+* **Web-usluga na Renderu:** jedan proces (`java -jar app.jar`) poslužuje statičke datoteke klijenta, REST API pod putanjom `/api`. Klijent i API zato dolaze s iste adrese pa za javno postavljanje nije potreban CORS.
 * **Baza podataka:** PostgreSQL na usluzi Neon, izvan Rendera. Veza se uspostavlja isključivo iz poslužitelja (JDBC uz `sslmode=require`), nikada iz preglednika. Shemu pri pokretanju poslužitelja stvara Flyway.
-* **Slike prijava:** poslužitelj ih sprema kao datoteke u mapu `uploads/` na disku usluge, a u bazi je samo URL. Taj disk na Renderu nije trajan (vidi 6.3).
+* **Slike prijava:** poslužitelj ih šalje na vanjsku uslugu Cloudinary (mapa `ecosentry/prijave`), a u bazi je samo URL slike. Preglednik sliku učitava izravno s Cloudinaryja, ne preko Rendera, pa slike ostaju sačuvane i nakon novog postavljanja usluge.
 * **Google prijava:** preglednik se preusmjerava na Google, a poslužitelj od Googlea razmjenjuje kod za token i dohvaća podatke o korisniku.
 
 ---
@@ -65,12 +65,15 @@ cp frontend/.env.example frontend/.env
 | `backend/.env` | `DB_HOST` | adresa Neon baze, bez `-pooler` u imenu (pooler može stvarati probleme Flywayu) | ne objavljivati |
 | `backend/.env` | `DB_USER` | korisnik baze | ne objavljivati |
 | `backend/.env` | `DB_PASSWORD` | lozinka baze | **da** |
+| `backend/.env` | `CLOUDINARY_CLOUD_NAME` | naziv Cloudinary računa u koji se spremaju slike prijava | ne objavljivati |
+| `backend/.env` | `CLOUDINARY_API_KEY` | API ključ Cloudinary računa | ne objavljivati |
+| `backend/.env` | `CLOUDINARY_API_SECRET` | tajni API ključ Cloudinary računa | **da** |
 | `backend/.env` | `FRONTEND_URL` | kamo backend vraća korisnika nakon prijave; neobavezno, zadano `http://localhost:5173` | ne |
 | `frontend/.env` | `VITE_GOOGLE_MAPS_API_KEY` | ključ za Google Maps JavaScript API; ulazi u izgrađeni klijent pa je vidljiv pregledniku | ne, ali ograničiti ključ u Google Cloud konzoli |
 | `frontend/.env` | `VITE_API_URL` | adresa backenda, lokalno `http://localhost:8080` | ne |
 | `frontend/.env` | `VITE_GOOGLE_MAPS_MAP_ID` | neobavezno; ID karte, zadano `DEMO_MAP_ID` | ne |
 
-Vrijednosti za Google prijavu dobivaju se od člana tima zaduženog za Google OAuth (Nikola), a podaci za bazu od člana zaduženog za bazu (Pavao). Backend `.env` datoteku čita iz **radnog direktorija** (`backend/.env`) ili, ako se pokreće iz korijena repozitorija, iz `backend/.env` relativno na korijen. Preporučeno je pokretati backend iz mape `backend/`. `.env` datoteke i arhive projekta koje ih sadrže ne šalju se u Git, e-poštom ni razgovorima. Sažet vodič za lokalno pokretanje nalazi se i u datoteci `LOCAL-START-HR.md` u korijenu repozitorija.
+Vrijednosti za Google prijavu dobivaju se od člana tima zaduženog za Google OAuth (Nikola), podaci za bazu od člana zaduženog za bazu (Pavao), a Cloudinary ključevi od člana zaduženog za Cloudinary račun (Tibor). Backend `.env` datoteku čita iz **radnog direktorija** (`backend/.env`) ili, ako se pokreće iz korijena repozitorija, iz `backend/.env` relativno na korijen. Preporučeno je pokretati backend iz mape `backend/`. `.env` datoteke i arhive projekta koje ih sadrže ne šalju se u Git, e-poštom ni razgovorima. Sažet vodič za lokalno pokretanje nalazi se i u datoteci `LOCAL-START-HR.md` u korijenu repozitorija.
 
 U Google Cloud konzoli, u postavkama OAuth klijenta, mora biti dodana adresa povratka (*authorized redirect URI*):
 
@@ -129,10 +132,10 @@ npm run dev
 2. Zaštita API-ja radi: `curl -i http://localhost:8080/api/me` bez prijave vraća status 401 i tijelo `{"poruka":"Korisnik nije prijavljen"}`.
 3. Otvorite `http://localhost:5173`, prijavite se Google računom i provjerite da se prikazuje stranica za vašu ulogu.
 4. Kao građanin podnesite probnu prijavu (slika, lokacija na karti, kategorija), provjerite da se na karti pojavljuje crvena pribadača i da prijava ostaje nakon osvježavanja stranice. To dokazuje da se podaci trajno spremaju u bazu.
-5. Slika prijave nalazi se u mapi `backend/uploads/` (u bazi je samo njezin URL).
+5. Slika prijave prikazuje se u detaljima prijave i nalazi se u Cloudinary konzoli, u mapi `ecosentry/prijave` (u bazi je samo njezin URL).
 6. Odjavite se gumbom „Odjava“ i provjerite da se ponovno prikazuje stranica za prijavu.
 
-**Ako korak ne uspije:** pogreške pokretanja i zahtjeva ispisuje terminal 1 (backend; uključen je i ispis SQL upita), a neuspjele pozive API-ja vidi se u kartici *Network* u alatima za razvojne programere preglednika. Ako se backend ne pokreće, provjerite je li `backend/.env` ispunjen i pokreće li se backend iz mape `backend/`; poruka o neuspjeloj vezi s bazom obično znači krivi `DB_HOST`, `DB_USER` ili `DB_PASSWORD`. Poruka „Prijava nije uspjela“ obično znači da adresa povratka nije dodana u Google Cloud konzoli ili da Google račun nema potvrđenu e-mail adresu.
+**Ako korak ne uspije:** pogreške pokretanja i zahtjeva ispisuje terminal 1 (backend; uključen je i ispis SQL upita), a neuspjele pozive API-ja vidi se u kartici *Network* u alatima za razvojne programere preglednika. Ako se backend ne pokreće, provjerite je li `backend/.env` ispunjen i pokreće li se backend iz mape `backend/`; poruka o neuspjeloj vezi s bazom obično znači krivi `DB_HOST`, `DB_USER` ili `DB_PASSWORD`. Ako podnošenje prijave vraća 500 „Spremanje slike nije uspjelo“, provjerite `CLOUDINARY_*` vrijednosti (i da na kraju retka nema razmaka). Poruka „Prijava nije uspjela“ obično znači da adresa povratka nije dodana u Google Cloud konzoli ili da Google račun nema potvrđenu e-mail adresu.
 
 ### 6. Pokretanje automatskih testova
 
@@ -164,7 +167,7 @@ Automatizirani testovi ne trebaju pristup zajedničkoj Neon bazi ni Google raču
 
 | **Postavljeni podsustav** | **Infrastruktura i izvor koda** | **Naredbe izgradnje i pokretanja** | **Konfiguracija i varijable okruženja** |
 | --- | --- | --- | --- |
-| **Klijent i poslužitelj (jedna web-usluga)** | Render, Web Service s Docker okruženjem; repozitorij `garbage-collectors-fer/garbage-collectors`, grana `master`, korijenski `Dockerfile` | Izgradnja: `Dockerfile` u tri koraka. (1) `node:22-alpine`: `npm ci` i `npm run build` u `frontend/`. (2) `eclipse-temurin:21-jdk`: izgrađeni klijent kopira se u `src/main/resources/static`, zatim `sh mvnw -q -DskipTests package`. (3) `eclipse-temurin:21-jre`: `java -jar app.jar` | `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`, `DB_HOST`, `DB_USER`, `DB_PASSWORD` (tajne), `FRONTEND_URL` (javna adresa usluge), `PORT` (dodjeljuje Render), `VITE_GOOGLE_MAPS_API_KEY` (Docker build argument za izgradnju klijenta, vidljiv pregledniku) |
+| **Klijent i poslužitelj (jedna web-usluga)** | Render, Web Service s Docker okruženjem; repozitorij `garbage-collectors-fer/garbage-collectors`, grana `master`, korijenski `Dockerfile` | Izgradnja: `Dockerfile` u tri koraka. (1) `node:22-alpine`: `npm ci` i `npm run build` u `frontend/`. (2) `eclipse-temurin:21-jdk`: izgrađeni klijent kopira se u `src/main/resources/static`, zatim `sh mvnw -q -DskipTests package`. (3) `eclipse-temurin:21-jre`: `java -jar app.jar` | `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`, `DB_HOST`, `DB_USER`, `DB_PASSWORD`, `CLOUDINARY_CLOUD_NAME`, `CLOUDINARY_API_KEY`, `CLOUDINARY_API_SECRET` (tajne), `FRONTEND_URL` (javna adresa usluge), `PORT` (dodjeljuje Render), `VITE_GOOGLE_MAPS_API_KEY` (Docker build argument za izgradnju klijenta, vidljiv pregledniku) |
 | **Baza podataka** | Neon (upravljani PostgreSQL), baza `neondb`; nije na Renderu | Shemu pri pokretanju poslužitelja izvodi Flyway (`db/migration/V1__init.sql` do `V4__test_racuni.sql`) | `DB_HOST` (bez `-pooler`), `DB_USER`, `DB_PASSWORD`; postavljaju se na web-usluzi, ne na klijentu |
 
 **Što se događa u konfiguraciji:**
@@ -179,7 +182,7 @@ Automatizirani testovi ne trebaju pristup zajedničkoj Neon bazi ni Google raču
 ### Postupak postavljanja
 
 1. **Baza podataka:** u Neonu je postojeći projekt s bazom `neondb`. Za produkciju se koristi grana `production`, a u `DB_HOST` adresa **bez** `-pooler`. Tablice i početne podatke stvara Flyway pri prvom pokretanju poslužitelja, pa ručna primjena sheme nije potrebna.
-2. **Web-usluga:** na Renderu odabrati *New → Web Service*, povezati GitHub repozitorij, odabrati granu `master` i Docker okruženje (Render koristi `Dockerfile` u korijenu). U postavkama web-usluge postaviti `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`, `DB_HOST`, `DB_USER`, `DB_PASSWORD` i javnu adresu `FRONTEND_URL`. Za Google Maps ključ provjeriti da je `VITE_GOOGLE_MAPS_API_KEY` dostupan kao Docker build argument tijekom izgradnje (u Dockerfileu je deklariran `ARG`); sam ključ nije tajna, ali ga treba ograničiti po HTTP referreru i API-ju u Google Cloud konzoli.
+2. **Web-usluga:** na Renderu odabrati *New → Web Service*, povezati GitHub repozitorij, odabrati granu `master` i Docker okruženje (Render koristi `Dockerfile` u korijenu). U postavkama web-usluge postaviti `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`, `DB_HOST`, `DB_USER`, `DB_PASSWORD`, `CLOUDINARY_CLOUD_NAME`, `CLOUDINARY_API_KEY`, `CLOUDINARY_API_SECRET` i javnu adresu `FRONTEND_URL`. Za Google Maps ključ provjeriti da je `VITE_GOOGLE_MAPS_API_KEY` dostupan kao Docker build argument tijekom izgradnje (u Dockerfileu je deklariran `ARG`); sam ključ nije tajna, ali ga treba ograničiti po HTTP referreru i API-ju u Google Cloud konzoli.
 3. **Javna adresa:** nakon prvog postavljanja zabilježiti adresu usluge (oblik `https://<naziv>.onrender.com`), postaviti je kao `FRONTEND_URL` i ponovno postaviti uslugu.
 4. **Završno povezivanje:** u Google Cloud konzoli, u OAuth klijentu, dodati adresu povratka `https://<javna-adresa>/api/auth/google/callback`. Za trenutačno navedenu javnu adresu to je `https://ecosentry-6rg1.onrender.com/api/auth/google/callback`. Zatim otvoriti javnu adresu, prijaviti se Google računom, podnijeti probnu prijavu i provjeriti da se pojavljuje na karti. README već navodi `https://ecosentry-6rg1.onrender.com`; nakon promjene domene ažurirati oba dokumenta.
 
@@ -191,7 +194,7 @@ Automatizirani testovi ne trebaju pristup zajedničkoj Neon bazi ni Google raču
 | Plan i regija | Free, Frankfurt |
 | Izvor izgradnje | `./Dockerfile`, grana `master` |
 | Javna adresa | https://ecosentry-6rg1.onrender.com/ |
-| Postavljene varijable okruženja | `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`, `FRONTEND_URL`, `DB_HOST`, `DB_USER`, `DB_PASSWORD`, `VITE_GOOGLE_MAPS_API_KEY` (vrijednosti se ne dokumentiraju) |
+| Postavljene varijable okruženja | `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`, `FRONTEND_URL`, `DB_HOST`, `DB_USER`, `DB_PASSWORD`, `CLOUDINARY_CLOUD_NAME`, `CLOUDINARY_API_KEY`, `CLOUDINARY_API_SECRET`, `VITE_GOOGLE_MAPS_API_KEY` (vrijednosti se ne dokumentiraju) |
 | Google Maps ključ | Prosljeđuje se kao Docker build argument (`ARG` i `ENV` u `Dockerfileu` prije `npm run build`); Render varijable okruženja prosljeđuje Dockeru |
 | Način postavljanja | Automatski deploy (*auto-deploy*) na svaki push na `master` |
 | Zadnje uspješno postavljanje | 15. 11. 2026. u 20:54, commit `66cb6b5` |
@@ -203,7 +206,7 @@ Plan Free znači da Render usluga nakon razdoblja bez prometa miruje, pa prvi za
 - **Nadzor rada i zapisi pogrešaka:** zapisi poslužitelja i zapisi izgradnje vide se u Render nadzornoj ploči, u kartici *Logs* odabrane usluge. Pristup imaju članovi tima koji su dodani u Render projekt. Podaci u bazi mogu se pregledavati u Neonu.
 - **Upravljanje ovlastima:** aplikacija nema administratorsko sučelje. Svaki novi korisnik postaje građanin. Prvi redar upisan je u `V2__seed.sql`, a daljnji redari, udruga i testni računi u `V3__nalog_kategorije_uloge.sql` i `V4__test_racuni.sql`; ostale promjene uloge rade se SQL naredbom u bazi (vidi 6.2, odjeljak 3). Redar u aplikaciji još ne može sam dodavati redare ni odobravati udruge.
 - **Sesije:** nakon svakog novog postavljanja korisnici se moraju ponovno prijaviti.
-- **Pohrana slika:** slike prijava spremaju se na disk web-usluge (`./uploads`). Na Renderu taj disk nije trajan, pa **slike nestaju pri svakom novom postavljanju ili ponovnom pokretanju usluge**, dok zapisi u bazi ostaju. Kod sadrži bilješku da će se pohrana zamijeniti vanjskom uslugom za slike; do tada je to poznato ograničenje.
+- **Pohrana slika:** slike prijava spremaju se na Cloudinary (mapa `ecosentry/prijave`), pa ne ovise o disku Render usluge i ostaju nakon novog postavljanja. Slike se pregledavaju i brišu u Cloudinary konzoli. Koristi se besplatni plan s ograničenom mjesečnom kvotom (krediti za pohranu, promet i obradu); poslužitelj zato smanjuje slike šire od 1400 px prije spremanja.
 - **Postupak ažuriranja:** promjena se spaja u granu `master` (po mogućnosti preko pull requesta). Push na `master` pokreće Renderov *auto-deploy* (`cd.yml` s deploy hookom se ne koristi jer tajna nije postavljena); Render ponovno izgrađuje Docker sliku, a Flyway pri pokretanju primjenjuje nove migracije. Postavljanje se može pokrenuti i ručno iz nadzorne ploče. Prije postavljanja ne izvode se automatizirane provjere.
 - **Sigurnosne kopije i oporavak:** nisu posebno konfigurirani. Podaci su u upravljanoj bazi na Neonu, a postupak oporavka tim nije uspostavio ni isprobao.
 

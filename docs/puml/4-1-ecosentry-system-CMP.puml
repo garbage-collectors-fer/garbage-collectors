@@ -3,17 +3,17 @@
 '
 ' Svrha:    Prikazuje logičke komponente sustava EcoSentry, njihove ovisnosti
 '           i vanjske usluge. Planirane komponente (akcije čišćenja, kalendar,
-'           prognoza, Cloudinary) prikazane su isprekidano. Fizičko izvođenje
+'           prognoza) prikazane su isprekidano. Fizičko izvođenje
 '           prikazuje dijagram razmještaja 6-1.
 ' Autor:
 ' AI:       Claude je pomogao pri izradi nacrta dijagrama prema kodu u repozitoriju; autor
 '           je sve provjerio da dijagram odgovara implementaciji.
-' Praćenje: Pri dodavanju akcija čišćenja, obavijesti ili Cloudinaryja
-'           ukloniti oznaku «planirano» i uskladiti veze s kodom.
+' Praćenje: Pri dodavanju akcija čišćenja, obavijesti, kalendara ili
+'           prognoze ukloniti oznaku «planirano» i uskladiti veze s kodom.
 '
 ' Diagram level: High-level logical architecture
 ' Diagram type:  UML Component Diagram
-' Version:       1.0
+' Version:       1.1 (fotografije na Cloudinaryju umjesto mape uploads/)
 ' ==============================================================================
 
 @startuml
@@ -42,11 +42,6 @@ skinparam database {
     BorderColor #212529
 }
 
-skinparam folder {
-    BackgroundColor #FFF3CD
-    BorderColor #212529
-}
-
 ' ==============================================================================
 ' Granica sustava i unutarnje komponente
 ' ==============================================================================
@@ -69,7 +64,6 @@ rectangle "Sustav EcoSentry" {
   }
 
   database "PostgreSQL\n(Neon)" as DB
-  folder "Mapa uploads/\n(privremeno)" as Uploads
 }
 
 ' ==============================================================================
@@ -80,7 +74,7 @@ component "Google prijava\n(OAuth 2.0 / OIDC)" as Google
 component "Google Maps\nJavaScript API" as Maps
 component "Google Calendar API" <<planirano>> as Calendar
 component "OpenWeatherMap API" <<planirano>> as Weather
-component "Cloudinary" <<planirano>> as Cloudinary
+component "Cloudinary\n(pohrana slika)" as Cloudinary
 
 ' ==============================================================================
 ' Ovisnosti
@@ -97,8 +91,7 @@ API --> Reports : rad s prijavama
 API --> Repo : kategorije, trenutni korisnik
 Reports --> Photos : fotografija prijave
 Reports --> Repo : pohrana i dohvat prijava
-Photos --> Uploads : datoteke slika
-Photos ..> Cloudinary : ciljna pohrana
+Photos --> Cloudinary : upload slike,\nvraća secure_url
 Repo --> DB : JDBC
 
 Actions ..> Repo

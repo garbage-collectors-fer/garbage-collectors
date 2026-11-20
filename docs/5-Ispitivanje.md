@@ -36,7 +36,7 @@ Kontinuirana integracija trenutačno **nije** u uporabi: `.github/workflows/ci.y
 
 **Cilj:** Važne provjere učiniti ponovljivima bilježenjem scenarija, ulaza, koraka, očekivanog rezultata i rezultata izvođenja. Svakoj provjeri dodijeljen je stabilan ID koji se može koristiti u tablici sljedivosti zahtjeva.
 
-Oznake: **CT** – komponenta (automatizirano, Java), **ST** – sustav (ručno u pokrenutoj aplikaciji). U zagradi uz scenarij navedeni su zahtjevi iz [dokumenta 2](2-Analiza-zahtjeva.md) i obrasci uporabe. Automatizirani slučajevi CT-01 do CT-38 i ručni sustavski slučajevi ST-01 do ST-11 označeni su prema izvještaju autora izvođenja kao prošli. Izvornici izvođenja (ispis testova, snimke zaslona) čuvaju se u `tests/evidence/`, a podaci izvođenja navedeni su u odjeljku 5.3.
+Oznake: **CT** – komponenta (automatizirano, Java), **ST** – sustav (ručno u pokrenutoj aplikaciji). U zagradi uz scenarij navedeni su zahtjevi iz [dokumenta 2](2-Analiza-zahtjeva.md) i obrasci uporabe. Automatizirani slučajevi CT-01 do CT-40 i ručni sustavski slučajevi ST-01 do ST-11 označeni su prema izvještaju autora izvođenja kao prošli. Izvornici izvođenja (ispis testova, snimke zaslona) čuvaju se u `tests/evidence/`, a podaci izvođenja navedeni su u odjeljku 5.3.
 
 ### Komponente: prijave otpada (automatizirani testovi napisani)
 
@@ -70,10 +70,11 @@ U stupcu „Koraci ispitivanja“ naveden je naziv testne metode; ako nije naved
 
 | ID ispitnog slučaja | Scenarij ispitivanja | Ulazni podaci | Očekivani rezultat | Stvarni rezultat | Ishod | Koraci ispitivanja |
 | --- | --- | --- | --- | --- | --- | --- |
-| CT-22 | Valjana slika (F-007) | PNG datoteka | Datoteka se sprema pod slučajnim imenom, vraća se URL koji završava na `.png`, sadržaj je jednak. | Prošlo prema izvještaju izvođenja koji je dostavio autor. | Prošao | Test `SlikaServiceTest.spremi_valjanaSlika_spremaDatotekuIVracaUrl`. |
-| CT-23 | Nedostaje ili prazna slika (F-005) | nema datoteke; datoteka veličine 0 | U oba slučaja status 400. | Prošlo prema izvještaju izvođenja koji je dostavio autor. | Prošao | Test `spremi_nedostajucaIliPrazna_vracaBadRequest`. |
-| CT-24 | Datoteka koja nije slika (NF-04) | PDF | Status 400; ništa se ne sprema na disk. | Prošlo prema izvještaju izvođenja koji je dostavio autor. | Prošao | Test `spremi_datotekaKojaNijeSlika_vracaBadRequestINistaSeNeSprema`. |
-
+| CT-22 | Valjana slika (F-007) | PNG datoteka | Slika se šalje na Cloudinary (mapa `ecosentry/prijave`) i vraća se njezin `secure_url`. Cloudinary je u testu zamijenjen lažnim objektom (Mockito). | Prošlo prema izvještaju izvođenja koji je dostavio autor. | Prošao | Test `SlikaServiceTest.spremi_valjanaSlika_saljeNaCloudinaryIVracaUrl`. |
+| CT-23 | Nedostaje ili prazna slika (F-005) | nema datoteke; datoteka veličine 0 | U oba slučaja status 400; ništa se ne šalje na Cloudinary. | Prošlo prema izvještaju izvođenja koji je dostavio autor. | Prošao | Test `spremi_nedostajucaIliPrazna_vracaBadRequest`. |
+| CT-24 | Datoteka koja nije slika (NF-04) | PDF | Status 400; ništa se ne šalje na Cloudinary. | Prošlo prema izvještaju izvođenja koji je dostavio autor. | Prošao | Test `spremi_datotekaKojaNijeSlika_vracaBadRequestINistaSeNeSalje`. |
+| CT-39 | Nedopuštena vrsta slike (NF-04) | WEBP datoteka | Status 400; ništa se ne šalje na Cloudinary. | Prošlo prema izvještaju izvođenja koji je dostavio autor. | Prošao | Test `spremi_webp_vracaBadRequest`. |
+| CT-40 | Cloudinary nije dostupan (NF-05) | JPG datoteka; Cloudinary baca iznimku | Status 500 s porukom „Spremanje slike nije uspjelo“; prijava se ne sprema. | Prošlo prema izvještaju izvođenja koji je dostavio autor. | Prošao | Test `spremi_cloudinaryNeuspjeh_vracaInternalServerError`. |
 ### Kontroler, autorizacija i repozitoriji (automatizirani testovi napisani)
 
 Ovi testovi postoje u ZIP-om dostavljenom repozitoriju. Važno: `AutorizacijaTest` provjerava prisutnost i vrijednosti anotacija na metodama kontrolera, a ne stvarnu Spring Security HTTP obradu. `PrijavaControllerTest` provjerava prosljeđivanje argumenata servisu uz Mockito; repozitorijski testovi koriste `@DataJpaTest` i H2.
@@ -115,19 +116,21 @@ Ovi testovi postoje u ZIP-om dostavljenom repozitoriju. Važno: `AutorizacijaTes
 
 **Cilj:** Navesti reviziju aplikacije, okruženje i dokaze potrebne za tumačenje stvarnih rezultata u tablici ispitnih slučajeva.
 
-**Najnovije izvođenje ili dokaz:** Automatizirane testove (CT-01 do CT-38) i ručne sustavske slučajeve (ST-01 do ST-11) izveo je autor ispitivanja, koji izvještava da su svi prošli. Podaci izvođenja:
+**Najnovije izvođenje ili dokaz:** Automatizirane testove (CT-01 do CT-40) i ručne sustavske slučajeve (ST-01 do ST-11) izveo je autor ispitivanja, koji izvještava da su svi prošli. Podaci izvođenja:
 
-| Podatak | Vrijednost |
-| --- | --- |
-| Datum izvođenja | 15. 11. 2026. |
-| Revizija aplikacije (`git rev-parse --short HEAD`) | 66cb6b5 |
-| Izvođač | Bruno Hrgovan |
-| Okruženje automatiziranih testova | lokalno, `./mvnw clean test` (JUnit 5, Mockito, H2 za repozitorijske testove) |
+| Podatak | Vrijednost                                                                                                                                       |
+| --- |--------------------------------------------------------------------------------------------------------------------------------------------------|
+| Datum izvođenja | 15. 11. 2026.                                                                                                                                    |
+| Revizija aplikacije (`git rev-parse --short HEAD`) | 66cb6b5                                                                                                                                          |
+| Izvođač | Bruno Hrgovan                                                                                                                                    |
+| Okruženje automatiziranih testova | lokalno, `./mvnw clean test` (JUnit 5, Mockito, H2 za repozitorijske testove)                                                                    |
 | Okruženje ručnih slučajeva | ST-01 do ST-10 lokalno (backend na `localhost:8080`, frontend na `localhost:5173`); ST-11 na javnoj adresi `https://ecosentry-6rg1.onrender.com` |
-| Sažetak naredbe `./mvnw clean test` | `Tests run: 42, Failures: 0, Errors: 0, Skipped: 0` |
-| Dokazi | ispis izvođenja testova i snimke zaslona u [`tests/evidence/`](../tests/evidence/) |
+| Sažetak naredbe `./mvnw clean test` | `Tests run: 42, Failures: 0, Errors: 0, Skipped: 0`                                                                                              |
+| Dokazi | ispis izvođenja testova i snimke zaslona u [`tests/evidence/`](../tests/evidence/)                                                               |
 
-U repozitoriju je 7 testnih razreda: servisni (`PrijavaServiceTest`, `SlikaServiceTest`), kontrolerski (`PrijavaControllerTest`), autorizacijski (`AutorizacijaTest`) i repozitorijski (`KategorijaRepositoryTest`, `KorisnikRepositoryTest`, `PrijavaRepositoryTest`). Ukupno je 39 JUnit testnih metoda (38 običnih i jedna parametrizirana); parametrizirani test provjerava četiri para koordinata, pa se očekuje 42 pojedinačna izvođenja. Stvarni broj uspješnih izvođenja prepisuje se iz ispisa pokretanja.
+Nakon prelaska na Cloudinary `SlikaServiceTest` je prilagođen i dodani su CT-39 i CT-40; ponovno izvođenje (Nikola, 19. 11. 2026.) dalo je `Tests run: 44, Failures: 0, Errors: 0, Skipped: 0`.
+
+U repozitoriju je 7 testnih razreda: servisni (`PrijavaServiceTest`, `SlikaServiceTest`), kontrolerski (`PrijavaControllerTest`), autorizacijski (`AutorizacijaTest`) i repozitorijski (`KategorijaRepositoryTest`, `KorisnikRepositoryTest`, `PrijavaRepositoryTest`). Ukupno je 41 JUnit testna metoda (40 običnih i jedna parametrizirana); parametrizirani test provjerava četiri para koordinata, pa se očekuje 44 pojedinačna izvođenja. Stvarni broj uspješnih izvođenja prepisuje se iz ispisa pokretanja.
 
 Rezultati se odnose samo na funkcionalnosti koje su implementirane. Ručne provjere ne dokazuju ponašanje onoga što još ne postoji (akcije čišćenja, obavijesti, zatvaranje prijava, statistika); to je navedeno u odjeljku 5.4. Uspjeh jediničnih testova nije dokaz da su Google prijava, javna adresa, karta i trajna pohrana ispravni; njih pokrivaju ručni slučajevi ST-01 do ST-11.
 
@@ -139,12 +142,10 @@ Stupci **Stvarni rezultat** i **Ishod** u odjeljku 5.2 mjerodavni su rezultati z
 
 | Problem ili ograničenje | Korisniku vidljiv učinak ili neprovjereno ponašanje | Dokaz ili poveznica na zadatak |
 | --- | --- | --- |
-| Slike prijava spremaju se na disk web-usluge | Na Renderu disk nije trajan: nakon novog postavljanja ili ponovnog pokretanja slike nestaju, a prijave ostaju bez slike. | `application.properties` (`app.upload-dir`); `SlikaService`, `WebConfig` |
 | Obavijesti nisu implementirane (F-009) | Prijavitelj ne dobiva obavijest kad se prijava odbaci ili riješi. | Bilješka `TODO` u `PrijavaService.izmijeni`; u `backend/src` nema kontrolera obavijesti |
 | Nisu implementirani akcije čišćenja, zatvaranje prijave, zahtjevi udruga, blokiranje korisnika i statistika | Nedovršen obavezan opseg (npr. F-020, F-024, F-025, F-003): udruga ne može kreirati akcije, volonteri se ne mogu prijaviti, prijava se ne može zatvoriti kao očišćena. | `backend/src/.../controller` sadrži samo kontrolere za prijave, kategorije i korisnika |
 | Redari i udruge dodjeljuju se u bazi, ne u aplikaciji | Svaki novi korisnik postaje građanin. Uloge redara i udruge članova tima postavljene su migracijama (V2 do V4), a za ostale račune SQL naredbom. Redar ne može u aplikaciji dodati drugog redara (F-002), a udruga ne može poslati zahtjev za račun (F-003). | `CustomOidcUserService`; `db/migration/V2` do `V4`; dokument 6, odjeljak 6.2 |
 | Stranica eko-udruge koristi probne podatke za akcije | Popis akcija na stranici udruge je ugrađen u kod; gumbi „Nova akcija“ i „Organiziraj akciju“ nisu aktivni. Udruga vidi samo prijave koje joj je redar poslao. | `frontend/src/pages/EkoUdruga.jsx` |
-| Poslužitelj prihvaća i WebP slike | NF-04 navodi samo JPG i PNG. Sučelje dopušta samo JPG i PNG, ali izravan zahtjev API-ju s WebP slikom poslužitelj prihvaća. | `SlikaService` (`DOPUSTENI_TIPOVI`); `Gradjanin.jsx` |
 | Automatizirani testovi ne pokrivaju cjeloviti HTTP/sustavski tijek | Postoje servisni, kontrolerski, autorizacijski (provjera anotacija) i repozitorijski testovi. Nedostaju integracijski testovi koji provjeravaju stvarne HTTP statuse kroz Spring Security, Google OAuth, preglednik i javno postavljanje; CI ne pokreće testove. | `backend/src/test/java/...`; `.github/workflows/ci.yml` (samo `echo`); odjeljak 5.2 |
 | Backend se lokalno spaja na zajedničku bazu | Pri lokalnom ručnom testiranju prijave ostaju u bazi koju koristi cijeli tim. | Dokument 6, odjeljak 6.2 |
-| Ručni slučajevi izvedeni su lokalno, a na javnoj adresi samo ST-11 | Ponašanje na Renderu za ostale tijekove (podnošenje prijave, slike, uloge redara i udruge, ponovna prijava nakon novog postavljanja) nije zasebno ispitano. Slike prijava na Renderu nestaju pri novom postavljanju. | Slučaj ST-11; dokument 6, odjeljak 6.3 |
+| Ručni slučajevi izvedeni su lokalno, a na javnoj adresi samo ST-11 | Ponašanje na Renderu za ostale tijekove (podnošenje prijave, slike, uloge redara i udruge, ponovna prijava nakon novog postavljanja) nije zasebno ispitano. | Slučaj ST-11; dokument 6, odjeljak 6.3 |

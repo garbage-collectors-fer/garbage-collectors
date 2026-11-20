@@ -15,6 +15,12 @@ Prioriteti su zadani po MoSCoW metodi: Must (mora biti), Should (trebalo bi biti
 | F-003 | Eko-udruga može poslati zahtjev za račun udruge, a redar ga odobrava ili odbija. | Should | Zadatak | Dok zahtjev nije odobren, račun nema prava udruge. Nakon odobrenja udruga može kreirati akcije. |
 | F-004 | Redar može blokirati korisnika uz upisan razlog. | Should | Zadatak | Blokirani korisnik ne može podnositi prijave ni prijavljivati se na akcije. Redar može ukloniti blokadu. |
 
+### Odjava iz sustava
+
+| ID | Opis | Prioritet | Izvor | Kriteriji prihvaćanja |
+| --- | --- | --- | --- | --- |
+| F-035 | Korisnik se odjavljuje iz sustava | Must | Zadatak | Odjava odvodi korisnika nazad na početnu stranicu i omogućuje ponovnu prijavu |
+
 ### Prijava otpada
 
 | ID | Opis | Prioritet | Izvor | Kriteriji prihvaćanja |
@@ -80,11 +86,6 @@ Prioriteti su zadani po MoSCoW metodi: Must (mora biti), Should (trebalo bi biti
 | F-033 | Sustav podržava više gradova s odvojenim redarima. | Won't | Interpretacija zadatka | Sustav je za jedan grad. |
 | F-034 | Sustav generira službeni nalog i šalje ga komunalnoj tvrtki. | Won't | Interpretacija zadatka | Komunikacija s komunalnom tvrtkom odvija se izvan sustava. |
 
-### Odjava iz sustava
-
-| ID | Opis | Prioritet | Izvor | Kriteriji prihvaćanja |
-| --- | --- | --- | --- | --- |
-| F-035 | Korisnik se odjavljuje iz sustava | Must | Zadatak | Odjava odvodi korisnika nazad na početnu stranicu i omogućuje ponovnu prijavu |
 
 ## 2.2 Nefunkcijski zahtjevi
 
@@ -134,14 +135,14 @@ Prioriteti su zadani po MoSCoW metodi: Must (mora biti), Should (trebalo bi biti
 
 ## 2.5 Značajne promjene zahtjeva
 
-| Datum | ID zahtjeva | Promjena i razlog | Dogovoreno s / dokaz |
-| --- | --- | --- | --- |
-| 15. 11. 2026. | F-017, F-034, AS-05, D-01 | Sustav ne generira službeni nalog. Prijava poslana na službenu sanaciju samo mijenja status i nestaje s karte. | Odluka tima, potvrđeno s asistentom |
-| 15. 11. 2026. | F-010, F-017, F-020 | Redar prihvaćenu prijavu šalje udrugama ili na službenu sanaciju, a udruge vide samo prijave poslane njima. | Odluka tima |
-| 15. 11. 2026. | F-002, C-03, C-04, AS-01 | Svi korisnici prijavljuju se isključivo Google računom. Novog redara dodaje postojeći redar upisom njegove e-mail adrese. | Odluka tima, potvrđeno s asistentom |
-| 15. 11. 2026. | svi | Zahtjevi su prenumerirani nakon uklanjanja i spajanja zahtjeva. | Odluka tima |
+| Datum | ID zahtjeva | Promjena i razlog                                                                                                                                                                                          | Dogovoreno s / dokaz |
+| --- | --- |------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------| --- |
+| 15. 11. 2026. | F-017, F-034, AS-05, D-01 | Sustav ne generira službeni nalog. Prijava poslana na službenu sanaciju samo mijenja status i nestaje s karte.                                                                                             | Odluka tima, potvrđeno s asistentom |
+| 15. 11. 2026. | F-010, F-017, F-020 | Redar prihvaćenu prijavu šalje udrugama ili na službenu sanaciju, a udruge vide samo prijave poslane njima.                                                                                                | Odluka tima |
+| 15. 11. 2026. | F-002, C-03, C-04, AS-01 | Svi korisnici prijavljuju se isključivo Google računom. Novog redara dodaje postojeći redar upisom njegove e-mail adrese.                                                                                  | Odluka tima, potvrđeno s asistentom |
+| 15. 11. 2026. | svi | Zahtjevi su prenumerirani nakon uklanjanja i spajanja zahtjeva.                                                                                                                                            | Odluka tima |
 | 19. 11. 2026. | F-002, F-003, F-007, F-009, F-013, F-014, F-018, F-019, F-026, F-031, NF-06 | Prioriteti su uravnoteženi: dio zahtjeva premješten je iz Must u Should, a dio iz Should u Could. Niži prioritet ne znači da se zahtjev neće realizirati, nego da o njemu ne ovisi osnovni tok aplikacije. | Napomena asistenta nakon pregleda dokumentacije |
-| 19. 11. 2026. | 2.3, D-02 | Akteri i dionici prikazani su u zasebnim tablicama, a dodan je dionik Grad (D-02). | Napomena asistenta nakon pregleda dokumentacije |
+| 19. 11. 2026. | 2.3, D-02 | Akteri i dionici prikazani su u zasebnim tablicama, a dodan je dionik Grad (D-02). Dodan je funkcijski zahjtev Odjava iz sustava(F-035).                                                                   | Napomena asistenta nakon pregleda dokumentacije |
 
 ## 2.6 Sljedivost zahtjeva
 
@@ -153,7 +154,7 @@ Tablica pokriva zahtjeve realizirane u prvom ciklusu. Oznake CT i ST upućuju na
 | F-004 (djelomično) | UC-002 | Backend: provjera blokiranog korisnika pri podnošenju prijave u `PrijavaService`. Blokiranje i uklanjanje blokade (endpointi i sučelje redara) nisu realizirani | CT-05 |
 | F-005 | UC-002 | Frontend: `Gradjanin.jsx` (nova prijava), `prijaveServis.js`. Backend: `POST /api/prijave`, `GET /api/kategorije`, `PrijavaService`, `SlikaService` | CT-01–CT-06, CT-23, CT-25, CT-30, CT-34–CT-35; ST-06–ST-07 |
 | F-006 | UC-002 | Frontend: `Gradjanin.jsx` (geolokacija preglednika), `KartaPrijava.jsx` (odabir lokacije klikom na kartu) | ST-06 (GPS i/ili odabir lokacije na karti) |
-| F-007 | UC-002 | Frontend: polje za odabir slike u `Gradjanin.jsx` (na mobitelu nudi kameru i galeriju) | CT-22–CT-24; ST-06–ST-07 |
+| F-007 | UC-002 | Frontend: polje za odabir slike u `Gradjanin.jsx` (na mobitelu nudi kameru i galeriju) | CT-22–CT-24, CT-39; ST-06–ST-07 |
 | F-008 | UC-009 | Frontend: `Gradjanin.jsx` (Moje prijave). Backend: `GET /api/prijave/moje` | CT-26, CT-32, CT-37; ST-06 |
 | F-010 | UC-003 | Frontend: `KartaPrijava.jsx` (Google Maps, boja pribadače po statusu). Backend: `GET /api/prijave` bez odbačenih prijava i prijava na službenoj sanaciji | CT-15–CT-18, CT-29, CT-38; ST-06, ST-08–ST-09 |
 | F-011 | UC-003 | Frontend: odabir pribadače u `KartaPrijava.jsx`, detalji prijave u `Gradjanin.jsx` i `KomunalniRedar.jsx` | CT-19–CT-21, CT-31; ST-06 (detalji odabrane pribadače) |
@@ -163,10 +164,10 @@ Tablica pokriva zahtjeve realizirane u prvom ciklusu. Oznake CT i ST upućuju na
 | NF-01 | svi | Prilagodba za mobitel u `Gradjanin.css` | ST-10 (prikaz širine 360 px) |
 | NF-02 | svi | Backend: `@PreAuthorize` po ulozi u `PrijavaController`, uloga se čita iz tablice korisnika | CT-25–CT-28 (provjera anotacija @PreAuthorize); ST-04, ST-08–ST-09 (ručna provjera uloga) |
 | NF-03 | svi | Javno postavljanje na Renderu preko HTTPS-a | ST-11 (HTTPS i javna adresa) |
-| NF-04 | UC-002 | Frontend: provjera vrste i veličine slike u `Gradjanin.jsx`. Backend: provjera u `SlikaService`, najveća veličina u `application.properties` | CT-22–CT-24; ST-07 |
+| NF-04 | UC-002 | Frontend: provjera vrste i veličine slike u `Gradjanin.jsx`. Backend: provjera u `SlikaService`, najveća veličina u `application.properties` | CT-22–CT-24, CT-39; ST-07 |
+| NF-05 (djelomično) | UC-002 | Backend: `SlikaService` vraća 500 s porukom ako Cloudinary ne odgovori, a prijava se ne sprema. Ostali vanjski servisi (prognoza) još nisu povezani | CT-40 |
 
-**Zahtjevi koji nisu realizirani u prvom ciklusu.** Od zahtjeva prioriteta Must nisu realizirani F-002 (dodavanje redara u aplikaciji; redari su za sada upisani u bazu), F-003 (zahtjev za račun udruge), F-009 (obavijesti), F-014 (mjesto okupljanja i ruta), F-018 (zatvaranje prijave), F-020 (kreiranje akcije), F-024 (zahtjev za zatvaranje), F-025 (prijava volontera na akciju), F-027 i F-028 (Google Calendar), F-030 i F-031 (prognoza i upozorenje na nevrijeme). Stranica eko-udruge u sučelju trenutačno prikazuje probne akcije. Od zahtjeva prioriteta Should realizirani su F-016 i NF-04, F-004 djelomično, a ostali funkcijski zahtjevi (F-012, F-013, F-019, F-021, F-022, F-023, F-026, F-029) nisu. Zahtjevi NF-05 i NF-06 nemaju posebna ispitivanja.
-
+**Zahtjevi koji nisu realizirani u prvom ciklusu.** Od zahtjeva prioriteta Must nisu realizirani F-020 (kreiranje akcije), F-024 (zahtjev za zatvaranje prijave), F-025 (prijava volontera na akciju), F-027 i F-028 (Google Calendar) te F-030 (vremenska prognoza). Stranica eko-udruge u sučelju trenutačno prikazuje probne akcije. Zahtjevi F-011 i F-015 realizirani su bez dijelova koji ovise o nerealiziranim zahtjevima: u detaljima prijave ne prikazuje se adresa (F-012), a prijavitelj ne dobiva obavijest o odbacivanju (F-009). Od zahtjeva prioriteta Should realizirani su F-007, F-016 i NF-04, a F-004 i NF-05 djelomično. Nisu realizirani F-002 (dodavanje redara u aplikaciji; redari su za sada upisani u bazu), F-003 (zahtjev za račun udruge), F-009 (obavijesti), F-012 (adresa iz koordinata), F-014 (mjesto okupljanja i ruta), F-018 (zatvaranje prijave), F-021 do F-023 (izmjena i otkazivanje akcije, kalendar udruge), F-029 (ažuriranje kalendara) i F-031 (upozorenje na nevrijeme). NF-05 je ispitan samo za Cloudinary (CT-40), ne i za prognozu. Nijedan zahtjev prioriteta Could (F-013, F-019, F-026, NF-06) nije realiziran ni ispitan.
 ## 2.7 Pregled zahtjeva
 
 | Kontrolna točka | Povratna informacija ili nalaz | Odluka o zahtjevu ili opsegu |
