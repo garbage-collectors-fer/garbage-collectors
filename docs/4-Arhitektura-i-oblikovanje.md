@@ -62,7 +62,7 @@ Građanin podnese prijavu otpada s fotografijom, kategorijom i lokacijom. Komuna
 Važne odluke modela podataka:
 
 - **Jedna tablica `korisnik` za sve uloge.** Uloga je stupac s vrijednostima `GRADANIN`, `UDRUGA` i `REDAR`. Naziv organizacije obavezan je samo za udruge, a razlog blokade samo za blokirane korisnike. Oba pravila provodi baza (`CHECK` ograničenja), ne samo poslužitelj.
-- **Bez lozinki.** Korisnik se prepoznaje po Google identifikatoru (`id_oauth`) i e-mailu. `id_oauth` je prazan dok se unaprijed dodani redar prvi put ne prijavi; tada ga poslužitelj poveže po e-mailu (ADR-01).
+- **Bez lozinki.** Poslužitelj korisnika pri prijavi pronalazi po e-mailu, pa se redari i udruge mogu unaprijed upisati migracijom i odmah pri prvoj prijavi imaju svoju ulogu (ADR-01). Stupac `id_oauth` predviđen je za Googleov stalni identifikator, ali ga poslužitelj još ne popunjava (vidi [dokumentaciju baze](../db/db_dokumentacija.md), 8.2).
 - **Kategorije su zapisi u tablici**, a ne fiksne vrijednosti u kodu, pa redar može promijeniti kategoriju prijave, a popis se mijenja migracijom.
 - **Statusi i uloge spremaju se kao tekstualni kodovi** (npr. `AKCIJA_U_TIJEKU`) koji odgovaraju Java enumima; prikazne nazive s dijakriticima određuje klijent.
 - **Veze više-na-više** (akcija obuhvaća više prijava; korisnik volontira na više akcija) provedene su veznim tablicama `akcija_prijava` i `volonter_prijava`. Uz volontera se pamti i ID događaja u njegovom Google kalendaru.
@@ -116,9 +116,10 @@ Građanin otvara obrazac za novu prijavu, a klijent odmah traži lokaciju uređa
 | Nedostaje lokacija, kategorija ili fotografija | Klijent, prije slanja zahtjeva | Popis onoga što nedostaje; uneseni podaci ostaju | 6a |
 | Korisnik nije prijavljen ili nije građanin | Spring Security (`@PreAuthorize("hasRole('GRADANIN')")`) | HTTP 401 ili 403 | preduvjet |
 | Korisnik je blokiran | `PrijavaService.stvori` | HTTP 403 „Vaš račun je blokiran” | preduvjet |
-| Spremanje fotografije ili prijave ne uspije | `SlikaService`, baza | Poruku o pogrešci; potvrda se ne prikazuje | 7a |
+| Spremanje fotografije ili prijave ne uspije | `SlikaService`, Cloudinary, baza | Poruku o pogrešci; potvrda se ne prikazuje | 7a |
 
 Provjere na klijentu postoje radi brzog odgovora korisniku, ali se ne smatraju zaštitom. Poslužitelj ponovno provjerava lokaciju, kategoriju i vrstu fotografije, jer se zahtjev može poslati i mimo sučelja (vidi 4.6). Fotografija se šalje na Cloudinary tek kad su ostali podaci provjereni, kako na Cloudinaryju ne bi ostale slike od odbijenih prijava i nepotrebno trošile besplatnu kvotu. Upis adrese umjesto odabira na karti (također dio 2a) još nije implementiran, pa nije prikazan.
+
 ### 4.4.2 Reprezentativni UML dijagram stanja
 
 **Vlasnik stanja i razlog odabira:** prijava otpada (`Prijava`). Stanje je zapisano u stupcu `prijava.status`, a unutar stanja Prijavljeno dodatno ga određuju stupci `provjerena` i `nacin_sanacije`. Prijelazi su važni jer određuju tko prijavu vidi na karti, smije li je udruga uključiti u akciju i što redar smije napraviti.
@@ -140,6 +141,7 @@ Prijelazi nacrtani punom crtom implementirani su u `PrijavaService.izmijeni` ([k
 | ADR-01 | Prijava isključivo Google računom | Lokalni računi s lozinkom za redare | Nema pohrane lozinki; ovisnost o Googleu. | Prihvaćeno |
 | ADR-02 | PostgreSQL na Neonu | MySQL; Supabase | Relacijske veze i ograničenja; baza se uspava bez prometa. | Prihvaćeno |
 | ADR-03 | Fotografije izvan baze, na Cloudinaryju | Fotografije u bazi | Mala baza; fotografije se dohvaćaju izravno putem URL-a i ne gube se pri ponovnom postavljanju. | Prihvaćeno |
+
 ### ADR-01: Prijava isključivo Google računom
 
 | Polje | Zapis odluke |
@@ -147,7 +149,7 @@ Prijelazi nacrtani punom crtom implementirani su u `PrijavaService.izmijeni` ([k
 | Kontekst i cilj | Zadatak traži prijavu putem OpenID Connect / OAuth 2.0. Prva inačica zahtjeva predviđala je i lozinke za komunalne redare, čije račune kreira administrator, te promjenu lozinke. Trebalo je odlučiti hoće li sustav održavati dva načina prijave. |
 | Kriteriji odluke | Sustav ne smije nesigurno pohranjivati pristupne podatke; prava korisnika moraju se provjeravati na poslužitelju; opseg mora biti izvediv unutar semestra. |
 | Razmatrane alternative | **Google prijava za sve korisnike:** jedan način prijave, bez lozinki u sustavu. **Google prijava za građane i lozinke za redare:** odgovara doslovnom čitanju zadatka, ali zahtijeva pohranu i sigurno sažimanje lozinki, promjenu i oporavak lozinke. |
-| Odluka i obrazloženje | Svi korisnici, uključujući redare, prijavljuju se Google računom. Dogovoreno je s asistentom u prvoj iteraciji (vidi povijest promjena u [2. Analiza zahtjeva](2-Analiza-zahtjeva.md)). Poslužitelj pri prijavi pronalazi ili stvara korisnika u bazi (`CustomOidcUserService`) i dodjeljuje mu ulogu iz baze; novog redara postojeći redar dodaje upisom njegove e-mail adrese. Odrekli smo se rada bez Googlea: ako Google prijava nije dostupna, nitko se ne može prijaviti, a prvi redar upisuje se izravno u bazu. |
+| Odluka i obrazloženje | Svi korisnici, uključujući redare, prijavljuju se Google računom. Dogovoreno je s asistentom u prvoj iteraciji (vidi povijest promjena u [2. Analiza zahtjeva](2-Analiza-zahtjeva.md)). Poslužitelj pri prijavi pronalazi ili stvara korisnika u bazi (`CustomOidcUserService`) i dodjeljuje mu ulogu iz baze; novog redara postojeći redar dodaje upisom njegove e-mail adrese (planirano; zasad se redar dodaje migracijom). Odrekli smo se rada bez Googlea: ako Google prijava nije dostupna, nitko se ne može prijaviti, a prvi redar upisuje se izravno u bazu. |
 | Status | Prihvaćeno. |
 
 ### ADR-02: PostgreSQL na Neonu
