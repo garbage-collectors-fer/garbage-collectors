@@ -24,7 +24,7 @@ Za svaki relevantan sastanak ili zapis tjedne koordinacije upišite jedan sažet
 
 **Cilj:** Prikazati planirani redoslijed rada i odgovornosti u timu. Prikažite projektne tjedne ili druga kratka razdoblja koja tim koristi, uključujući pripremu za formalne provjere.
 
-**Trenutačni plan:** tablica u nastavku. Za ažurnost plana zadužen je: ???
+**Trenutačni plan:** tablica u nastavku. Za ažurnost plana zadužen je: Ivana Markovinović.
 
 | Razdoblje/Tjedan | Glavni planirani rad | Odgovorni članovi | Poveznica na zadatke |
 |------------------| --- | --- | --- |
@@ -39,45 +39,51 @@ Ako koristite tablicu, plan vodite na korisnoj tjednoj razini i ažurirajte ga k
 
 ## A.3 Aktivnosti i doprinosi članova
 
-Pripremljen je lokalni prototip stranice eko-udruge prema stilu stranice komunalnog redara. Dodani su prikaz akcija, dostupnih odlagališta i detalja odabrane stavke te je uređen izgled sučelja. Pripremljen je i paket od deset SVG ikonica s React komponentom i kratkim uputama za ostale članove frontend tima.
 
 **Cilj:** Prikazati koji su članovi radili na važnim projektnim aktivnostima i približan trud koji prijavljuju. Uz implementaciju uključite oblikovanje, dokumentaciju, integraciju, ispitivanje i postavljanje.
 
-| Aktivnost ili rezultat | Član | Prijavljeni sati | Reprezentativni rezultat ili poveznica |
-| --- | --- | --- | --- |
-| Opseg projekta i analiza zahtjeva (dok. 1 i 2), kasnije usklađivanje zahtjeva s odlukama tima i ispravci | Ivana Markovinović | 2.5 | PR #23, #24; `docs/1-Projekt.md`, `docs/2-Analiza-zahtjeva.md` |
-| Prijedlog REST API-ja između klijenta i poslužitelja | Ivana Markovinović | 0.5 | `docs/api.md` |
-| Stranica komunalnog redara (popis prijava, uređivanje prijava, odluka o sanaciji) | Ivana Markovinović | 4 | PR #11; `KomunalniRedar.jsx` |
-| Zajednička komponenta karte | Ivana Markovinović | 2 | PR #11, #19; `KartaPrijava.jsx` |
-| Prijava Google računom na klijentu, prikaz stranice prema ulozi | Ivana Markovinović | 2 | PR #13; `Prijava.jsx`, `App.jsx`, `autentikacijaServis.js` |
-| Spajanje klijenta na poslužitelj | Ivana Markovinović | 2 | PR #18, #20, #27; `prijaveServis.js` |
-| Stranica građanina: nova prijava s lokacijom, kategorijom i fotografijom, moje prijave, prilagodba za mobitel | Ivana Markovinović | 4 | PR #19, #22; `Gradjanin.jsx`, `Gradjanin.css` |
-| Usklađivanje obrazaca uporabe s novim zahtjevima | Ivana Markovinović | 0.5 | PR #24; `docs/3-Obrasci-uporabe.md` |
-| README repozitorija i naslovnica dokumentacije | Ivana Markovinović | 1.5 | PR #26, #29; `README.md`, `docs/Home.md` |
-| PDF dokumentacije za prvi ciklus | Ivana Markovinović | 1 | PR #35; `docs/deliverables/PROINZ26_G01.2_EcoSentry_v1.pdf` |
-| Rad na stranici gradjanina | Aki Pandžić | 4 | `Gradjanin.jsx`, `Gradjanin.css` |
-| Rad na dokumentaciji | Aki Pandžić | 1 | `docs/1-Projekt.md`, `docs/2-Analiza-zahtjeva.md`, `docs/3-Obrasci-uporabe.md` |
-| Automatskih testovi, ispitivanje sustava i prikupljanje dokaza | Bruno Hrgovan | 3 | `backend/src/test/`, `tests/evidence/` |
-| Izrada dokumentacije za ispitivanje i postavljanje sustava (dokumenti 5 i 6) | Bruno Hrgovan | 1 | `docs/5-Ispitivanje.md`, `docs/6-Postavljanje-instalacija-i-konfiguracija.md` |
-| Izrada poglavlja 2.6 – Sljedivost zahtjeva | Bruno Hrgovan | 0.5 | `docs/2-Analiza-zahtjeva.md` |
-| Dopuna obrazaca uporabe, izrada pripadajućeg UML dijagrama i ažuriranje dokumentacije aktivnosti grupe | Bruno Hrgovan | 2 | `docs/3-Obrasci-uporabe.md`, `docs/puml/3-1-ecosentry-system-UC.puml`, `docs/A-Pregled-aktivnosti-grupe.md` |
-| Izrada stranice eko-udruge, uključujući strukturu sučelja i prikaz dostupnih funkcionalnosti | Leo Žigman | 2 | `EkoUdruga.jsx`, `EkoUdruga.css` |
-| Implementacija prikaza akcija i dostupnih odlagališta | Leo Žigman | 2.5 | `EkoUdruga.jsx`, `EkoUdruga.css` |
-| Implementacija prikaza detalja odabrane stavke i pripadajućih elemenata sučelja | Leo Žigman | 2 | `EkoUdruga.jsx`, `EkoUdruga.css` |
-| Izrada paketa od deset SVG ikonica i pripadajuće React komponente | Leo Žigman | 3 | `assets/icons/`, React komponenta za ikonice |
-| Izrada kratkih uputa za korištenje i integraciju ikonica za ostale članove frontend tima | Leo Žigman | 1 | Dokumentacija/upute za korištenje ikonica ||
-| Uspostava repozitorija iz predloška kolegija i prebacivanje workflowa na `master`; pozivanje članova, asistenta i nositelja kolegija u repozitorij (nositelj ponovno pozvan 15. 11.) | Nikola Mihanović | 2 | PR #1, #2; postavke repozitorija |
-| Otvaranje početnih zadataka za obrasce uporabe i prijedlog tehnologija | Nikola Mihanović | 1 | Issue #3–#8 |
-| Usklađivanje zahtjeva F-011 sa zadatkom i razdvajanje vanjskih aktera (A-04 do A-07) | Nikola Mihanović | 1 | PR #9; `docs/2-Analiza-zahtjeva.md` |
-| Spring Boot poslužitelj: prijava Google računom (OAuth 2.0 / OpenID Connect), sesija, odjava, CSRF zaštita, JSON odgovori 401 i 403, `/api/health` i `/api/me` | Nikola Mihanović | 6 | PR #10; `SecurityConfig`, `KorisnikController`, `application.properties` |
-| Google Cloud projekt: OAuth klijent, adrese povratka, testni korisnici, omogućeni Maps i Calendar API, ograničeni Maps ključevi | Nikola Mihanović | 2 | postavke u Google Cloud konzoli |
-| Zajednički testni Google računi redara i udruge i njihovo dodavanje kao testnih korisnika (uloge im u bazi postavlja migracija V4) | Nikola Mihanović | 0.5 | `ecosentry.redar`, `ecosentry.udruga` |
-| Postavljanje na Render: `Dockerfile` (klijent i poslužitelj u jednoj usluzi), varijable okruženja, automatsko postavljanje s `master` | Nikola Mihanović | 3 | PR #10; `Dockerfile`, `.dockerignore` |
-| Prosljeđivanje Google Maps ključa klijentu pri izgradnji na Renderu | Nikola Mihanović | 0.5 | commit `cb9fde0`; `Dockerfile` |
-| Poslužiteljska točka `GET /api/kategorije` za izbor kategorije na klijentu i uklanjanje `TestController` | Nikola Mihanović | 1 | PR #28; `KategorijaController` |
-| Postavljanje varijabli okruženja za bazu (Neon) i Cloudinary na Renderu, pregled i spajanje PR-a za Cloudinary | Nikola Mihanović | 1 | PR #36 (autor Tibor Andreani) |
-| Popravak izgradnje na Renderu koja je padala od 15. 11. (test ovisnosti, prevođenje testova izvan Docker izgradnje) i prilagodba `SlikaServiceTest` Cloudinaryju | Nikola Mihanović | 3 | PR #37, #38; `Dockerfile`, `backend/pom.xml` |
-| Uklanjanje ostataka predloška, uravnoteženje prioriteta zahtjeva i podjela aktera i dionika prema napomenama asistenta | Nikola Mihanović | 2 | PR #41, #42; `docs/Home.md`, `docs/1-Projekt.md`, `docs/2-Analiza-zahtjeva.md` |
+| Aktivnost ili rezultat                                                                                                                                                               | Član | Prijavljeni sati | Reprezentativni rezultat ili poveznica |
+|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------| --- |------------------| --- |
+| Opseg projekta i analiza zahtjeva (dok. 1 i 2), kasnije usklađivanje zahtjeva s odlukama tima i ispravci                                                                             | Ivana Markovinović | 2.5              | PR #23, #24; `docs/1-Projekt.md`, `docs/2-Analiza-zahtjeva.md` |
+| Prijedlog REST API-ja između klijenta i poslužitelja                                                                                                                                 | Ivana Markovinović | 0.5              | `docs/api.md` |
+| Stranica komunalnog redara (popis prijava, uređivanje prijava, odluka o sanaciji)                                                                                                    | Ivana Markovinović | 4                | PR #11; `KomunalniRedar.jsx` |
+| Zajednička komponenta karte                                                                                                                                                          | Ivana Markovinović | 2                | PR #11, #19; `KartaPrijava.jsx` |
+| Prijava Google računom na klijentu, prikaz stranice prema ulozi                                                                                                                      | Ivana Markovinović | 2                | PR #13; `Prijava.jsx`, `App.jsx`, `autentikacijaServis.js` |
+| Spajanje klijenta na poslužitelj                                                                                                                                                     | Ivana Markovinović | 2                | PR #18, #20, #27; `prijaveServis.js` |
+| Stranica građanina: nova prijava s lokacijom, kategorijom i fotografijom, moje prijave, prilagodba za mobitel                                                                        | Ivana Markovinović | 4                | PR #19, #22; `Gradjanin.jsx`, `Gradjanin.css` |
+| Usklađivanje obrazaca uporabe s novim zahtjevima                                                                                                                                     | Ivana Markovinović | 0.5              | PR #24; `docs/3-Obrasci-uporabe.md` |
+| README repozitorija i naslovnica dokumentacije                                                                                                                                       | Ivana Markovinović | 1.5              | PR #26, #29; `README.md`, `docs/Home.md` |
+| PDF dokumentacije za prvi ciklus                                                                                                                                                     | Ivana Markovinović | 1                | PR #35; `docs/deliverables/PROINZ26_G01.2_EcoSentry_v1.pdf` |
+| Rad na stranici gradjanina                                                                                                                                                           | Aki Pandžić | 4                | `Gradjanin.jsx`, `Gradjanin.css` |
+| Rad na dokumentaciji                                                                                                                                                                 | Aki Pandžić | 1                | `docs/1-Projekt.md`, `docs/2-Analiza-zahtjeva.md`, `docs/3-Obrasci-uporabe.md` |
+| Automatskih testovi, ispitivanje sustava i prikupljanje dokaza                                                                                                                       | Bruno Hrgovan | 3                | `backend/src/test/`, `tests/evidence/` |
+| Izrada dokumentacije za ispitivanje i postavljanje sustava (dokumenti 5 i 6)                                                                                                         | Bruno Hrgovan | 1                | `docs/5-Ispitivanje.md`, `docs/6-Postavljanje-instalacija-i-konfiguracija.md` |
+| Izrada poglavlja 2.6 – Sljedivost zahtjeva                                                                                                                                           | Bruno Hrgovan | 0.5              | `docs/2-Analiza-zahtjeva.md` |
+| Dopuna obrazaca uporabe, izrada pripadajućeg UML dijagrama i ažuriranje dokumentacije aktivnosti grupe                                                                               | Bruno Hrgovan | 2                | `docs/3-Obrasci-uporabe.md`, `docs/puml/3-1-ecosentry-system-UC.puml`, `docs/A-Pregled-aktivnosti-grupe.md` |
+| Izrada stranice eko-udruge, uključujući strukturu sučelja i prikaz dostupnih funkcionalnosti                                                                                         | Leo Žigman | 2                | `EkoUdruga.jsx`, `EkoUdruga.css` |
+| Implementacija prikaza akcija i dostupnih odlagališta                                                                                                                                | Leo Žigman | 2.5              | `EkoUdruga.jsx`, `EkoUdruga.css` |
+| Implementacija prikaza detalja odabrane stavke i pripadajućih elemenata sučelja                                                                                                      | Leo Žigman | 2                | `EkoUdruga.jsx`, `EkoUdruga.css` |
+| Izrada paketa od deset SVG ikonica i pripadajuće React komponente                                                                                                                    | Leo Žigman | 3                | `assets/icons/`, React komponenta za ikonice |
+| Izrada kratkih uputa za korištenje i integraciju ikonica za ostale članove frontend tima                                                                                             | Leo Žigman | 1                | Dokumentacija/upute za korištenje ikonica ||
+| Uspostava repozitorija iz predloška kolegija i prebacivanje workflowa na `master`; pozivanje članova, asistenta i nositelja kolegija u repozitorij (nositelj ponovno pozvan 15. 11.) | Nikola Mihanović | 2                | PR #1, #2; postavke repozitorija |
+| Otvaranje početnih zadataka za obrasce uporabe i prijedlog tehnologija                                                                                                               | Nikola Mihanović | 1                | Issue #3–#8 |
+| Usklađivanje zahtjeva F-011 sa zadatkom i razdvajanje vanjskih aktera (A-04 do A-07)                                                                                                 | Nikola Mihanović | 1                | PR #9; `docs/2-Analiza-zahtjeva.md` |
+| Spring Boot poslužitelj: prijava Google računom (OAuth 2.0 / OpenID Connect), sesija, odjava, CSRF zaštita, JSON odgovori 401 i 403, `/api/health` i `/api/me`                       | Nikola Mihanović | 6                | PR #10; `SecurityConfig`, `KorisnikController`, `application.properties` |
+| Google Cloud projekt: OAuth klijent, adrese povratka, testni korisnici, omogućeni Maps i Calendar API, ograničeni Maps ključevi                                                      | Nikola Mihanović | 2                | postavke u Google Cloud konzoli |
+| Zajednički testni Google računi redara i udruge i njihovo dodavanje kao testnih korisnika (uloge im u bazi postavlja migracija V4)                                                   | Nikola Mihanović | 0.5              | `ecosentry.redar`, `ecosentry.udruga` |
+| Postavljanje na Render: `Dockerfile` (klijent i poslužitelj u jednoj usluzi), varijable okruženja, automatsko postavljanje s `master`                                                | Nikola Mihanović | 3                | PR #10; `Dockerfile`, `.dockerignore` |
+| Prosljeđivanje Google Maps ključa klijentu pri izgradnji na Renderu                                                                                                                  | Nikola Mihanović | 0.5              | commit `cb9fde0`; `Dockerfile` |
+| Poslužiteljska točka `GET /api/kategorije` za izbor kategorije na klijentu i uklanjanje `TestController`                                                                             | Nikola Mihanović | 1                | PR #28; `KategorijaController` |
+| Postavljanje varijabli okruženja za bazu (Neon) i Cloudinary na Renderu, pregled i spajanje PR-a za Cloudinary                                                                       | Nikola Mihanović | 1                | PR #36 (autor Tibor Andreani) |
+| Popravak izgradnje na Renderu koja je padala od 15. 11. (test ovisnosti, prevođenje testova izvan Docker izgradnje) i prilagodba `SlikaServiceTest` Cloudinaryju                     | Nikola Mihanović | 3                | PR #37, #38; `Dockerfile`, `backend/pom.xml` |
+| Uklanjanje ostataka predloška, uravnoteženje prioriteta zahtjeva i podjela aktera i dionika prema napomenama asistenta                                                               | Nikola Mihanović | 2                | PR #41, #42; `docs/Home.md`, `docs/1-Projekt.md`, `docs/2-Analiza-zahtjeva.md` |
+| Obrasci uporabe (dokumentacija 3) i UML dijagram obrazaca uporabe za M0                                                                                                              | Tibor Andreani | 6                | `docs/3-Obrasci-uporabe.md`, `docs/puml/3-1-ecosentry-system-UC.puml` |
+| Entiteti prijave i korisnika, spremanje korisnika u bazu pri prijavi, dohvat svih prijava                                                                                            | Tibor Andreani | 10               | PR #16 |
+| Nova prijava s fotografijom, dohvat mojih prijava i pojedine prijave (podnositelja vidi samo redar i on sam), obrada grešaka                                                         | Tibor Andreani | 8                | PR #17 |
+| Uređivanje prijave za redara i službena sanacija                                                                                                                                     | Tibor Andreani | 0.5              | PR #21 |
+| Spremanje fotografija prijava na Cloudinary                                                                                                                                          | Tibor Andreani | 3                |PR #36 |
+| Ispravci u dok. 2 i 3 i usklađivanje dokumentacije s Cloudinaryjem                                                                                                                   | Tibor Andreani | 3                | PR #46 |
+| Evidencija sastanaka i plan rada (A.1, A.2)                                                                                                                                          | Tibor Andreani | 2                | `docs/A-Pregled-aktivnosti-grupe.md` |
 
 Koristite aktivnosti specifične za projekt umjesto obaveznog retka za svako poglavlje dokumentacije ili svaki UML dijagram. Tim treba dosljedno bilježiti sate i izbjegavati dvostruko brojanje zajedničkog rada; reprezentativni rezultat objašnjava što je prijavljeni trud proizveo. Sati su samoprijavljena procjena uloženog rada, a ne mjera kvalitete niti zamjena za pregled koda i artefakata.
 
