@@ -6,7 +6,7 @@
 '           AKCIJA_U_TIJEKU, OCISCENO) te podstanja unutar PRIJAVLJENO koja
 '           određuju stupci provjerena i nacin_sanacije. Isprekidani prijelazi
 '           su planirani i još nisu implementirani.
-' Autor:
+' Autor:    Pavao Maršić
 ' AI:       Claude je izradio nacrt dijagrama prema PrijavaService.izmijeni(),
 '           shemi baze i zahtjevima F-015 do F-024; autor je provjerio da
 '           dijagram odgovara kodu i zahtjevima.
