@@ -36,7 +36,6 @@ Za potpuni opseg, zahtjeve, oblikovanje i dokaze ispitivanja pogledajte [docs](d
 **Ograničenja:**
 
 - Prvo otvaranje može trajati do dvije minute jer se besplatna Render instanca nakon neaktivnosti gasi.
-- Fotografije prijava spremaju se na disk Render poslužitelja, pa nestaju pri svakom novom postavljanju i ponovnom pokretanju. Prijave ostaju u bazi, ali bez slike.
 - Adresa se još ne dohvaća iz koordinata, pa se uz prijavu prikazuju koordinate.
 - Nakon svakog novog postavljanja korisnici se moraju ponovno prijaviti.
 
@@ -65,10 +64,10 @@ npm run dev
 
 **Konfiguracija:**
 
-- `backend/.env`: kopirajte `backend/.env.example` i upišite `GOOGLE_CLIENT_ID` i `GOOGLE_CLIENT_SECRET` za Google prijavu te `DB_HOST`, `DB_USER` i `DB_PASSWORD` za spajanje na bazu.
+- `backend/.env`: kopirajte `backend/.env.example` i upišite `GOOGLE_CLIENT_ID` i `GOOGLE_CLIENT_SECRET` za Google prijavu, `DB_HOST`, `DB_USER` i `DB_PASSWORD` za spajanje na bazu te `CLOUDINARY_CLOUD_NAME`, `CLOUDINARY_API_KEY` i `CLOUDINARY_API_SECRET` za spremanje slika prijava.
 - `frontend/.env`: kopirajte `frontend/.env.example` i upišite `VITE_GOOGLE_MAPS_API_KEY` za kartu. `VITE_API_URL` ostaje `http://localhost:8080`.
 
-Ključeve za Google dobijete od člana tima zaduženog za Google Cloud projekt, a podatke za bazu od člana zaduženog za bazu. Datoteke `.env` se ne commitaju.
+Ključeve za Google dobijete od člana tima zaduženog za Google Cloud projekt, podatke za bazu od člana zaduženog za bazu, a Cloudinary ključeve od člana tima koji je postavio Cloudinary račun. Datoteke `.env` se ne commitaju.
 
 Backend se i lokalno spaja na PostgreSQL bazu na Neonu, a tablice i početne podatke pri pokretanju stvara Flyway. Za provjeru otvorite http://localhost:5173 i prijavite se Google računom: trebala bi se otvoriti stranica građanina s kartom i gumbom **+ Prijavi otpad**. Za detaljno postavljanje pogledajte [projektnu dokumentaciju](docs/Home.md).
 

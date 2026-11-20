@@ -86,7 +86,7 @@ class SlikaServiceTest {
         verify(uploader, never()).upload(any(), anyMap());
     }
 
-    // dodatni slucaj (nije u dokumentu 5): WEBP vise nije dopusten
+    // CT-39
     @Test
     void spremi_webp_vracaBadRequest() throws IOException {
         MockMultipartFile webp = new MockMultipartFile("slika", "otpad.webp", "image/webp", new byte[] {1, 2, 3});
@@ -97,7 +97,7 @@ class SlikaServiceTest {
         verify(uploader, never()).upload(any(), anyMap());
     }
 
-    // dodatni slucaj (nije u dokumentu 5): Cloudinary ne radi, korisnik dobiva 500 s porukom
+    //CT-40
     @Test
     void spremi_cloudinaryNeuspjeh_vracaInternalServerError() throws IOException {
         MockMultipartFile slika = new MockMultipartFile("slika", "otpad.jpg", "image/jpeg", new byte[] {1, 2, 3});
