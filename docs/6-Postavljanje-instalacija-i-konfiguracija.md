@@ -13,7 +13,7 @@ EcoSentry se sastoji od React klijenta (`frontend/`, Vite), Java poslužitelja (
 **Slika 6.1. UML dijagram razmještaja sustava EcoSentry**
 
 **PlantUML izvor:** [izvor](./puml/6-1-ecosentry-DD.puml)  
-**Javno dostupna aplikacija:** https://ecosentry-6rg1.onrender.com (ista adresa navedena je u `README.md`; prije predaje provjeriti da je i dalje dostupna).
+**Javno dostupna aplikacija:** https://ecosentry-6rg1.onrender.com (ista adresa navedena je u `README.md`.
 
 **Analiza razmještaja:**
 * **Korisnički uređaj:** web-preglednik preuzima izgrađeni React klijent i izvršava ga. Kartu učitava izravno s Google Maps JavaScript API-ja.
