@@ -10,11 +10,11 @@
 '           prijaveServis.js, SecurityConfig, PrijavaController, PrijavaService,
 '           SlikaService); autor je provjerio da dijagram odgovara kodu.
 ' Praćenje: Pri promjeni provjera, HTTP statusa ili pohrane fotografija
-'           (npr. prelazak na Cloudinary) ažurirati model.
+'           ažurirati model.
 '
 ' Diagram level: Runtime behaviour (representative scenario)
 ' Diagram type:  UML Sequence Diagram
-' Version:       1.0
+' Version:       1.1
 ' ==============================================================================
 
 @startuml
@@ -46,6 +46,7 @@ participant "Spring Security\n(sesija, CSRF, uloga)" as Sec <<Security>>
 participant "PrijavaController" as Ctrl <<API>>
 participant "PrijavaService" as Svc <<Application>>
 participant "SlikaService" as Img <<Application>>
+participant "Cloudinary" as Cld <<External>>
 database "PostgreSQL\n(Neon)" as DB <<Persistence>>
 
 ' ==============================================================================
@@ -101,17 +102,25 @@ else svi podaci uneseni
       Ctrl --> Web : 400 s porukom
     else podaci ispravni
       Svc -> Img++ : spremi(slika)
-      alt vrsta datoteke nije dopuštena ili spremanje ne uspije
-        Img --> Svc : ResponseStatusException 400 / 500
+      alt vrsta datoteke nije JPG/PNG
+        Img --> Svc : ResponseStatusException 400
         Svc --> Ctrl : iznimka
-        Ctrl --> Web : 400 / 500 s porukom
-      else fotografija spremljena
-        Img --> Svc-- : URL fotografije
-        Svc -> DB : INSERT prijava\n(status PRIJAVLJENO, provjerena = false)
-        DB --> Svc : nova prijava s ID-em
-        Svc --> Ctrl-- : PrijavaDto
-        Ctrl --> Sec-- : 201 Created
-        Sec --> Web-- : 201 + PrijavaDto
+        Ctrl --> Web : 400 s porukom
+      else vrsta dopuštena
+        Img -> Cld : upload (mapa ecosentry/prijave,\nširina najviše 1400 px)
+        alt Cloudinary ne odgovori
+          Img --> Svc : ResponseStatusException 500
+          Svc --> Ctrl : iznimka
+          Ctrl --> Web : 500 „Spremanje slike nije uspjelo”
+        else upload uspio
+          Cld --> Img : secure_url
+          Img --> Svc-- : URL fotografije
+          Svc -> DB : INSERT prijava\n(status PRIJAVLJENO, provjerena = false)
+          DB --> Svc : nova prijava s ID-em
+          Svc --> Ctrl-- : PrijavaDto
+          Ctrl --> Sec-- : 201 Created
+          Sec --> Web-- : 201 + PrijavaDto
+        end
       end
     end
   end
