@@ -1,14 +1,10 @@
 # 6. Postavljanje, instalacija i konfiguracija
 
-**Cilj:** Detaljno dokumentirati topologiju izvođenja, postupak lokalne instalacije i konfiguracije iz izvornog koda te način javnog postavljanja i administracije programa. [README](../README.md) navodi javnu adresu i sažeti postupak lokalnog pokretanja; ova stranica donosi potpun inženjerski postupak koji osigurava točnu ponovljivost na drugom računalu.
-
 EcoSentry se sastoji od React klijenta (`frontend/`, Vite), Java poslužitelja (`backend/`, Spring Boot) i PostgreSQL baze na usluzi Neon. Lokalno se klijent i poslužitelj pokreću kao dva procesa. Na javnoj adresi izvode se kao **jedna** Docker web-usluga na platformi Render: `Dockerfile` u korijenu repozitorija izgrađuje klijent i ugrađuje ga u poslužitelj, koji ga poslužuje uz REST API.
 
 ---
 
 ## 6.1 Prikaz razmještaja
-
-**Cilj:** Prikazati okruženja izvođenja, raspodijeljene dijelove programa, spremište podataka i relevantne vanjske usluge.
 
 **Dijagram razmještaja:**
 
@@ -29,8 +25,6 @@ EcoSentry se sastoji od React klijenta (`frontend/`, Vite), Java poslužitelja (
 ---
 
 ## 6.2 Lokalna instalacija i konfiguracija
-
-**Cilj:** Omogućiti novom članu tima ili ocjenjivaču da iz čiste radne kopije repozitorija instalira i lokalno pokrene cijeli programski sustav, uključujući bazu podataka i početne podatke.
 
 Za pokretanje samo frontenda dovoljni su Node.js i npm: u mapi `frontend` pokreću se naredbe `npm install` i `npm run dev`, a aplikacija se otvara na adresi koju ispiše Vite. Prijava i prijave otpada traže pokrenut backend, jer frontend više ne koristi probne podatke. Stvarne tajne vrijednosti ne upisuju se u dokumentaciju ni u repozitorij.
 
@@ -162,8 +156,6 @@ Automatizirani testovi ne trebaju pristup zajedničkoj Neon bazi ni Google raču
 ---
 
 ## 6.3 Javno postavljanje i administracija
-
-**Cilj:** Dokumentirati točne korake za ponovljivo postavljanje cjelovitog programskog sustava na produkcijsku infrastrukturu u oblaku, uključujući smještenu bazu podataka i veze među postavljenim dijelovima.
 
 | **Postavljeni podsustav** | **Infrastruktura i izvor koda** | **Naredbe izgradnje i pokretanja** | **Konfiguracija i varijable okruženja** |
 | --- | --- | --- | --- |

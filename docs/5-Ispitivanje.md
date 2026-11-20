@@ -1,12 +1,8 @@
 # 5. Ispitivanje
 
-**Cilj:** Prikazati kako tim provjerava važno ponašanje aplikacije, što je stvarno ispitano, što rezultati pokazuju i koji poznati nedostaci ostaju. Planirano ispitivanje nije dokaz uspješnog izvođenja.
-
 Povezivanje zahtjev → obrazac uporabe → ispitivanje održava se u [tablici sljedivosti zahtjeva](2-Analiza-zahtjeva.md); specifikacije ispitivanja i dokazi izvođenja bilježe se ovdje ili se povezuju s ispitivanjima u repozitoriju.
 
 ## 5.1 Pristup ispitivanju
-
-**Cilj:** Odabrati provjere koje obuhvaćaju glavne korisničke ciljeve, važne uvjete neuspjeha i projektno specifične nefunkcijske zahtjeve.
 
 **Pokretanje testova na Windowsu (CMD), iz mape `backend/`:**
 
@@ -33,8 +29,6 @@ Stvarni HTTP odgovori Spring Securityja (401 bez prijave i 403 za nedopuštenu u
 Kontinuirana integracija trenutačno **nije** u uporabi: `.github/workflows/ci.yml` ispisuje samo poruku i ne izvodi izgradnju ni testove. Uspješno lokalno pokretanje testova stoga nije isto što i automatska provjera pri svakom pull requestu ili pushu.
 
 ## 5.2 Ispitni slučajevi
-
-**Cilj:** Važne provjere učiniti ponovljivima bilježenjem scenarija, ulaza, koraka, očekivanog rezultata i rezultata izvođenja. Svakoj provjeri dodijeljen je stabilan ID koji se može koristiti u tablici sljedivosti zahtjeva.
 
 Oznake: **CT** – komponenta (automatizirano, Java), **ST** – sustav (ručno u pokrenutoj aplikaciji). U zagradi uz scenarij navedeni su zahtjevi iz [dokumenta 2](2-Analiza-zahtjeva.md) i obrasci uporabe. Automatizirani slučajevi CT-01 do CT-40 i ručni sustavski slučajevi ST-01 do ST-11 označeni su prema izvještaju autora izvođenja kao prošli. Izvornici izvođenja (ispis testova, snimke zaslona) čuvaju se u `tests/evidence/`, a podaci izvođenja navedeni su u odjeljku 5.3.
 
@@ -114,8 +108,6 @@ Ovi testovi nalaze se u repozitoriju, u `backend/src/test`. Važno: `Autorizacij
 
 ## 5.3 Provedena ispitivanja i rezultati
 
-**Cilj:** Navesti reviziju aplikacije, okruženje i dokaze potrebne za tumačenje stvarnih rezultata u tablici ispitnih slučajeva.
-
 **Najnovije izvođenje ili dokaz:** Automatizirane testove (CT-01 do CT-40) i ručne sustavske slučajeve (ST-01 do ST-11) izveo je autor ispitivanja, koji izvještava da su svi prošli. Podaci izvođenja:
 
 | Podatak | Vrijednost                                                                                                                                       |
@@ -137,8 +129,6 @@ Rezultati se odnose samo na funkcionalnosti koje su implementirane. Ručne provj
 Stupci **Stvarni rezultat** i **Ishod** u odjeljku 5.2 mjerodavni su rezultati za pojedinačni slučaj. Neuspješna i blokirana izvođenja bilježe se iskreno; pri ponovnom izvođenju zadržava se relevantna povijest umjesto prikaza starog uspješnog rezultata kao trenutačnog.
 
 ## 5.4 Poznati nedostaci i ograničenja ispitivanja
-
-**Cilj:** Omogućiti čitatelju da vidi nedostatke koji utječu na uporabu trenutačne aplikacije i važno ponašanje koje tim nije mogao provjeriti.
 
 | Problem ili ograničenje | Korisniku vidljiv učinak ili neprovjereno ponašanje | Dokaz ili poveznica na zadatak |
 | --- | --- | --- |
