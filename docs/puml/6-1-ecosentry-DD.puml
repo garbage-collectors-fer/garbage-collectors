@@ -3,9 +3,10 @@
 '
 ' Svrha:    Prikazuje razmještaj sustava EcoSentry: jednu Docker web-uslugu na
 '           platformi Render u kojoj Spring Boot poslužuje i REST API i izgrađeni
-'           React klijent, PostgreSQL bazu na usluzi Neon te vanjske usluge s
-'           kojima preglednik i poslužitelj komuniciraju.
-' Autor:    [upisati ime autora]
+'           React klijent, PostgreSQL bazu na usluzi Neon, pohranu slika prijava
+'           na usluzi Cloudinary te vanjske usluge s kojima preglednik i
+'           poslužitelj komuniciraju.
+' Autor:    Bruno Hrgovan
 ' AI:       Claude je pomogao pri izradi nacrta dijagrama prema Dockerfileu i
 '           konfiguraciji u repozitoriju; autor mora provjeriti da dijagram
 '           odgovara stvarnom postavljanju.
@@ -14,7 +15,7 @@
 '
 ' Diagram level: Physical Deployment Architecture
 ' Diagram type:  Deployment Diagram
-' Version:       1.1
+' Version:       1.2
 ' ==============================================================================
 
 @startuml
@@ -64,7 +65,6 @@ cloud "Platforma Render" as Render {
       artifact "Spring Boot aplikacija\n(app.jar: REST API + Google prijava)" as Backend <<artifact>>
       artifact "Izgrađeni React klijent\n(statičke datoteke u app.jar)" as Frontend <<artifact>>
     }
-    artifact "Mapa uploads/\n(slike prijava, privremeni disk)" as Uploads <<artifact>>
   }
 
   note right of Service
@@ -72,7 +72,9 @@ cloud "Platforma Render" as Render {
     varijable PORT (dodjeljuje Render).
     Varijable okruženja: GOOGLE_CLIENT_ID,
     GOOGLE_CLIENT_SECRET, FRONTEND_URL,
-    DB_HOST, DB_USER, DB_PASSWORD.
+    DB_HOST, DB_USER, DB_PASSWORD,
+    CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY,
+    CLOUDINARY_API_SECRET.
   end note
 }
 
@@ -83,14 +85,15 @@ cloud "Neon" as NeonCloud {
 cloud "Vanjske usluge" as External {
   node "Google prijava (OAuth 2.0 / OpenID Connect)" as IdP <<server>>
   node "Google Maps JavaScript API" as Maps <<server>>
+  node "Cloudinary (pohrana slika)" as Cloudinary <<server>>
 }
 
 ' ==============================================================================
 ' Komunikacijski putovi
 ' ==============================================================================
 
-' 1. Isporuka klijenta, REST API i slike prijava (isti izvor, ista usluga)
-Browser -[#blue]-> Service : <<HTTPS : 443>> \n statičke datoteke, REST / JSON, slike
+' 1. Isporuka klijenta i REST API (isti izvor, ista usluga)
+Browser -[#blue]-> Service : <<HTTPS : 443>> \n statičke datoteke, REST / JSON
 
 ' 2. Veza poslužitelja s bazom
 Service -[#green,bold]-> DB : <<TCP/IP : 5432, TLS>> \n JDBC, migracije (Flyway)
@@ -101,4 +104,8 @@ Service -[#darkorange]-> IdP : <<HTTPS : 443>> \n razmjena koda za token i podac
 
 ' 4. Karta (poziva se izravno iz preglednika)
 Browser -[#darkorange]-> Maps : <<HTTPS : 443>> \n učitavanje karte (ključ u klijentu)
+
+' 5. Pohrana slika prijava
+Service -[#purple]-> Cloudinary : <<HTTPS : 443>> \n upload slike (API ključ)
+Browser -[#purple]-> Cloudinary : <<HTTPS : 443>> \n prikaz slike preko secure_url
 @enduml
