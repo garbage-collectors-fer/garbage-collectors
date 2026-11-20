@@ -24,11 +24,16 @@ Za svaki relevantan sastanak ili zapis tjedne koordinacije upišite jedan sažet
 
 **Cilj:** Prikazati planirani redoslijed rada i odgovornosti u timu. Prikažite projektne tjedne ili druga kratka razdoblja koja tim koristi, uključujući pripremu za formalne provjere.
 
-**Trenutačni plan:** [Poveznica na GitHub Projects ploču, Gantogram ili održavanu tablicu u nastavku. Navesti osobu zaduženu za ažurnost plana. Odaberite jedan glavni prikaz i navedite tko ga održava ažurnim.]
+**Trenutačni plan:** tablica u nastavku. Za ažurnost plana zadužen je: ???
 
 | Razdoblje/Tjedan | Glavni planirani rad | Odgovorni članovi | Poveznica na zadatke |
-| --- | --- | --- | --- |
-|  |  |  |  |
+|------------------| --- | --- | --- |
+| 2. tjedan        | Organizacija tima, postavljanje repozitorija iz predloška kolegija i uključivanje članova | NM | Repozitorij `garbage-collectors-fer/garbage-collectors` |
+| 3. tjedan        | Dokumentacija za M0: opis projekta i analiza zahtjeva (dok. 1 i 2), obrasci uporabe i dijagram obrazaca uporabe (dok. 3); otvaranje početnih zadataka | IM, TA, NM | `docs/1-Projekt.md`, `docs/2-Analiza-zahtjeva.md`, `docs/3-Obrasci-uporabe.md`; issue #3–#8 |
+| 4. tjedan        | Predaja M0; dizajn sučelja i kostur klijenta s posebnom stranicom za svaku ulogu | LŽ, IM, AP | `frontend/src/pages/` |
+| 5. tjedan        | Poslužitelj u Spring Bootu, prijava Google računom i postavljanje na Render; prijedlog REST API-ja | NM, IM | `docs/api.md` |
+| 6. tjedan        | Stranice redara, građanina i eko-udruge; API za prijave; baza u oblaku; spajanje klijenta na poslužitelj; automatski testovi | IM, AP, LŽ, TA, PM, NM, BH | `docs/api.md`, `backend/src/main/resources/db/migration/` |
+| 7. tjedan        | Spremanje slika na Cloudinary; dokumenti 4, 5 i 6 i dokumentacija baze; dorada dok. 1–3 prema napomenama asistenta; dok. A; PDF za predaju prvog ciklusa | TA, PM, BH, AP, IM, svi | `docs/`, `db/`, `docs/deliverables/` |
 
 Ako koristite tablicu, plan vodite na korisnoj tjednoj razini i ažurirajte ga kada se prioriteti promijene. Kratice članova tima definirajte  u A.1 i ovdje ih primjenjujte dosljedno; ako dva člana imaju iste inicijale, proširite kraticu. Plan nije dokaz da je planirani rad dovršen (to dokazuje kod i dokumentacija).
 
