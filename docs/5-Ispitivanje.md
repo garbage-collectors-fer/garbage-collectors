@@ -77,7 +77,7 @@ U stupcu „Koraci ispitivanja“ naveden je naziv testne metode; ako nije naved
 | CT-40 | Cloudinary nije dostupan (NF-05) | JPG datoteka; Cloudinary baca iznimku | Status 500 s porukom „Spremanje slike nije uspjelo“; prijava se ne sprema. | Prošlo prema izvještaju izvođenja koji je dostavio autor. | Prošao | Test `spremi_cloudinaryNeuspjeh_vracaInternalServerError`. |
 ### Kontroler, autorizacija i repozitoriji (automatizirani testovi napisani)
 
-Ovi testovi postoje u ZIP-om dostavljenom repozitoriju. Važno: `AutorizacijaTest` provjerava prisutnost i vrijednosti anotacija na metodama kontrolera, a ne stvarnu Spring Security HTTP obradu. `PrijavaControllerTest` provjerava prosljeđivanje argumenata servisu uz Mockito; repozitorijski testovi koriste `@DataJpaTest` i H2.
+Ovi testovi nalaze se u repozitoriju, u `backend/src/test`. Važno: `AutorizacijaTest` provjerava prisutnost i vrijednosti anotacija na metodama kontrolera, a ne stvarnu Spring Security HTTP obradu. `PrijavaControllerTest` provjerava prosljeđivanje argumenata servisu uz Mockito; repozitorijski testovi koriste `@DataJpaTest` i H2.
 
 | ID ispitnog slučaja | Scenarij ispitivanja | Ulazni podaci | Očekivani rezultat | Stvarni rezultat | Ishod | Koraci ispitivanja |
 | --- | --- | --- | --- | --- | --- | --- |

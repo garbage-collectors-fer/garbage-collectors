@@ -80,6 +80,7 @@ Backend se i lokalno spaja na PostgreSQL bazu na Neonu, a tablice i početne pod
 | PostgreSQL (Neon) + Spring Data JPA + Flyway | Spremanje korisnika, prijava i kategorija. | Baza je u oblaku pa je zajednička za cijeli tim i za Render. Shemu stvaraju Flyway migracije, a Hibernate je samo provjerava. Besplatna Neon baza se uspava kad nema prometa, pa prvi upit može potrajati. |
 | Google prijava (OAuth 2.0 / OpenID Connect) | Prijava korisnika Google računom. | Obavezno prema zadatku. Svi korisnici, uključujući redare, prijavljuju se Google računom, pa sustav ne sprema lozinke. |
 | Google Maps JavaScript API | Karta s pribadačama prijava u bojama prema statusu i odabir lokacije nove prijave. | Treba API ključ ograničen na adrese aplikacije. Bez ključa stranica radi, ali se karta ne prikazuje. |
+| Cloudinary | Pohrana fotografija prijava; u bazi je samo URL slike. | Slike ne ovise o disku Render poslužitelja pa ostaju nakon novog postavljanja. Treba API ključ, a besplatni plan ima ograničen prostor. |
 | Docker + Render | Frontend i backend grade se u jednu aplikaciju i postavljaju na javnu adresu. | Frontend i backend su na istoj adresi, pa kolačić prijave radi bez dodatne konfiguracije. Promjena na `master` automatski se postavlja. |
 
 <a id="team-members"></a>
