@@ -86,18 +86,18 @@ Pripremljen je lokalni prototip stranice eko-udruge prema stilu stranice komunal
 | Implementacija prikaza detalja odabrane stavke i pripadajućih elemenata sučelja | Leo Žigman | 2 | `EkoUdruga.jsx`, `EkoUdruga.css` |
 | Izrada paketa od deset SVG ikonica i pripadajuće React komponente | Leo Žigman | 3 | `assets/icons/`, React komponenta za ikonice |
 | Izrada kratkih uputa za korištenje i integraciju ikonica za ostale članove frontend tima | Leo Žigman | 1 | Dokumentacija/upute za korištenje ikonica ||
-| Uspostava repozitorija iz predloška kolegija i prebacivanje workflowa na `master`; pozivanje članova, asistenta i nositelja kolegija u repozitorij (nositelj ponovno pozvan 15. 11.) | Nikola Mihanović | ? | PR #1, #2; postavke repozitorija |
-| Otvaranje početnih zadataka za obrasce uporabe i prijedlog tehnologija | Nikola Mihanović | ? | Issue #3–#8 |
-| Usklađivanje zahtjeva F-011 sa zadatkom i razdvajanje vanjskih aktera (A-04 do A-07) | Nikola Mihanović | ? | PR #9; `docs/2-Analiza-zahtjeva.md` |
-| Spring Boot poslužitelj: prijava Google računom (OAuth 2.0 / OpenID Connect), sesija, odjava, CSRF zaštita, JSON odgovori 401 i 403, `/api/health` i `/api/me` | Nikola Mihanović | ? | PR #10; `SecurityConfig`, `KorisnikController`, `application.properties` |
-| Google Cloud projekt: OAuth klijent, adrese povratka, testni korisnici, omogućeni Maps i Calendar API, ograničeni Maps ključevi | Nikola Mihanović | ? | postavke u Google Cloud konzoli |
-| Zajednički testni Google računi redara i udruge i njihovo dodavanje kao testnih korisnika (uloge im u bazi postavlja migracija V4) | Nikola Mihanović | ? | `ecosentry.redar`, `ecosentry.udruga` |
-| Postavljanje na Render: `Dockerfile` (klijent i poslužitelj u jednoj usluzi), varijable okruženja, automatsko postavljanje s `master` | Nikola Mihanović | ? | PR #10; `Dockerfile`, `.dockerignore` |
-| Prosljeđivanje Google Maps ključa klijentu pri izgradnji na Renderu | Nikola Mihanović | ? | commit `cb9fde0`; `Dockerfile` |
-| Poslužiteljska točka `GET /api/kategorije` za izbor kategorije na klijentu i uklanjanje `TestController` | Nikola Mihanović | ? | PR #28; `KategorijaController` |
-| Postavljanje varijabli okruženja za bazu (Neon) i Cloudinary na Renderu, pregled i spajanje PR-a za Cloudinary | Nikola Mihanović | ? | PR #36 (autor Tibor Andreani) |
-| Popravak izgradnje na Renderu koja je padala od 15. 11. (test ovisnosti, prevođenje testova izvan Docker izgradnje) i prilagodba `SlikaServiceTest` Cloudinaryju | Nikola Mihanović | ? | PR #37, #38; `Dockerfile`, `backend/pom.xml` |
-| Uklanjanje ostataka predloška, uravnoteženje prioriteta zahtjeva i podjela aktera i dionika prema napomenama asistenta | Nikola Mihanović | ? | PR #41, #42; `docs/Home.md`, `docs/1-Projekt.md`, `docs/2-Analiza-zahtjeva.md` |
+| Uspostava repozitorija iz predloška kolegija i prebacivanje workflowa na `master`; pozivanje članova, asistenta i nositelja kolegija u repozitorij (nositelj ponovno pozvan 15. 11.) | Nikola Mihanović | 2 | PR #1, #2; postavke repozitorija |
+| Otvaranje početnih zadataka za obrasce uporabe i prijedlog tehnologija | Nikola Mihanović | 1 | Issue #3–#8 |
+| Usklađivanje zahtjeva F-011 sa zadatkom i razdvajanje vanjskih aktera (A-04 do A-07) | Nikola Mihanović | 1 | PR #9; `docs/2-Analiza-zahtjeva.md` |
+| Spring Boot poslužitelj: prijava Google računom (OAuth 2.0 / OpenID Connect), sesija, odjava, CSRF zaštita, JSON odgovori 401 i 403, `/api/health` i `/api/me` | Nikola Mihanović | 6 | PR #10; `SecurityConfig`, `KorisnikController`, `application.properties` |
+| Google Cloud projekt: OAuth klijent, adrese povratka, testni korisnici, omogućeni Maps i Calendar API, ograničeni Maps ključevi | Nikola Mihanović | 2 | postavke u Google Cloud konzoli |
+| Zajednički testni Google računi redara i udruge i njihovo dodavanje kao testnih korisnika (uloge im u bazi postavlja migracija V4) | Nikola Mihanović | 0.5 | `ecosentry.redar`, `ecosentry.udruga` |
+| Postavljanje na Render: `Dockerfile` (klijent i poslužitelj u jednoj usluzi), varijable okruženja, automatsko postavljanje s `master` | Nikola Mihanović | 3 | PR #10; `Dockerfile`, `.dockerignore` |
+| Prosljeđivanje Google Maps ključa klijentu pri izgradnji na Renderu | Nikola Mihanović | 0.5 | commit `cb9fde0`; `Dockerfile` |
+| Poslužiteljska točka `GET /api/kategorije` za izbor kategorije na klijentu i uklanjanje `TestController` | Nikola Mihanović | 1 | PR #28; `KategorijaController` |
+| Postavljanje varijabli okruženja za bazu (Neon) i Cloudinary na Renderu, pregled i spajanje PR-a za Cloudinary | Nikola Mihanović | 1 | PR #36 (autor Tibor Andreani) |
+| Popravak izgradnje na Renderu koja je padala od 15. 11. (test ovisnosti, prevođenje testova izvan Docker izgradnje) i prilagodba `SlikaServiceTest` Cloudinaryju | Nikola Mihanović | 3 | PR #37, #38; `Dockerfile`, `backend/pom.xml` |
+| Uklanjanje ostataka predloška, uravnoteženje prioriteta zahtjeva i podjela aktera i dionika prema napomenama asistenta | Nikola Mihanović | 2 | PR #41, #42; `docs/Home.md`, `docs/1-Projekt.md`, `docs/2-Analiza-zahtjeva.md` |
 
 Koristite aktivnosti specifične za projekt umjesto obaveznog retka za svako poglavlje dokumentacije ili svaki UML dijagram. Tim treba dosljedno bilježiti sate i izbjegavati dvostruko brojanje zajedničkog rada; reprezentativni rezultat objašnjava što je prijavljeni trud proizveo. Sati su samoprijavljena procjena uloženog rada, a ne mjera kvalitete niti zamjena za pregled koda i artefakata.
 
