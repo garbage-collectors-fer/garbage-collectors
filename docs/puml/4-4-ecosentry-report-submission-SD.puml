@@ -3,12 +3,14 @@
 '
 ' Svrha:    Prikazuje podnošenje prijave otpada (UC-002): određivanje lokacije,
 '           provjere na klijentu, provjeru prijave i uloge na poslužitelju,
-'           pohranu fotografije i spremanje prijave, uz najvažnije
-'           neuspješne grane.
-' Autor:
+'           spremanje fotografije na Cloudinary i spremanje prijave u bazu,
+'           uz najvažnije neuspješne grane.
+' Autor:    Pavao Maršić
 ' AI:       Claude je izradio nacrt dijagrama prema kodu (Gradjanin.jsx,
 '           prijaveServis.js, SecurityConfig, PrijavaController, PrijavaService,
 '           SlikaService); autor je provjerio da dijagram odgovara kodu.
+'           Verzija 1.1: fotografije se spremaju na Cloudinary, a u bazu
+'           se upisuje samo njihov URL.
 ' Praćenje: Pri promjeni provjera, HTTP statusa ili pohrane fotografija
 '           ažurirati model.
 '
@@ -46,7 +48,7 @@ participant "Spring Security\n(sesija, CSRF, uloga)" as Sec <<Security>>
 participant "PrijavaController" as Ctrl <<API>>
 participant "PrijavaService" as Svc <<Application>>
 participant "SlikaService" as Img <<Application>>
-participant "Cloudinary" as Cld <<External>>
+participant "Cloudinary" as Cdn <<External>>
 database "PostgreSQL\n(Neon)" as DB <<Persistence>>
 
 ' ==============================================================================
@@ -101,21 +103,25 @@ else svi podaci uneseni
       Svc --> Ctrl : ResponseStatusException 400
       Ctrl --> Web : 400 s porukom
     else podaci ispravni
+      ' slika se šalje na Cloudinary tek kad je sve ostalo provjereno
       Svc -> Img++ : spremi(slika)
-      alt vrsta datoteke nije JPG/PNG
+
+      alt fotografija nije JPG/PNG
         Img --> Svc : ResponseStatusException 400
         Svc --> Ctrl : iznimka
-        Ctrl --> Web : 400 s porukom
-      else vrsta dopuštena
-        Img -> Cld : upload (mapa ecosentry/prijave,\nširina najviše 1400 px)
-        alt Cloudinary ne odgovori
+        Ctrl --> Web : 400 „Slika mora biti JPG ili PNG”
+      else vrsta datoteke dopuštena
+        Img -> Cdn++ : upload(slika)\nmapa ecosentry/prijave, širina najviše 1400 px
+
+        alt Cloudinary nije dostupan ili upload ne uspije
+          Cdn --> Img : pogreška
           Img --> Svc : ResponseStatusException 500
           Svc --> Ctrl : iznimka
           Ctrl --> Web : 500 „Spremanje slike nije uspjelo”
-        else upload uspio
-          Cld --> Img : secure_url
+        else fotografija spremljena
+          Cdn --> Img-- : secure_url (https)
           Img --> Svc-- : URL fotografije
-          Svc -> DB : INSERT prijava\n(status PRIJAVLJENO, provjerena = false)
+          Svc -> DB : INSERT prijava\n(url_fotografija = Cloudinary URL,\nstatus PRIJAVLJENO, provjerena = false)
           DB --> Svc : nova prijava s ID-em
           Svc --> Ctrl-- : PrijavaDto
           Ctrl --> Sec-- : 201 Created

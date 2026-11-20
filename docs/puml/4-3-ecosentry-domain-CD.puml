@@ -5,7 +5,7 @@
 '           prijave otpada od REST kontrolera preko usluge do entiteta i
 '           repozitorija. Prikazane su odgovornosti, ključne operacije i veze,
 '           a ne svi atributi ni getteri/setteri.
-' Autor:
+' Autor:    Pavao Maršić
 ' AI:       Claude je pomogao pri izradi nacrta dijagrama prema kodu u paketu
 '           hr.fer.ecosentry; autor je provjerio da dijagram odgovara kodu.
 ' Praćenje: Pri promjeni pravila prijelaza statusa ili potpisa metoda u

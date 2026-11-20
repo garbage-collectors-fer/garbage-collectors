@@ -5,7 +5,7 @@
 '           (Flyway migracije V1–V4): korisnike, prijave, kategorije, akcije
 '           čišćenja, volontere, povijest statusa, obavijesti i Google tokene.
 '           Prikazani su ključevi i reprezentativni atributi, ne svi stupci.
-' Autor:
+' Autor:    Pavao Maršić
 ' AI:       Claude je pomogao pri izradi nacrta dijagrama prema migracijama u repozitoriju;
 '           autor je provjerio da dijagram odgovara shemi baze.
 ' Praćenje: Izvor je backend/src/main/resources/db/migration. Pri

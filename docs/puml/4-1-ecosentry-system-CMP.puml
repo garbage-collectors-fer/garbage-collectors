@@ -5,7 +5,7 @@
 '           i vanjske usluge. Planirane komponente (akcije čišćenja, kalendar,
 '           prognoza) prikazane su isprekidano. Fizičko izvođenje
 '           prikazuje dijagram razmještaja 6-1.
-' Autor:
+' Autor:    Pavao Maršić
 ' AI:       Claude je pomogao pri izradi nacrta dijagrama prema kodu u repozitoriju; autor
 '           je sve provjerio da dijagram odgovara implementaciji.
 ' Praćenje: Pri dodavanju akcija čišćenja, obavijesti, kalendara ili
